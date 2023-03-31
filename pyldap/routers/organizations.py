@@ -8,8 +8,12 @@ router = APIRouter(
     tags=['organizations']
 )
 
+@router.get('/schema')
+async def get_organizations_schema():
+    resp = await domain.search_organizations_schema()
+    return resp
 
-@router.get('/organizations')
-async def get_organizations():
-    resp = await domain.search_organizations()
+@router.get('/tree')
+async def get_organizations_tree():
+    resp = await domain.search_organizations_tree()
     return resp
