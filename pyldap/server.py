@@ -9,19 +9,19 @@ Python LDAP REST-API
 
 tags_metadata = [
     {
-        'name': 'auth',
+        'name': 'Auth',
         'description': 'аутентификация.'
     },
     {
-        'name': 'computers',
+        'name': 'Computers',
         'description': 'поиск компьютеров в домене.'
     },
     {
-        'name': 'organizations',
+        'name': 'Organizations',
         'description': 'поиск подразделений в домене.'
     },
     {
-        'name': 'users',
+        'name': 'Users',
         'description': 'поиск пользователей в домене.'
     },
 ] 

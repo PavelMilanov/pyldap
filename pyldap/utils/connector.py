@@ -24,6 +24,11 @@ class Ldap3Connector:
             print(data)
 
     async def search_organizations_schema(self) -> Dict | None:
+        """Возвращает все подразделения в контейнере домена.
+
+        Returns:
+            Dict | None: json-всех подраздлений со всеми атрибутами | None.
+        """        
         try:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.search(search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_scope=SUBTREE, search_filter='(objectCategory=organizationalUnit)', attributes=ALL_ATTRIBUTES)
@@ -34,6 +39,11 @@ class Ldap3Connector:
             return None
     
     async def search_organizations_tree(self) -> Dict[str, List[str]] | None:
+        """Возвращает все подраздления со вложенностью ввиде словаря.
+
+        Returns:
+            Dict[str, List[str]] | None: {'Temp': ['Unit1', 'Unit2']} | None.
+        """        
         try:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.search(search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_scope=LEVEL, search_filter='(objectCategory=organizationalUnit)', attributes=['name'])
@@ -56,5 +66,35 @@ class Ldap3Connector:
             print(e)
             return None
 
+    async def search_organization_by_name(self, name: str):
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+                dc.search(search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_scope=SUBTREE, search_filter=f'(&(objectCategory=organizationalUnit)(cn={name}))', attributes=ALL_ATTRIBUTES)
+                unit = dc.entries[0].entry_to_json()
+                print(unit)
+                return unit
+        except Exception as e:
+            print(e)
+            return None
+
+    async def add_organization(self, name: str):
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+                dc.add(dn=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', object_class=['inetOrgPerson', 'posixGroup', 'top'], attributes={'sn': 'user_sn', 'gidNumber': 0})
+                print(dc.result)
+                # return unit
+        except Exception as e:
+            print(e)
+            return None
+
+    async def delete_organization(self, name: str):
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+                dc.delete(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}')
+                print(dc.result)
+                # return unit
+        except Exception as e:
+            print(e)
+            return None
 
 domain = Ldap3Connector()
