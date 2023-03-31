@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pyldap"
+version = "0.1.0"
+description = ""
+authors = ["Pavel Milanov <milanov71@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.95.0"
+uvicorn = "^0.21.1"
+ldap3 = "^2.9.1"
+environs = "^9.5.0"
+pycryptodome = "^3.17"
+loguru = "^0.6.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
