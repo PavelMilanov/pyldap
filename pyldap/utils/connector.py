@@ -17,7 +17,7 @@ class Ldap3Connector:
     _DC2 = env.list("DN")[2]
     
 
-    def search_domain_users(self):
+    async def search_domain_users(self):
        with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
             dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectCategory= person)', attributes=ALL_ATTRIBUTES)
             data = dc.entries
@@ -42,7 +42,7 @@ class Ldap3Connector:
                     data = json.loads(unit.entry_to_json())
                     tree_item = data['attributes']['name'][0]
                     dc.search(search_base=f'ou={tree_item},ou=ARMs,ou={env.list("DN")[0]},dc={env.list("DN")[1]},dc={env.list("DN")[2]}', search_scope=LEVEL, search_filter='(objectCategory=organizationalUnit)', attributes=['name'])
-                    if len(dc.entries) > 0:
+                    if len(dc.entries) > 0:  # если есть вложенность
                         tree_subitems = []
                         for subunit in dc.entries:
                             data = json.loads(subunit.entry_to_json())

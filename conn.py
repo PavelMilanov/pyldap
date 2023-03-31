@@ -15,7 +15,7 @@ try:
             data = json.loads(unit.entry_to_json())
             tree_item = data['attributes']['name'][0]
             dc.search(search_base=f'ou={tree_item},ou=ARMs,ou={env.list("DN")[0]},dc={env.list("DN")[1]},dc={env.list("DN")[2]}', search_scope=LEVEL, search_filter='(objectCategory=organizationalUnit)', attributes=['name'])
-            if len(dc.entries) > 0:
+            if len(dc.entries) > 0:  # если есть вложенность
                 tree_subitems = []
                 for subunit in dc.entries:
                     data = json.loads(subunit.entry_to_json())
