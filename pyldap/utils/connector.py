@@ -22,7 +22,7 @@ class Ldap3Connector:
     async def search_domain_users(self):
        with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
             dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=ALL_ATTRIBUTES)
-            data = dc.entries
+            data = dc.entries.entry_to_json()
             print(data)
 
     async def search_organizations_schema(self) -> Dict | None:

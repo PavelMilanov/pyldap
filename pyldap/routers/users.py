@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from utils.connector import domain
 
 
 router = APIRouter(
@@ -9,7 +10,8 @@ router = APIRouter(
 
 @router.get('/users')
 async def get_users():
-    return "в разработке"
+    resp = await domain.search_domain_users()
+    return resp
 
 @router.get('/{user}')
 async def get_user_by_name(user: str):
