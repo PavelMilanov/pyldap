@@ -25,7 +25,8 @@ async def get_organizations_tree():
 
 @router.get('/count')
 async def get_count_organizations():
-    return 'в разработке'
+    resp = await domain.get_count_organizations()
+    return resp
 
 @router.get('/{unit}')
 async def get_organization_by_name(unit: str):

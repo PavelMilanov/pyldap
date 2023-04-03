@@ -1,5 +1,7 @@
 import pytest
 from pyldap.utils.connector import Ldap3Connector
+from datetime import datetime
+
 
 server = Ldap3Connector()
 
