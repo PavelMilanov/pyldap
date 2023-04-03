@@ -2,7 +2,7 @@ from ldap3 import Server, Connection, ALL, NTLM, ALL_ATTRIBUTES, LEVEL, SUBTREE
 from environs import Env
 import json
 from typing import List, Dict
-from models.domain import Organization, OrganizationResponse
+from models.ldap import Organization, OrganizationResponse, Customer
 
 
 env = Env()
@@ -19,11 +19,80 @@ class Ldap3Connector:
     _DC2 = env.list("DN")[2]
     
 
-    async def search_domain_users(self):
-       with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-            dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=ALL_ATTRIBUTES)
-            data = dc.entries.entry_to_json()
-            print(data)
+    async def get_domain_users(self) -> List[Customer] | None:
+        """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
+
+        Returns:
+            List[Customer] | None: {
+                name=str,
+                last_logon=datetime,
+                bad_password_time=datetime,
+                member_of=list(str),
+            }
+        """        
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+                dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=ALL_ATTRIBUTES)
+                data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
+                users = []
+                for user in data:
+                    name=str(user['attributes']['name'][0])
+                    last_logon=str(user['attributes']['lastLogon'])
+                    try:
+                        bad_password_time=str(user['attributes']['badPasswordTime'])
+                        member_of=list(user['attributes']['memberOf'])
+                    except KeyError as e:  # пользователь состоит только в группе domain user
+                        bad_password_time=None
+                        member_of=None
+                    users.append(Customer(
+                        name=name,
+                        last_logon=last_logon,
+                        bad_password_time=bad_password_time,
+                        member_of=member_of,
+                    ))
+                print(users)
+                return users
+        except Exception as e:
+            print(e)
+            return None
+
+    async def get_domain_user(self, name: str) -> Customer | None:
+        """Ищет пользователя в домене и возвращает pydantic-модель.
+
+        Args:
+            name (str): Имя пользователя.
+
+        Returns:
+            Customer | None: {
+                name=str,
+                last_logon=datetime,
+                bad_password_time=datetime,
+                member_of=list(str)
+            }
+        """        
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+                dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter=f'(&(objectClass=person)(cn={name}))', attributes=ALL_ATTRIBUTES)
+                user = json.loads(dc.entries[0].entry_to_json())
+                print(user)
+                name=str(user['attributes']['name'][0])
+                last_logon=str(user['attributes']['lastLogon'])
+                try:
+                    bad_password_time=str(user['attributes']['badPasswordTime'])
+                    member_of=list(user['attributes']['memberOf'])
+                except KeyError:  # пользователь состоит только в группе domain user
+                    last_logoff=None
+                    bad_password_time=None
+                    member_of=None    
+                return Customer(
+                    name=name,
+                    last_logon=last_logon,
+                    bad_password_time=bad_password_time,
+                    member_of=member_of,
+                )
+        except IndexError as e:  # пользователь не найден
+            return None
+            
 
     async def search_organizations_schema(self) -> Dict | None:
         """Возвращает все подразделения в контейнере домена.

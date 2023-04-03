@@ -29,6 +29,6 @@ from datetime import datetime
 #     print(e)
 # finally:
 #     pass
-data = '2017-01-27 13:26:52+00:00'
-format_date = datetime.strptime(data, '%Y-%m-%d %H:%M:%S%z')
+data = '2017-06-09 08:24:23'
+format_date = datetime.strptime(data, '%Y-%m-%d %H:%M:%S')
 print(format_date)
