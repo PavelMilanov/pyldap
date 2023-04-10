@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from utils.connector import domain
-from models.ldap import Organization
 
 
 router = APIRouter(

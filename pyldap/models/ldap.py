@@ -1,60 +1,55 @@
-from pydantic import BaseModel, validator, ValidationError
+from pydantic import BaseModel, validator
 from datetime import datetime
 from typing import Union, List
+from enum import Enum
 
 
-class Customer(BaseModel):
+class CustomerLdap(BaseModel):
     name: str
-    last_logon: str
+    last_logon: Union[str, None]
     bad_password_time: Union[str, None]
     member_of: Union[List[str], None]
     
-    @validator('last_logon')
-    def formated_last_logon(cls, data):
+    @validator('last_logon', 'bad_password_time')
+    def formated_datetime(cls, data):
         if data is not None and data.find('1601') == -1:  # 1601-01-01 00:00:00+00:00 - хз откуда такая дата
-            return datetime.strptime(data.split('.')[0][2:], '%Y-%m-%d %H:%M:%S')  # '2017-10-09 12:05:39'
-        else:
-            return None
-        
-    @validator('bad_password_time')
-    def formated_bad_password_time(cls, data):
-        if data is not None and data.find('1601') == -1:  # 1601-01-01 00:00:00+00:00 - хз откуда такая дата
-            return datetime.strptime(data.split('.')[0][2:], '%Y-%m-%d %H:%M:%S')  # '2017-10-09 12:05:39'
-        else:
-            return None
-    
+            return datetime.strptime(data.split('.')[0], '%Y-%m-%d %H:%M:%S')  # '2017-10-09 12:05:39'
+
     @validator('member_of')
     def formated_member_of(cls, data):
         if data is not None:
-            for group in data:
-                print(group.split(',')[0])
-        else:
-            return None
+            return [group.split(',')[0][3:] for group in data]  # CN=Administrators -> Administrators
 
-class Organization(BaseModel):
+
+class OrganizationLdap(BaseModel):
     name: str
-    created_at: Union[str, datetime] # "2017-01-27 13:26:52+00:00"
+    created_at: Union[str, None] # "2017-01-27 13:26:52+00:00"
     changed_at: str
     dn: str
 
-    @validator('created_at')
-    def formated_created_at(cls, data):
+    @validator('created_at', 'changed_at')
+    def formated_datetime(cls, data):
         if data is not None:
             return datetime.strptime(data, '%Y-%m-%d %H:%M:%S%z')
-        else:
-            return None
-    
-    @validator('changed_at')
-    def formated_changed_at(cls, data):
-        if data is not None:
-            return datetime.strptime(data, '%Y-%m-%d %H:%M:%S%z')
-        else:
-            return None
 
 
-class OrganizationResponse(BaseModel):
+class ResponseLdap(BaseModel):
     description: str
     resp_type: str
 
-class Computer(BaseModel):
+
+class ComputerLdapOS(BaseModel):
     name: str
+    version: str
+    
+
+class ComputerLdap(BaseModel):
+    name: str
+    os: ComputerLdapOS
+    unit: Union[str, None]
+    
+    @validator('unit')
+    def formated_unit(cls, data):
+        if data is not None:
+            format_value = data.split(',')[1:-4]
+            return data.split(',')[1:-4]
