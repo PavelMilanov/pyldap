@@ -365,6 +365,26 @@ class Ldap3Connector:
                     )]
             case _:
                 raise ValueError(f'Не указаны аргументы для поиска')
-    
+
+    async def delete_computer(self, name: str) -> ResponseLdap:
+        """Удаляет компьютер в контейнере AD.
+
+        Args:
+            name (str): Название компьютера.
+
+        Returns:
+            ResponseLdap: {
+                description=str,
+                resp_type=str(delResponse)
+            }
+        """
+        with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+            dc.delete(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}')
+            print(dc.result)
+            return ResponseLdap(
+                description=str(dc.result['description']),
+                resp_type=str(dc.result['type'])
+            )
+
     
 domain = Ldap3Connector()
