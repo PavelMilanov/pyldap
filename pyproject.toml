@@ -13,6 +13,10 @@ ldap3 = "^2.9.1"
 environs = "^9.5.0"
 pycryptodome = "^3.17"
 loguru = "^0.6.0"
+python-multipart = "^0.0.6"
+python-jose = "^3.3.0"
+passlib = "^1.7.4"
+redis = "^4.5.4"
 
 
 [tool.poetry.group.dev.dependencies]

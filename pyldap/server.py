@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import computers, organizations, users
+from routers import computers, organizations, users, auth
 
 
 description = """
@@ -10,7 +10,7 @@ Python LDAP REST-API
 tags_metadata = [
     {
         'name': 'Auth',
-        'description': 'аутентификация.'
+        'description': 'аутентификация через домен.'
     },
     {
         'name': 'Computers',
@@ -42,6 +42,7 @@ app = FastAPI(
     }
 )
 
+app.include_router(auth.router)
 app.include_router(computers.router)
 app.include_router(organizations.router)
 app.include_router(users.router)

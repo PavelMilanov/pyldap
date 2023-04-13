@@ -10,11 +10,11 @@ from ldap3 import (
     SUBTREE,
     MODIFY_REPLACE
     )
-from ldap3.core.exceptions import LDAPAttributeError, LDAPKeyError
+from ldap3.core.exceptions import LDAPAttributeError, LDAPKeyError, LDAPBindError
 from environs import Env
 import json
 import ssl
-from typing import List, Dict
+from typing import List, Dict, Final
 from models.ldap import (
     OrganizationLdap,
     ResponseLdap,
@@ -31,13 +31,13 @@ env.read_env()
 
 
 class Ldap3Connector:
-    # _SERVER = Server(env('DC'), port=636, use_ssl=True, tls=Tls(validate=ssl.CERT_NONE, version=ssl.PROTOCOL_TLSv1_2), get_info=ALL)
-    _SERVER = Server(env('DC'), get_info=ALL)
-    _LOGIN = env('LOGIN')
-    _PASSWORD = env('PASSWORD')
-    _OU = env.list("DN")[0]
-    _DC1 = env.list("DN")[1]
-    _DC2 = env.list("DN")[2]
+
+    _SERVER: Final = Server(env('DC'), get_info=ALL)
+    _LOGIN: Final = env('LOGIN')
+    _PASSWORD: Final = env('PASSWORD')
+    _OU: Final = env.list("DN")[0]
+    _DC1: Final = env.list("DN")[1]
+    _DC2: Final = env.list("DN")[2]
     
     def __init__(self):
         try:
@@ -386,5 +386,31 @@ class Ldap3Connector:
                 resp_type=str(dc.result['type'])
             )
 
-    
+    async def ldap_authentificate(self, name, password) -> bool:
+        """Ldap-аутентификация администратора домена.
+
+        Args:
+            name (_type_): логин.
+            password (_type_): пароль.
+
+        Raises:
+            LDAPBindError: неверный пользователь.
+
+        Returns:
+            bool: успешная аутентификация.
+        """        
+        search_tree = f'ou={self._OU},dc={self._DC1},dc={self._DC2}'
+        search_filter = f'(&(objectClass=person)(cn={name}))'
+        try:
+            with Connection(self._SERVER, user=f'fso.rsnet\{name.lower()}', password=password, authentication=NTLM) as dc:
+                dc.search(search_base=search_tree, search_filter=search_filter, attributes=['name'])
+                user = json.loads(dc.entries[0].entry_to_json())
+                if user['attributes']['name'][0].lower() == name.lower():  # проверка на ввод данных администратора домена
+                    return True
+                raise LDAPBindError('Вход только для администратора домена')
+        except LDAPBindError:
+            print('некорректный пользователь')
+            return False
+
+
 domain = Ldap3Connector()
