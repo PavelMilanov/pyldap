@@ -1,4 +1,7 @@
 from tortoise import Tortoise
+from tortoise import Tortoise, fields, run_async
+from tortoise.models import Model
+
 
 TORTOISE_ORM = {
         "connections": {
@@ -6,20 +9,21 @@ TORTOISE_ORM = {
             },
         "apps": {
             "models": {
-                "models": ["app.models", "aerich.models"],
+                "models": ["db.postgres", "aerich.models"],
                 "default_connection": "default",
             },
         }
     }
 
-class PostgresConnector:
-    
-    async def connect(self):
-        await Tortoise.init(
-        db_url='postgres://postgres:P@ssw0rd7@localhost:5432/postgres',
-        modules={'models': ['app.models']},
-        generate_schemas=True,
-        add_exception_handlers=True,
-    )
 
-db = PostgresConnector()
+
+class Event(Model):
+    id = fields.IntField(pk=True)
+    name = fields.TextField()
+    datetime = fields.DatetimeField(null=True)
+
+    class Meta:
+        table = "event"
+
+    def __str__(self):
+        return self.name

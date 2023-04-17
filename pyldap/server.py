@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import computers, organizations, users, auth
 
+from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 
 description = """
 Python LDAP REST-API
@@ -57,7 +58,13 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    pass
+    register_tortoise(
+        app,
+        db_url="postgres://postgres:P@ssw0rd7@localhost:5432/postgres",
+        modules={"models": ["db.postgres"]},
+        generate_schemas=True,
+        add_exception_handlers=True,
+    )
 
 @app.on_event("shutdown")
 async def shutdown_event():
