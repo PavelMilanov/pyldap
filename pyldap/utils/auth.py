@@ -22,7 +22,7 @@ class Authentification:
         token = jwt.encode({'expired_date': str(expired_date)}, self.SECRET, algorithm=self.ALGORITHM)
         cache.set_value('token', token)
         # print(token)
-        return token
+        return await token
 
     async def check_token(self, token: str) -> bool:
         """Проверяет валидность токена.
@@ -44,7 +44,7 @@ class Authentification:
 
     async def __expired_date(self) -> date:
         current_date = date.today()
-        return date(current_date.year, current_date.month, current_date.day+2)
+        return await date(current_date.year, current_date.month, current_date.day+2)
 
 
 auth = Authentification()
