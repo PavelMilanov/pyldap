@@ -21,8 +21,6 @@ async def authentificate(form: OAuth2PasswordRequestForm = Depends()):
     if resp:
         token = await auth.generate_token(form.username, form.password)
         return token
-    else:
-        return resp
 
 @router.get('/me')
 async def me(token: str = Depends(ldap_auth)):
