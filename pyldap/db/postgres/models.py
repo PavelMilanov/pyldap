@@ -16,7 +16,7 @@ TORTOISE_ORM = {
 
 
 
-class StaicIp(Model):
+class StaticIp(Model):
     ip = fields.CharField(pk=True, max_length=15)
     description = fields.TextField(null=True)
 
