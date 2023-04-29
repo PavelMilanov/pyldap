@@ -10,9 +10,16 @@ export const defaultStore = defineStore('default', {
       isActive: false,
       token: '',
     },
+    forms: [
+      {
+        ip: '192.168.1.10',
+        description: 'description'
+      },
+    ]
   }),
   getters: {
     getUser: (state) => state.user,
+    getNetworkForms: (state) => state.forms,
   },
   actions: {
     async postAuthentification(login, password) {
@@ -32,5 +39,11 @@ export const defaultStore = defineStore('default', {
         this.user.token = responseData
       }
     },
+    async addNetworkRow(ip, description) {
+      this.forms.push({ip, description})
+    },
+    async removeNetworkRow(index) {
+      this.forms.splice(index, 1)
+    }
   },
 })

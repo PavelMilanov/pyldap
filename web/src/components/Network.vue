@@ -1,9 +1,14 @@
 <script>
 import { registerRuntimeHelpers } from '@vue/compiler-core'
 import { defaultStore } from '../stores/counter'
+import AddRow from './modal/AddRow.vue'
+import RemoveRow from './modal/RemoveRow.vue'
 
 export default {
-   
+    components: {
+        AddRow,
+        RemoveRow
+    },
     setup() {
         const store = defaultStore()
         return { store }
@@ -11,10 +16,6 @@ export default {
     data() {
         return {
             editable: false,
-            form: {
-                ip: 'testst',
-                description: 'fsdfsd'
-            } 
         }
     },
     methods: {
@@ -31,43 +32,46 @@ export default {
 </script>
 
 <template>
-    <div>
-        <div class="table-menu p-3 mx-auto" style="width:85%; height: 5%;">
+    <div class="network mx-auto" >
+        <div class="table-menu p-3 mx-auto" style="height: 5%;">
             <form class="d-flex justify-content-start" role="search">
-                <button type="button" class="btn btn-primary">btn1</button>
-                <button type="button" class="btn btn-primary">btn2</button>
-                <input class="form-control me-4" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
+                <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Найти</button>
           </form>
         </div>
-        <div class="p-3 mx-auto" style="width:85%;">
+        <div class="p-3 mx-auto">
             <table class="table table-hover shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                 <thead class="table-light">
                     <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Static Ip</th>
-                    <th scope="col">Description</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Static Ip</th>
+                        <th scope="col">Description</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                    <tr>
-                    <th scope="row">1</th>
-                    <td v-if="editable == false" @dblclick="editValue">{{form.ip}}</td>
-                    <td v-else @dblclick="editValue"><input type="text" v-model="form.ip"></td>
-                    <td>{{ editable }}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>2.2.2.2</td>
-                    <td>second</td>
+                    <tr v-for="(item, index) in this.store.getNetworkForms">
+                        <th scope="row">{{index+1}}</th>
+                        <td v-if="editable == false" @dblclick="editValue">{{item.ip}}</td>
+                        <td v-else @dblclick="editValue"><input type="text" v-model="item.ip"></td>
+                        <td v-if="editable == false" @dblclick="editValue">{{ item.description }}</td>
+                        <td v-else @dblclick="editValue"><input type="text" v-model="item.description"></td>
                     </tr>
                 </tbody>
             </table>
+            <AddRow />
+            <RemoveRow />
         </div>
     </div>
 </template>
 
 <style lang="less">
+
+.network {
+    width: 85%;
+    margin-top: 3%;
+}
 
 .d-flex {
     height: 4vh;
