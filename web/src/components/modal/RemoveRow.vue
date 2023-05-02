@@ -9,13 +9,13 @@ export default {
     },
     data() {
         return {
-            index: 0
+            ip: ''
         }
     },
     methods: {
-        async removeRow(index) {
-            await this.store.removeNetworkRow(index-1)  // в таблице индекс начинается с 1
-            this.index = 0
+        async removeRow(ip) {
+            await this.store.removeNetworkRow(ip)  // в таблице индекс начинается с 1
+            this.index = ''
         }
     }
 }
@@ -32,14 +32,14 @@ export default {
                  <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                        <label for="new-ip" class="col-form-label"># записи:</label>
-                        <input type="text" class="form-control" id="new-ip" v-model="index">
+                        <label for="new-ip" class="col-form-label">Ip-адрес:</label>
+                        <input type="text" class="form-control" id="new-ip" v-model="ip">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="removeRow(index)">Удалить</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="removeRow(ip)">Удалить</button>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Union, List, Dict
 from enum import Enum
@@ -27,4 +27,17 @@ class OSFilter(Enum):
     win7 = 'Windows 7'
     win8 = 'Windows 8'
     win10 = 'Windows 10'
+
+
+class StaticIp(BaseModel):
+    ip: str = Field()
+    description: str = Field()
     
+    class Config:
+        schema_extra = {
+            'example': {
+                'ip': '192.168.1.10',
+                'description': 'description'
+            }
+        }
+            

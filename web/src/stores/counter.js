@@ -11,10 +11,10 @@ export const defaultStore = defineStore('default', {
       token: '',
     },
     forms: [
-      {
-        ip: '192.168.1.10',
-        description: 'description'
-      },
+      // {
+      //   ip: '192.168.1.10',
+      //   description: 'description'
+      // },
     ]
   }),
   getters: {
@@ -39,11 +39,27 @@ export const defaultStore = defineStore('default', {
         this.user.token = responseData
       }
     },
-    async addNetworkRow(ip, description) {
-      this.forms.push({ip, description})
+    async getNetworkList() {
+      let cache = [] 
+      await axios.get(`http://localhost:8000/api/v1/network/`).then().catch(function (error) {
+        console.log(error)
+      })
+      this.forms = cache
+
     },
-    async removeNetworkRow(index) {
-      this.forms.splice(index, 1)
+    async addNetworkRow(ip, description) {
+      await axios.post(`http://localhost:8000/api/v1/network/`, {
+        'ip': ip,
+        'description': description
+      }).then().catch(function (error) {
+        console.log(error)
+      })
+    },
+    async removeNetworkRow(ip) {
+      let param = ip
+      await axios.delete(`http://localhost:8000/api/v1/network/${param}`).then().catch(function (error) {
+        console.log(error)
+      })
     }
   },
 })

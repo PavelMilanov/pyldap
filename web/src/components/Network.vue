@@ -27,6 +27,12 @@ export default {
                 this.editable = false
             }
         },
+    },
+    created() {
+        this.store.getNetworkList()
+    },
+    updated() {
+        this.store.getNetworkList()
     }
 }
 </script>
