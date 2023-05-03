@@ -15,7 +15,8 @@ export default {
     methods: {
         async removeRow(ip) {
             await this.store.removeNetworkRow(ip)  // в таблице индекс начинается с 1
-            this.index = ''
+            this.ip = ''
+            this.store.getNetworkList()
         }
     }
 }
