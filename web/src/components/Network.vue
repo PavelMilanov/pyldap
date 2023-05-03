@@ -17,7 +17,8 @@ export default {
         return {
             editable: false,
             searchMode: false,
-            search: ''
+            search: '',
+            searchForm: []
         }
     },
     methods: {
@@ -33,7 +34,18 @@ export default {
             if (this.searchMode == false) {
                 this.searchMode = true
             }
-            this.store.getNetworkRow(search)
+            // this.store.getNetworkRow(search)
+            var cache = []
+            var data = this.store.getNetworkForms
+            data.forEach(function (item, index) {
+                if (item.ip == search || item.description == search) {
+                    cache.push({
+                        "ip": item.ip,
+                        "description": item.description
+                    })
+                }
+            })
+            this.searchForm = cache
         },
         searchModeOff() {
             this.searchMode = false
@@ -60,7 +72,7 @@ export default {
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
                 <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" v-model="search">
                 <button class="btn btn-outline-success" @click="searchModeOn(search)">Найти</button>
-                <button v-if="searchMode" class="btn" @click="searchModeOff()">Назад</button>  <!--Для того, чтобы выйти из режима редактирования-->
+                <button v-if="searchMode" class="btn btn-info" @click="searchModeOff()">Назад</button>  <!--Для того, чтобы выйти из режима редактирования-->
             </div>
         </div>
         <div class="p-3 mx-auto">
@@ -80,14 +92,14 @@ export default {
                     </tr>
                 </tbody>
                 <tbody v-else class="table-group-divider">
-                    <tr v-for="(item, index) in this.store.getNetworkSearchForms" :key="index">
+                    <tr v-for="(item, index) in searchForm" :key="index">
                         <th scope="row">{{ index + 1 }}</th>
-                        <td>{{ item.ip }}</td>
-                        <!-- <td v-if="editable == false" @dblclick="editValue">{{item.ip}}</td> -->
-                        <!-- <td v-else @dblclick="searchOfValue()"><input type="text" v-model="item.ip"></td> -->
-                        <td>{{ item.description }}</td>
-                        <!-- <td v-if="editable == false" @dblclick="editValue">{{ item.description }}</td>
-                    <td v-else @dblclick="searchOfValue()"><input type="text" v-model="item.description"></td> -->
+                        <!-- <td>{{ item.ip }}</td> -->
+                        <td v-if="editable == false" @dblclick="editValue">{{item.ip}}</td>
+                        <td v-else @dblclick="editValue(index+1)"><input type="text" v-model="item.ip"></td>
+                        <!-- <td>{{ item.description }}</td> -->
+                        <td v-if="editable == false" @dblclick="editValue">{{ item.description }}</td>
+                        <td v-else @dblclick="editValue(index + 1)"><input type="text" v-model="item.description"></td>
                     </tr>
                 </tbody>
             </table>
@@ -114,6 +126,10 @@ export default {
 
     :nth-child(2) {
         margin-right: 10%;
+    }
+
+    :last-child {
+        margin-left: 2%;
     }
 
     .form-control {

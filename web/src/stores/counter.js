@@ -16,14 +16,14 @@ export const defaultStore = defineStore('default', {
       //   description: 'description'
       // },
     ],
-    searchForm: [
+    // searchForm: [
 
-    ]
+    // ]
   }),
   getters: {
     getUser: (state) => state.user,
     getNetworkForms: (state) => state.forms,
-    getNetworkSearchForms: (state) => state.searchForm,
+    // getNetworkSearchForms: (state) => state.searchForm,
   },
   actions: {
     async postAuthentification(login, password) {
@@ -54,19 +54,20 @@ export const defaultStore = defineStore('default', {
       })
       this.forms = cache
     },
-    async getNetworkRow(ip) {
-      let param = ip
-      let cache = []
-      this.searchForm = []
-      await axios.get(`http://localhost:8000/api/v1/network/${param}`).then(
-        function (response) {
-          cache = response.data
-        }
-      ).catch(function (error) {
-        console.log(error)
-      })
-      this.searchForm.push({"ip": cache.ip, "description": cache.description})
-    },
+    // async getNetworkRow(ip) {
+    //   let param = ip
+    //   let cache = []
+    //   this.searchForm = []
+      // await axios.get(`http://localhost:8000/api/v1/network/${param}`).then(
+      //   function (response) {
+      //     cache = response.data
+      //   }
+      // ).catch(function (error) {
+      //   console.log(error)
+      // })
+    //   console.log(this.forms)
+    //   this.searchForm.push({"ip": cache.ip, "description": cache.description})
+    // },
     async addNetworkRow(ip, description) {
       await axios.post(`http://localhost:8000/api/v1/network/`, {
         'ip': ip,
