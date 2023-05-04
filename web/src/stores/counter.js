@@ -10,20 +10,11 @@ export const defaultStore = defineStore('default', {
       isActive: false,
       token: '',
     },
-    forms: [
-      // {
-      //   ip: '192.168.1.10',
-      //   description: 'description'
-      // },
-    ],
-    // searchForm: [
-
-    // ]
+    forms: [],
   }),
   getters: {
     getUser: (state) => state.user,
     getNetworkForms: (state) => state.forms,
-    // getNetworkSearchForms: (state) => state.searchForm,
   },
   actions: {
     async postAuthentification(login, password) {
@@ -76,8 +67,17 @@ export const defaultStore = defineStore('default', {
         console.log(error)
       })
     },
-    async removeNetworkRow(ip) {
-      let param = ip
+    async editNetworkRow(params) {
+      let id = params.id
+      await axios.put(`http://localhost:8000/api/v1/network/${id}`, {
+        'ip': params.ip,
+        'description': params.description
+      }).then().catch(function (error) {
+        console.log(error)
+      })
+    },
+    async removeNetworkRow(id) {
+      let param = id
       await axios.delete(`http://localhost:8000/api/v1/network/${param}`).then().catch(function (error) {
         console.log(error)
       })

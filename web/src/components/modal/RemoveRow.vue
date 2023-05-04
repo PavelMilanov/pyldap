@@ -14,7 +14,14 @@ export default {
     },
     methods: {
         async removeRow(ip) {
-            await this.store.removeNetworkRow(ip)  // в таблице индекс начинается с 1
+            var data = this.store.getNetworkForms
+            var param
+            data.forEach(function (item) {
+                if (item.ip == ip) {
+                    param = item.id
+                }
+            })
+            await this.store.removeNetworkRow(param)
             this.ip = ''
             this.store.getNetworkList()
         }

@@ -2,11 +2,13 @@
 import { registerRuntimeHelpers } from '@vue/compiler-core'
 import { defaultStore } from '../stores/counter'
 import AddRow from './modal/AddRow.vue'
+import EditRow from './modal/EditRow.vue'
 import RemoveRow from './modal/RemoveRow.vue'
 
 export default {
     components: {
         AddRow,
+        EditRow,
         RemoveRow
     },
     setup() {
@@ -15,29 +17,19 @@ export default {
     },
     data() {
         return {
-            editable: false,
             searchMode: false,
             search: '',
-            searchForm: []
+            searchForm: [],
         }
     },
     methods: {
-        editValue() {
-            if (this.editable == false) {
-                this.editable = true
-            }
-            else {
-                this.editable = false
-            }
-        },
         searchModeOn(search) {
             if (this.searchMode == false) {
                 this.searchMode = true
             }
-            // this.store.getNetworkRow(search)
             var cache = []
             var data = this.store.getNetworkForms
-            data.forEach(function (item, index) {
+            data.forEach(function (item) {
                 if (item.ip == search || item.description == search) {
                     cache.push({
                         "ip": item.ip,
@@ -51,13 +43,8 @@ export default {
             this.searchMode = false
             this.search = ''
             this.store.getNetworkList()
-        }
+        },
     },
-    // computed: {
-    //     renderTable1() {
-    //         return this.store.getNetworkForms
-    //     }
-    // },
     created() {
         this.store.getNetworkList()
     }
@@ -70,6 +57,7 @@ export default {
             <div class="d-flex justify-content-start" role="search">
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRow">Редактировать</button>
                 <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" v-model="search">
                 <button class="btn btn-outline-success" @click="searchModeOn(search)">Найти</button>
                 <button v-if="searchMode" class="btn btn-info" @click="searchModeOff()">Назад</button>  <!--Для того, чтобы выйти из режима редактирования-->
@@ -84,26 +72,23 @@ export default {
                         <th scope="col">Description</th>
                     </tr>
                 </thead>
-                <tbody v-if="searchMode == false" class="table-group-divider">
-                    <tr v-for="(item, index) in this.store.getNetworkForms" :key="index">
-                        <th scope="row">{{index+1}}</th>
+                <tbody v-if="!searchMode" class="table-group-divider">
+                    <tr v-for="(item, index) in this.store.getNetworkForms" :key="(index)">
+                        <th scope="row">{{ index + 1 }}</th>
                         <td>{{ item.ip }}</td>
                         <td>{{ item.description }}</td>
                     </tr>
                 </tbody>
                 <tbody v-else class="table-group-divider">
-                    <tr v-for="(item, index) in searchForm" :key="index">
+                    <tr v-for="(item, index) in searchForm" :key="(index)">
                         <th scope="row">{{ index + 1 }}</th>
-                        <!-- <td>{{ item.ip }}</td> -->
-                        <td v-if="editable == false" @dblclick="editValue">{{item.ip}}</td>
-                        <td v-else @dblclick="editValue(index+1)"><input type="text" v-model="item.ip"></td>
-                        <!-- <td>{{ item.description }}</td> -->
-                        <td v-if="editable == false" @dblclick="editValue">{{ item.description }}</td>
-                        <td v-else @dblclick="editValue(index + 1)"><input type="text" v-model="item.description"></td>
+                        <td>{{ item.ip }}</td>
+                        <td>{{ item.description }}</td>
                     </tr>
                 </tbody>
             </table>
             <AddRow />
+            <EditRow />
             <RemoveRow />
         </div>
     </div>
@@ -125,6 +110,10 @@ export default {
     }
 
     :nth-child(2) {
+        margin-right: 2%;
+    }
+
+    :nth-child(3) {
         margin-right: 10%;
     }
 

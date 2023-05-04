@@ -13,10 +13,10 @@ router = APIRouter(
 
 @router.get('/')
 #async def set_static_ip(token: str = Depends(ldap_auth)):
-async def get_static_ip_all() -> List[schema.StaticIp]:
+async def get_static_ip_all() -> List[schema.GetStaticIp]:
     try:
         resp = await StaticIp.all().values()
-        return [schema.StaticIp(**item) for item in resp]
+        return [schema.GetStaticIp(**item) for item in resp]
     except DoesNotExist as e:
         print(e)
 
@@ -26,17 +26,27 @@ async def set_static_ip(item: schema.StaticIp):
     new_item = await StaticIp.create(ip=item.ip, description=item.description)
     return new_item
 
-@router.get('/{ip}')
+
+
+@router.get('/{id}')
 #async def set_static_ip(token: str = Depends(ldap_auth)):
-async def get_static_ip(ip: str) -> schema.StaticIp:
+async def get_static_ip(id: int) -> schema.GetStaticIp:
     try:
-        resp = await StaticIp.get(ip=ip).values()
-        return schema.StaticIp(**resp)
+        resp = await StaticIp.get(id=id).values()
+        return schema.GetStaticIp(**resp)
     except DoesNotExist as e:
         print(e)
 
+@router.put('/{id}')
+async def change_static_ip(id: int, item: schema.StaticIp):
+    try:
+        resp = await StaticIp.get(id=id)
+        resp.update_from_dict(item.dict())
+        await resp.save()
+    except DoesNotExist as e:
+        print(e)
 
-@router.delete('/{ip}')
-async def delete_static_ip(ip: str) -> bool:
-    await StaticIp.get(ip=ip).delete()
+@router.delete('/{id}')
+async def delete_static_ip(id: int) -> bool:
+    await StaticIp.get(id=id).delete()
     return True

@@ -40,4 +40,15 @@ class StaticIp(BaseModel):
                 'description': 'description'
             }
         }
-            
+
+class GetStaticIp(StaticIp):
+    id: int = Field()
+    
+    class Config:
+        schema_extra = {
+            'example': {
+                'id': '1',
+                'ip': '192.168.1.10',
+                'description': 'description'
+            }
+        }

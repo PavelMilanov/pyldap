@@ -1,7 +1,6 @@
 import redis
 
 
-
 class RedisConnector:
     
     def __init__(self, ip: str = 'localhost', port: int = 6379, decode_responses=True):

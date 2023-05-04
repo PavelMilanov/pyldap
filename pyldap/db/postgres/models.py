@@ -17,7 +17,8 @@ TORTOISE_ORM = {
 
 
 class StaticIp(Model):
-    ip = fields.CharField(pk=True, max_length=15)
+    id = fields.IntField(pk=True)
+    ip = fields.CharField(max_length=15, unique=True)
     description = fields.TextField(null=True)
 
     class Meta:

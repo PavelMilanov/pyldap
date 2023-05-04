@@ -18,7 +18,6 @@ export default {
   methods: {
     async addRow(ip, description) {
       await this.store.addNetworkRow(ip, description)
-      console.log("test")
       this.form.ip = ''
       this.form.description = ''
       this.store.getNetworkList()

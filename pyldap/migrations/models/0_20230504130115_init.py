@@ -4,7 +4,8 @@ from tortoise import BaseDBAsyncClient
 async def upgrade(db: BaseDBAsyncClient) -> str:
     return """
         CREATE TABLE IF NOT EXISTS "static_ip" (
-    "ip" VARCHAR(15) NOT NULL  PRIMARY KEY,
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "ip" VARCHAR(15) NOT NULL,
     "description" TEXT
 );
 CREATE TABLE IF NOT EXISTS "aerich" (
