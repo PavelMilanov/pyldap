@@ -17,13 +17,13 @@ export const defaultStore = defineStore('default', {
     getNetworkForms: (state) => state.forms,
   },
   actions: {
-    async postAuthentification(login, password) {
+    async authentificate(login, password) {
       let responseData
-      const params = new URLSearchParams()
-      params.append('username', login)
-      params.append('password', password)
-      await axios.post(`http://localhost:8000/api/auth/`, params
-      ).then(function (response) {
+      console.log(login, password)
+      await axios.post(`http://localhost:8000/api/auth/`, {
+        "username": login,
+        "password": password
+      }).then(function (response) {
         responseData = response.data
         console.log(responseData)
       }).catch(function (error) {

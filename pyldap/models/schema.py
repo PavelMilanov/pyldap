@@ -4,6 +4,18 @@ from typing import Union, List, Dict
 from enum import Enum
 
 
+class AuthSchema(BaseModel):
+    username: str = Field()
+    password: str = Field()
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'username': 'domain-login',
+                'password': 'domain-password'
+            }
+        }
+
 class CustomerSchema(BaseModel):
     name: str
     last_logon: Union[datetime, None]

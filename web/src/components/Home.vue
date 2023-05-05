@@ -31,7 +31,7 @@ export default {
 
 <template>
     <div>
-        <div class="main container-fluid bg-primary bg-gradient text-white">
+        <div class="main container-fluid bg-secondary bg-gradient text-white">
             <nav class="navbar-header">
                 <div @click="this.component = 0" class="navbar-header-item">
                     <p>Home</p>
@@ -48,10 +48,6 @@ export default {
                 <div @click="this.component = 4" class="navbar-header-item">
                     <p>Units</p>
                 </div>
-                <!-- <div class="navbar-header-item search" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </div> -->
             </nav>
         </div>
         <Network v-if="this.component === 1"/>
@@ -73,11 +69,6 @@ export default {
 
     .search {
         display: flex;
-    }
-
-    div > p {
-        position: relative;
-        top: 19%;
     }
 
     div:hover {

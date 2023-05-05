@@ -8,47 +8,51 @@ export default {
     },
     data() {
         return {
-            authForm: true,
+            // authForm: true,
             login: '',
             password: '',
         }
     },
     methods: {
-        isActive() {
-            if (this.store.getUser.isActive === true) {
-                this.$router.push('/')
-            }
-        },
         async authentification(login, password) {  
-            await this.store.postAuthentification(login, password)
-            setTimeout(this.isActive, 1000)
+            await this.store.authentificate(login, password)
+            // setTimeout(this.isActive, 1000)
         },
-
     }
 }
 </script>
 
 <template>
-    <div class="d-flex justify-content-center align-items-center bg-secondary bg-gradient">
-        <div class="form bg-light shadow-lg rounded">
-            <div class="form-floating m-3">
-                <input v-model="login" type="text" class="form-control" id="floatingInput">
-                <label for="floatingInput">Логин</label>
-                <div id="help" class="form-text">Вход разрешен администратору домена</div>
-            </div>
-            <div class="form-floating m-3">
-                <input v-model="password" type="password" class="form-control" id="floatingPassword">
-                <label for="floatingPassword">Пароль</label>
-            </div>
-            <div class="form-floating m-3">
-                <button @click="authentification(this.login, this.password)" class="btn btn-primary">Вход</button>
-            </div>
+    <div class="auth mx-auto border border-secondary-subtle shadow-lg bg-body-tertiary rounded">
+        <div class="d-flex justify-content-center">
+            <p>Авторизация</p>
+        </div>
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInput" placeholder="Login" v-model="this.login">
+            <label for="floatingInput">Логин</label>
+            <div id="help" class="form-text">Вход разрешен администратору домена</div>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="this.password">
+            <label for="floatingPassword">Пароль</label>
+        </div>
+        <div class="d-flex justify-content-center form-floating">
+            <button @click="authentification(this.login, this.password)" class="form-login btn btn-primary">Вход</button>
         </div>
     </div>
 </template>
 
 <style leng="less">
-.d-flex {
-    height: 100vh;
+
+.auth {
+    margin-top: 20%;
+    width: 40vh;
+}
+
+.auth > div {
+    margin:auto;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    width: 70%;
 }
 </style>

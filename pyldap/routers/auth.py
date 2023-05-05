@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Body
 from utils.connector import domain
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from utils.auth import auth
+from models.schema import AuthSchema
 
 
 router = APIRouter(
@@ -16,7 +17,7 @@ async def ldap_auth(token: str = Depends(auth_scheme)):
     print(resp)
 
 @router.post('/')
-async def authentificate(form: OAuth2PasswordRequestForm = Depends()):
+async def authentificate(form: AuthSchema = Body()):
     resp = await domain.ldap_authentificate(form.username, form.password)
     if resp:
         token = await auth.generate_token(form.username, form.password)
