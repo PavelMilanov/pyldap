@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from utils.connector import domain
-from .auth import ldap_auth
+# from .auth import ldap_auth
 
 
 router = APIRouter(
@@ -9,7 +9,7 @@ router = APIRouter(
 )
 
 @router.get('/schema')
-async def get_organizations_schema(token: str = Depends(ldap_auth)):
+async def get_organizations_schema():
     """Получение схемы всех подраздений со всеми отрибутами.
 
     Returns:
@@ -19,19 +19,19 @@ async def get_organizations_schema(token: str = Depends(ldap_auth)):
     return resp
 
 @router.get('/tree')
-async def get_organizations_tree(token: str = Depends(ldap_auth)):
+async def get_organizations_tree():
     resp = await domain.search_organizations_tree()
     return resp
 
 @router.get('/count')
-async def get_count_organizations(token: str = Depends(ldap_auth)):
+async def get_count_organizations():
     resp = await domain.get_count_organizations()
     return resp
 
 @router.get('/{unit}')
 async def get_organization_by_name(
         unit: str,
-        token: str = Depends(ldap_auth)
+        # token: str = Depends(ldap_auth)
     ):
     resp = await domain.search_organization_by_name(name=unit)
     return resp
@@ -39,7 +39,7 @@ async def get_organization_by_name(
 @router.post('/{unit}')
 async def add_organization_by_name(
         unit: str,
-        token: str = Depends(ldap_auth)
+        # token: str = Depends(ldap_auth)
     ):
     resp = await domain.add_organization(name=unit)
     return resp
@@ -47,7 +47,7 @@ async def add_organization_by_name(
 @router.delete('/{unit}')
 async def delete_organization_by_name(
         unit: str,
-        token: str = Depends(ldap_auth)
+        # token: str = Depends(ldap_auth)
     ):
     resp = await domain.delete_organization(name=unit)
     return resp

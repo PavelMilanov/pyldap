@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from utils.connector import domain
 from models.schema import CustomerSchema
 from typing import List
-from .auth import ldap_auth
+# from .auth import ldap_auth
 
 
 router = APIRouter(
@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get('/users')
-async def get_users(token: str = Depends(ldap_auth)) -> List[CustomerSchema]:
+async def get_users() -> List[CustomerSchema]:
     resp = await domain.get_domain_users()
     return [CustomerSchema(name=customer.name,
             last_logon=customer.last_logon,
@@ -20,14 +20,14 @@ async def get_users(token: str = Depends(ldap_auth)) -> List[CustomerSchema]:
             member_of=customer.member_of) for customer in resp]
 
 @router.get('/count')
-async def get_users_count(token: str = Depends(ldap_auth)) -> int:
+async def get_users_count() -> int:
     resp = await domain.get_count_users()  # вывод количества всех пользователей
     return resp
 
 @router.get('/{user}')
 async def get_user_by_name(
         user: str,
-        token: str = Depends(ldap_auth)
+        # token: str = Depends(ldap_auth)
     ) -> CustomerSchema:
     resp = await domain.get_domain_user(name=user)
     if resp is not None:
@@ -43,7 +43,7 @@ async def get_user_by_name(
 @router.delete('/{user}')
 async def delete_user_by_name(
         user: str,
-        token: str = Depends(ldap_auth)
+        # token: str = Depends(ldap_auth)
     ):
     resp = await domain.delete_user(name=user)
     return resp
