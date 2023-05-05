@@ -62,22 +62,28 @@ export default {
 </template>
 
 <style lang="less">
-// .main {
-
-// }
-
 .navbar-header {
     display: flex;
     justify-content: space-around;
-
+    height: 7vh;
 
     .navbar-header-item {
         margin: 1%;
-        // border: 1px solid black;
     }
 
     .search {
         display: flex;
     }
+
+    div > p {
+        position: relative;
+        top: 19%;
+    }
+
+    div:hover {
+        border: 1.5px solid rgb(238, 238, 238);
+        border-radius: 10%;
+    }
 }
+
 </style>
