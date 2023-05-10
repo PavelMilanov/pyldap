@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import computers, organizations, users, auth, network
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from db.redis import RedisConnector
-from environs import Env
 
 
 description = """
@@ -63,23 +62,23 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-@app.on_event("startup")
-async def startup_event():
-    env = Env()
-    env.read_env()
+# @app.on_event("startup")
+# async def startup_event():
+#     env = Env()
+#     env.read_env()
     
-    USER = env('POSTGRES_USER')
-    PASSWORD = env('POSTGRES_PASSWORD')
-    DB = env('POSTGRES_DB')
-    HOST = env('POSTGRES_HOST')
+#     USER = env('POSTGRES_USER')
+#     PASSWORD = env('POSTGRES_PASSWORD')
+#     DB = env('POSTGRES_DB')
+#     HOST = env('POSTGRES_HOST')
     
-    register_tortoise(
-        app,
-        db_url=f'postgres://{USER}:{PASSWORD}@{HOST}:5432/{DB}',
-        modules={"models": ['db.postgres.models']},
-        generate_schemas=True,
-        add_exception_handlers=True,
-    )
+#     register_tortoise(
+#         app,
+#         db_url=f'postgres://{USER}:{PASSWORD}@{HOST}:5432/{DB}',
+#         modules={"models": ['db.postgres.models']},
+#         generate_schemas=True,
+#         add_exception_handlers=True,
+#     )
 
 @app.on_event("shutdown")
 async def shutdown_event():

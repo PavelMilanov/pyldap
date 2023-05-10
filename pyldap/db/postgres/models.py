@@ -1,15 +1,24 @@
 from tortoise import Tortoise, fields, run_async
 from tortoise.models import Model
+from environs import Env
 
+
+env = Env()
+env.read_env()
+
+USER = env('POSTGRES_USER')
+PASSWORD = env('POSTGRES_PASSWORD')
+DB = env('POSTGRES_DB')
+HOST = env('POSTGRES_HOST')
 
 TORTOISE_ORM = {
-        "connections": {
-            "default": "postgres://local:P@ssw0rd7@localhost:5432/local"
+        'connections': {
+            'default': f'postgres://{USER}:{PASSWORD}@{HOST}:5432/{DB}'
             },
-        "apps": {
-            "models": {
-                "models": ["db.postgres.models", "aerich.models"],
-                "default_connection": "default",
+        'apps': {
+            'models': {
+                'models': ['db.postgres.models', 'aerich.models'],
+                'default_connection': 'default',
             },
         }
     }
@@ -22,7 +31,7 @@ class StaticIp(Model):
     description = fields.TextField(null=True)
 
     class Meta:
-        table = "static_ip"
+        table = 'static_ip'
 
     def __str__(self):
         return self.ip
