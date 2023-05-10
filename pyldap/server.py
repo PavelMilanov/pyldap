@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import computers, organizations, users, auth, network
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
+from db.redis import RedisConnector
+from environs import Env
 
 
 description = """
@@ -63,10 +65,18 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
+    env = Env()
+    env.read_env()
+    
+    USER = env('POSTGRES_USER')
+    PASSWORD = env('POSTGRES_PASSWORD')
+    DB = env('POSTGRES_DB')
+    HOST = env('POSTGRES_HOST')
+    
     register_tortoise(
         app,
-        db_url="postgres://local:P@ssw0rd7@localhost:5432/local",
-        modules={"models": ["db.postgres.models"]},
+        db_url=f'postgres://{USER}:{PASSWORD}@{HOST}:5432/{DB}',
+        modules={"models": ['db.postgres.models']},
         generate_schemas=True,
         add_exception_handlers=True,
     )

@@ -3,7 +3,7 @@ import redis
 
 class RedisConnector:
     
-    def __init__(self, ip: str = 'localhost', port: int = 6379, decode_responses=True):
+    def __init__(self, ip: str = 'redis', port: int = 6379, decode_responses=True):
         self.connect = redis.Redis(host=ip, port=port)
 
     def set_value(self, key: str, value: str):
