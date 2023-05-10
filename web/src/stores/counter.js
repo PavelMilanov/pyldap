@@ -11,6 +11,7 @@ export const defaultStore = defineStore('default', {
       token: '',
     },
     forms: [],
+    BACKEND: import.meta.env.VITE_APP_BACKEND
   }),
   getters: {
     getUser: (state) => state.user,
@@ -19,7 +20,7 @@ export const defaultStore = defineStore('default', {
   actions: {
     async login(login, password) {
       let responseData
-      await axios.post(`http://localhost:8000/api/auth/login`, {
+      await axios.post(`http://${this.BACKEND}/api/auth/login`, {
         "username": login,
         "password": password
       }).then(function (response) {
@@ -35,7 +36,7 @@ export const defaultStore = defineStore('default', {
     async getNetworkList() {
       let cache = []
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.get(`http://localhost:8000/api/v1/network/`, { headers }).then(
+      await axios.get(`http://${this.BACKEND}/api/v1/network/`, { headers }).then(
         function (response) {
           cache = response.data
         }
@@ -46,7 +47,7 @@ export const defaultStore = defineStore('default', {
     },
     async addNetworkRow(ip, description) {
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.post(`http://localhost:8000/api/v1/network/`, {
+      await axios.post(`http://${this.BACKEND}/api/v1/network/`, {
         'ip': ip,
         'description': description
       }, { headers }).then().catch(function (error) {
@@ -56,7 +57,7 @@ export const defaultStore = defineStore('default', {
     async editNetworkRow(params) {
       let id = params.id
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.put(`http://localhost:8000/api/v1/network/${id}`, {
+      await axios.put(`http://${this.BACKEND}/api/v1/network/${id}`, {
         'ip': params.ip,
         'description': params.description
       }, { headers }).then().catch(function (error) {
@@ -66,7 +67,7 @@ export const defaultStore = defineStore('default', {
     async removeNetworkRow(id) {
       let param = id
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.delete(`http://localhost:8000/api/v1/network/${param}`, { headers }).then().catch(function (error) {
+      await axios.delete(`http://${this.BACKEND}/api/v1/network/${param}`, { headers }).then().catch(function (error) {
         console.log(error)
       })
     }
