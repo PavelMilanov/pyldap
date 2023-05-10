@@ -11,14 +11,14 @@ router = APIRouter(
 
 token_auth_scheme = Authentification()
 
-@router.post('/')
-async def registration(form: AuthSchema = Body()):
+@router.post('/login')
+async def login(form: AuthSchema = Body()):
     resp = await domain.ldap_authentificate(form.username, form.password)
     if resp:
         token = await token_auth_scheme.generate_token(form.username, form.password)
         return token
 
-@router.get('/me')
-async def me(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+@router.get('/authentication')
+async def authentication(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
     test = await token_auth_scheme.check_token(token.credentials)
     return True

@@ -8,15 +8,13 @@ export default {
     },
     data() {
         return {
-            // authForm: true,
             login: '',
             password: '',
         }
     },
     methods: {
         async authentification(login, password) {  
-            await this.store.authentificate(login, password)
-            // setTimeout(this.isActive, 1000)
+            await this.store.login(login, password)
         },
     }
 }

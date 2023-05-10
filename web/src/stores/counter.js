@@ -17,15 +17,13 @@ export const defaultStore = defineStore('default', {
     getNetworkForms: (state) => state.forms,
   },
   actions: {
-    async authentificate(login, password) {
+    async login(login, password) {
       let responseData
-      console.log(login, password)
-      await axios.post(`http://localhost:8000/api/auth/`, {
+      await axios.post(`http://localhost:8000/api/auth/login`, {
         "username": login,
         "password": password
       }).then(function (response) {
         responseData = response.data
-        console.log(responseData)
       }).catch(function (error) {
         console.log(error)
       })
@@ -35,8 +33,9 @@ export const defaultStore = defineStore('default', {
       }
     },
     async getNetworkList() {
-      let cache = [] 
-      await axios.get(`http://localhost:8000/api/v1/network/`).then(
+      let cache = []
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://localhost:8000/api/v1/network/`, { headers }).then(
         function (response) {
           cache = response.data
         }
@@ -46,25 +45,28 @@ export const defaultStore = defineStore('default', {
       this.forms = cache
     },
     async addNetworkRow(ip, description) {
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
       await axios.post(`http://localhost:8000/api/v1/network/`, {
         'ip': ip,
         'description': description
-      }).then().catch(function (error) {
+      }, { headers }).then().catch(function (error) {
         console.log(error)
       })
     },
     async editNetworkRow(params) {
       let id = params.id
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
       await axios.put(`http://localhost:8000/api/v1/network/${id}`, {
         'ip': params.ip,
         'description': params.description
-      }).then().catch(function (error) {
+      }, { headers }).then().catch(function (error) {
         console.log(error)
       })
     },
     async removeNetworkRow(id) {
       let param = id
-      await axios.delete(`http://localhost:8000/api/v1/network/${param}`).then().catch(function (error) {
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.delete(`http://localhost:8000/api/v1/network/${param}`, { headers }).then().catch(function (error) {
         console.log(error)
       })
     }
