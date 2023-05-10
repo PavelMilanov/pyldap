@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, Body, Security, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import APIRouter, Depends, Body, Security
+from fastapi.security import HTTPAuthorizationCredentials
 from utils.connector import domain
-from utils.auth import auth
+from utils.auth import Authentification
 from models.schema import AuthSchema
 
 router = APIRouter(
@@ -9,20 +9,16 @@ router = APIRouter(
     tags=['Auth']
 )
 
-security = HTTPBearer()
-
-async def verify(token):
-    resp = await auth.check_token(token)
-    print(resp)
+token_auth_scheme = Authentification()
 
 @router.post('/')
 async def registration(form: AuthSchema = Body()):
     resp = await domain.ldap_authentificate(form.username, form.password)
     if resp:
-        token = await auth.generate_token(form.username, form.password)
+        token = await token_auth_scheme.generate_token(form.username, form.password)
         return token
 
 @router.get('/me')
-async def me(token: HTTPAuthorizationCredentials = Security(security)):
-      test = await verify(token.credentials)
-      return True
+async def me(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+    test = await token_auth_scheme.check_token(token.credentials)
+    return True

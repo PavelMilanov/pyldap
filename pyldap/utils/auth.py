@@ -1,3 +1,4 @@
+from fastapi.security import HTTPBearer
 from passlib.context import CryptContext
 from jose import jwt
 from typing import Final
@@ -10,7 +11,7 @@ env = Env()
 env.read_env()
 
 
-class Authentification:
+class Authentification(HTTPBearer):
     
     pwd_schema = CryptContext(schemes=["bcrypt"], deprecated="auto")
     ALGORITHM: Final = env('ALGORITHM')
@@ -18,10 +19,18 @@ class Authentification:
     
     
     async def generate_token(self, username: str, password: str) -> str:
+        """Генерирует токен аутентификации при корректном вводе логина и пароля.
+
+        Args:
+            username (str): логин.
+            password (str): пароль.
+
+        Returns:
+            str: токен.
+        """        
         expired_date = await self.__expired_date()
         token = jwt.encode({'expired_date': str(expired_date)}, self.SECRET, algorithm=self.ALGORITHM)
         cache.set_value('token', token)
-        # print(token)
         return token
 
     async def check_token(self, token: str) -> bool:
@@ -43,8 +52,10 @@ class Authentification:
             return True
 
     async def __expired_date(self) -> date:
+        """Валидация токена.
+
+        Returns:
+            date: Дата окончания валидности токена.
+        """        
         current_date = date.today()
         return date(current_date.year, current_date.month, current_date.day+2)
-
-
-auth = Authentification()
