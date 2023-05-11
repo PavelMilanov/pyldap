@@ -1,5 +1,9 @@
 import redis
+from environs import Env
 
+
+env = Env()
+env.read_env()
 
 class RedisConnector:
     
@@ -14,4 +18,4 @@ class RedisConnector:
         return self.connect.get(key)
         
 
-cache = RedisConnector()
+cache = RedisConnector(ip=env('REDIS_HOST'))

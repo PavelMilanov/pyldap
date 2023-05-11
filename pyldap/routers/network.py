@@ -19,6 +19,8 @@ async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token
         return [schema.GetStaticIp(**item) for item in resp]
     except DoesNotExist as e:
         print(e)
+    except TypeError as e:  # пустой список
+        return []
 
 @router.post('/')
 async def set_static_ip(item: schema.StaticIp, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
