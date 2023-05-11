@@ -31,7 +31,7 @@ export default {
             <div id="help" class="form-text">Вход разрешен администратору домена</div>
         </div>
         <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="this.password">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" @keyup.enter="authentification(this.login, this.password)" v-model="this.password">
             <label for="floatingPassword">Пароль</label>
         </div>
         <div class="d-flex justify-content-center form-floating">

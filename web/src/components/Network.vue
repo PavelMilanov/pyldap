@@ -58,7 +58,7 @@ export default {
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRow">Редактировать</button>
-                <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" v-model="search">
+                <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" @keyup.enter="searchModeOn(search)" v-model="search">
                 <button class="btn btn-outline-success" @click="searchModeOn(search)">Найти</button>
                 <button v-if="searchMode" class="btn btn-info" @click="searchModeOff()">Назад</button>  <!--Для того, чтобы выйти из режима редактирования-->
             </div>
@@ -87,6 +87,23 @@ export default {
                     </tr>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    </li>
+                </ul>
+            </nav>
             <AddRow />
             <EditRow />
             <RemoveRow />
