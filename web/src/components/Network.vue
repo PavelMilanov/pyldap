@@ -30,7 +30,7 @@ export default {
             var cache = []
             var data = this.store.getNetworkForms
             data.forEach(function (item) {
-                if (item.ip == search || item.description.includes(search)) {
+                if (item.ip == search || item.description.toLowerCase().includes(search.toLowerCase())) {
                     cache.push({
                         "ip": item.ip,
                         "description": item.description
