@@ -1,8 +1,9 @@
 FROM node:16.20 as build
 
+ARG listen_ip
 COPY . /.
 RUN npm install
-RUN echo "VITE_APP_BACKEND=backend:8000" > .env
+RUN echo "VITE_APP_BACKEND=${listen_ip}" > .env
 RUN npm run build
 
 
