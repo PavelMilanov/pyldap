@@ -3,7 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import computers, organizations, users, auth, network
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from db.redis import RedisConnector
+from environs import Env
 
+
+env = Env()
+env.read_env()
 
 description = """
 Python LDAP REST-API
@@ -56,29 +60,15 @@ app.include_router(network.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=[env('ALLOW_ORIGINS')],
     allow_credentials=True,
     allow_methods=['GET', 'POST', 'DELETE', 'PUT'],
     allow_headers=['*'],
 )
 
-# @app.on_event("startup")
-# async def startup_event():
-#     env = Env()
-#     env.read_env()
-    
-#     USER = env('POSTGRES_USER')
-#     PASSWORD = env('POSTGRES_PASSWORD')
-#     DB = env('POSTGRES_DB')
-#     HOST = env('POSTGRES_HOST')
-    
-#     register_tortoise(
-#         app,
-#         db_url=f'postgres://{USER}:{PASSWORD}@{HOST}:5432/{DB}',
-#         modules={"models": ['db.postgres.models']},
-#         generate_schemas=True,
-#         add_exception_handlers=True,
-#     )
+@app.on_event("startup")
+async def startup_event():
+    pass
 
 @app.on_event("shutdown")
 async def shutdown_event():
