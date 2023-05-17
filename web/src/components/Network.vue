@@ -45,7 +45,7 @@ export default {
         searchModeOff() {
             this.searchMode = false
             this.search = ''
-            this.store.getNetworkList
+            this.store.getNetworkList()
         },
         changePage(index) {
             this.store.setPaginationPage(index)
@@ -80,7 +80,7 @@ export default {
                 </thead>
                 <tbody v-if="!searchMode" class="table-group-divider">
                     <tr v-for="(item, index) in this.store.getNetworkTable.tableRender[this.store.getPaginationInfo.currentPage]" :key="(index)">
-                        <th scope="row">{{ index + 1 + 5 }}</th>
+                        <th scope="row">{{ (index + 1) + (this.store.getPaginationInfo.currentPage * this.store.getPaginationInfo.range ) }}</th>  <!-- Генерация сквозной нумерации -->
                         <td>{{ item.ip }}</td>
                         <td>{{ item.description }}</td>
                     </tr>

@@ -17,7 +17,7 @@ export const defaultStore = defineStore('default', {
     
     pagination: {
       count: 0, // количество страниц, исходя из размера страницы
-      range: 5, // размер таблицы на одной странице
+      range: 15, // размер таблицы на одной странице
       currentPage: 0, // номер страницы пагинации
     },
     BACKEND: import.meta.env.VITE_APP_BACKEND
