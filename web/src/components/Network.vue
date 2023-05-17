@@ -5,11 +5,12 @@ import AddRow from './modal/AddRow.vue'
 import EditRow from './modal/EditRow.vue'
 import RemoveRow from './modal/RemoveRow.vue'
 
+
 export default {
     components: {
         AddRow,
         EditRow,
-        RemoveRow
+        RemoveRow,
     },
     setup() {
         const store = defaultStore()
@@ -19,7 +20,8 @@ export default {
         return {
             searchMode: false,
             search: '',
-            searchForm: [],
+            searchForm: [],  // рендер при поиске
+            tableIndex: 1
         }
     },
     methods: {
@@ -28,8 +30,9 @@ export default {
                 this.searchMode = true
             }
             var cache = []
-            var data = this.store.getNetworkForms
+            var data = this.store.getNetworkTable.tableFull
             data.forEach(function (item) {
+                console.log(item)
                 if (item.ip == search || item.description.toLowerCase().includes(search.toLowerCase())) {
                     cache.push({
                         "ip": item.ip,
@@ -42,8 +45,11 @@ export default {
         searchModeOff() {
             this.searchMode = false
             this.search = ''
-            this.store.getNetworkList()
+            this.store.getNetworkList
         },
+        changePage(index) {
+            this.store.setPaginationPage(index)
+        }
     },
     created() {
         this.store.getNetworkList()
@@ -64,7 +70,7 @@ export default {
             </div>
         </div>
         <div class="p-3 mx-auto">
-            <table class="table table-hover shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+            <table class="table table-hover table-striped shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                 <thead class="table-light">
                     <tr>
                         <th scope="col">#</th>
@@ -73,8 +79,8 @@ export default {
                     </tr>
                 </thead>
                 <tbody v-if="!searchMode" class="table-group-divider">
-                    <tr v-for="(item, index) in this.store.getNetworkForms" :key="(index)">
-                        <th scope="row">{{ index + 1 }}</th>
+                    <tr v-for="(item, index) in this.store.getNetworkTable.tableRender[this.store.getPaginationInfo.currentPage]" :key="(index)">
+                        <th scope="row">{{ index + 1 + 5 }}</th>
                         <td>{{ item.ip }}</td>
                         <td>{{ item.description }}</td>
                     </tr>
@@ -89,16 +95,16 @@ export default {
             </table>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
+                    <li class="page-item" @click="changePage(0)">
+                    <a class="page-link" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
+                    <li v-for="(page, index) in this.store.getPaginationInfo.count" :key="index" @click="changePage(index)" class="page-item">
+                        <a class="page-link">{{ page }}</a>
+                    </li>
+                    <li class="page-item" @click="changePage(this.store.getPaginationInfo.count -1)">
+                    <a class="page-link" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                     </li>

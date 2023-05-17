@@ -10,12 +10,22 @@ export const defaultStore = defineStore('default', {
       isActive: false,
       token: '',
     },
-    forms: [],
+    network: {
+      tableRender: [],
+      tableFull: []
+    },
+    
+    pagination: {
+      count: 0, // количество страниц, исходя из размера страницы
+      range: 5, // размер таблицы на одной странице
+      currentPage: 0, // номер страницы пагинации
+    },
     BACKEND: import.meta.env.VITE_APP_BACKEND
   }),
   getters: {
     getUser: (state) => state.user,
-    getNetworkForms: (state) => state.forms,
+    getNetworkTable: (state) => state.network,
+    getPaginationInfo: (state) => state.pagination
   },
   actions: {
     async login(login, password) {
@@ -43,7 +53,14 @@ export const defaultStore = defineStore('default', {
       ).catch(function (error) {
         console.log(error)
       })
-      this.forms = cache
+      this.network.tableFull = cache
+      this.network.tableRender = []
+      var idx = Math.ceil(cache.length / this.pagination.range)  // количество записей на одной странице
+      this.pagination.count = idx
+      for (let i = 0; i < cache.length; i += this.pagination.range) {  // разбивает весь список на подcписки длинной paginationRange
+        const chunk = cache.slice(i, i + this.pagination.range)
+        this.network.tableRender.push(chunk)
+      }
     },
     async addNetworkRow(ip, description) {
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
@@ -70,6 +87,9 @@ export const defaultStore = defineStore('default', {
       await axios.delete(`http://${this.BACKEND}/api/v1/network/${param}`, { headers }).then().catch(function (error) {
         console.log(error)
       })
+    },
+    setPaginationPage(page) {
+      this.pagination.currentPage = page
     }
   },
 })

@@ -14,7 +14,7 @@ export default {
     },
     methods: {
         async removeRow(ip) {
-            var data = this.store.getNetworkForms
+            var data = this.store.getNetworkTable.tableFull
             var param
             data.forEach(function (item) {
                 if (item.ip == ip) {

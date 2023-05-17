@@ -1,4 +1,5 @@
 <script>
+import { defaultStore } from '../stores/counter'
 import Auth from './Auth.vue'
 import Customers from './Customers.vue'
 import Computers from './Computers.vue'
@@ -15,8 +16,8 @@ export default {
         Network
     },
     setup() {
-        // const store = defaultStore()
-        // return { store }
+        const store = defaultStore()
+        return { store }
     },
     data() {
         return {
@@ -25,6 +26,9 @@ export default {
     },
     methods: {
     
+    },
+    created() {
+        // this.store.getNetworkList()
     }
 }
 </script>

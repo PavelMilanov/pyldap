@@ -29,7 +29,7 @@ export default {
     methods: {
         loadForm(patternIp) {
             var cache
-            var data = this.store.getNetworkForms
+            var data = this.store.getNetworkTable.tableFull
             data.forEach(function (item) {
                 if (item.ip == patternIp) {
                     cache = [item.id, item.ip, item.description]

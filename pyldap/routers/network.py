@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Security
+from fastapi import APIRouter, Security, Response
 from fastapi.security import HTTPAuthorizationCredentials
 from db.postgres.models import StaticIp
 from models import schema
@@ -13,9 +13,10 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List[schema.GetStaticIp]:
+async def get_static_ip_all(response: Response, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List[schema.GetStaticIp]:
     try:
         resp = await StaticIp.all().values()
+        response.headers['Form-Length'] = str(len(resp))
         return [schema.GetStaticIp(**item) for item in resp]
     except DoesNotExist as e:
         print(e)
