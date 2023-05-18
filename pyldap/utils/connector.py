@@ -237,7 +237,6 @@ class Ldap3Connector:
             if len(subunit) > 1:  # если подраздление имет вложенность
                 for org in subunit:
                     count += 1
-        print(count)
         return count
                     
     async def add_organization(self, name: str) -> ResponseLdap:
@@ -255,7 +254,6 @@ class Ldap3Connector:
         try:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.add(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', object_class=['organizationalUnit', 'top'], attributes=None)
-                print(dc.result)
                 return ResponseLdap(
                     description=str(dc.result['description']),
                     resp_type=str(dc.result['type'])
@@ -307,7 +305,6 @@ class Ldap3Connector:
                 with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                     dc.search(search_base=search, search_filter=filter_pattern, attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
                     computer = json.loads(dc.entries[0].entry_to_json())
-                    print(computer['dn'])
                     name=str(computer['attributes']['name'][0])
                     os=ComputerLdapOS(
                         name=str(computer['attributes']['operatingSystem'][0]),
@@ -322,7 +319,6 @@ class Ldap3Connector:
             case 'operatingSystem':  # поиск по названию операционной системе
                 if attribute_value is None:
                     raise ValueError(f'Не указан аргумент для {attribute}')
-                print(attribute_value)
                 filter_pattern = f'(&(objectClass=computer)({attribute}=*))'
                 with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                     dc.search(search_base=search, search_filter=filter_pattern, attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
@@ -344,14 +340,12 @@ class Ldap3Connector:
                             ))
                     return computers
             case 'dn':
-                print(attribute)
                 if attribute_value is None:
                     raise ValueError(f'Не указан аргумент для {attribute}')
                 filter_pattern = f'(&(objectClass=computer)({attribute}={attribute_value}))'
                 with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                     dc.search(search_base=search, search_filter=filter_pattern, attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
                     computer = json.loads(dc.entries[0].entry_to_json())
-                    print(computer['dn'])
                     name=str(computer['attributes']['name'][0])
                     os=ComputerLdapOS(
                         name=str(computer['attributes']['operatingSystem'][0]),
@@ -380,7 +374,6 @@ class Ldap3Connector:
         """
         with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
             dc.delete(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}')
-            print(dc.result)
             return ResponseLdap(
                 description=str(dc.result['description']),
                 resp_type=str(dc.result['type'])
@@ -409,7 +402,6 @@ class Ldap3Connector:
                     return True
                 raise LDAPBindError('Вход только для администратора домена')
         except LDAPBindError:
-            print('некорректный пользователь')
             return False
 
 
