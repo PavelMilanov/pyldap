@@ -32,7 +32,6 @@ export default {
             var cache = []
             var data = this.store.getNetworkTable.tableFull
             data.forEach(function (item) {
-                console.log(item)
                 if (item.ip == search || item.description.toLowerCase().includes(search.toLowerCase())) {
                     cache.push({
                         "ip": item.ip,
@@ -93,7 +92,7 @@ export default {
                     </tr>
                 </tbody>
             </table>
-            <nav aria-label="Page navigation example">
+            <nav v-if="!searchMode" aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" @click="changePage(0)">
                     <a class="page-link" aria-label="Previous">
