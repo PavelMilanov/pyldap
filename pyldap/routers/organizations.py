@@ -28,26 +28,26 @@ async def get_count_organizations():
     resp = await domain.get_count_organizations()
     return resp
 
-@router.get('/{unit}')
-async def get_organization_by_name(
-        unit: str,
-        # token: str = Depends(ldap_auth)
-    ):
-    resp = await domain.search_organization_by_name(name=unit)
-    return resp
+# @router.get('/{unit}')
+# async def get_organization_by_name(
+#         unit: str,
+#         # token: str = Depends(ldap_auth)
+#     ):
+#     resp = await domain.search_organization_by_name(name=unit)
+#     return resp
 
-@router.post('/{unit}')
-async def add_organization_by_name(
-        unit: str,
-        # token: str = Depends(ldap_auth)
-    ):
-    resp = await domain.add_organization(name=unit)
-    return resp
+# @router.post('/{unit}')
+# async def add_organization_by_name(
+#         unit: str,
+#         # token: str = Depends(ldap_auth)
+#     ):
+#     resp = await domain.add_organization(name=unit)
+#     return resp
 
-@router.delete('/{unit}')
-async def delete_organization_by_name(
-        unit: str,
-        # token: str = Depends(ldap_auth)
-    ):
-    resp = await domain.delete_organization(name=unit)
-    return resp
+# @router.delete('/{unit}')
+# async def delete_organization_by_name(
+#         unit: str,
+#         # token: str = Depends(ldap_auth)
+#     ):
+#     resp = await domain.delete_organization(name=unit)
+#     return resp
