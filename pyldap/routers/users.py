@@ -28,8 +28,9 @@ async def get_users_count() -> int:
 async def get_user_by_name(
         user: str,
         # token: str = Depends(ldap_auth)
-    ) -> CustomerSchema:
+    ) -> CustomerSchema | None:
     resp = await domain.get_domain_user(name=user)
+    print(resp)
     if resp is not None:
         return CustomerSchema(
         name=resp.name,
@@ -38,7 +39,7 @@ async def get_user_by_name(
         member_of=resp.member_of,
     )
     else:
-        return 'Пользователь не найден'
+        return 
 
 @router.delete('/{user}')
 async def delete_user_by_name(
