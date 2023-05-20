@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Security, Response
+from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials
 from db.postgres.models import StaticIp
 from models import schema
@@ -13,10 +13,16 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_static_ip_all(response: Response, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List[schema.GetStaticIp]:
+async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List[schema.GetStaticIp]:
+    """Возвращает список табличных данных.
+    Args:
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+
+    Returns:
+        List[schema.GetStaticIp]: db.postgres.StaticIp.
+    """    
     try:
         resp = await StaticIp.all().values()
-        response.headers['Form-Length'] = str(len(resp))
         return [schema.GetStaticIp(**item) for item in resp]
     except DoesNotExist as e:
         print(e)
@@ -25,11 +31,33 @@ async def get_static_ip_all(response: Response, token: HTTPAuthorizationCredenti
 
 @router.post('/')
 async def set_static_ip(item: schema.StaticIp, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
-    new_item = await StaticIp.create(ip=item.ip, description=item.description)
-    return new_item
+    """Добавляет запись в таблицу StaticIp.
 
+    Args:
+        item (schema.StaticIp): {
+            ip: str,
+            description: str
+        }
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+    """    
+    try:
+        new_item = await StaticIp.create(ip=item.ip, description=item.description)
+    except Exception as e:
+        
 @router.get('/{id}')
 async def get_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> schema.GetStaticIp:
+    """_summary_
+
+    Args:
+        id (int): Возвращает запись из таблицы StaticIp по id.
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+
+    Returns:
+        schema.GetStaticIp: {
+            id: str,
+            description: str
+        }
+    """    
     try:
         resp = await StaticIp.get(id=id).values()
         return schema.GetStaticIp(**resp)
@@ -38,6 +66,16 @@ async def get_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(
 
 @router.put('/{id}')
 async def change_static_ip(id: int, item: schema.StaticIp, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+    """Обновлеяет запись из таблицы StaticIp по id.
+
+    Args:
+        id (int): id записи.
+        item (schema.StaticIp): {
+            ip: str,
+            description: str
+        }
+        token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
+    """    
     try:
         resp = await StaticIp.get(id=id)
         resp.update_from_dict(item.dict())
@@ -46,6 +84,11 @@ async def change_static_ip(id: int, item: schema.StaticIp, token: HTTPAuthorizat
         print(e)
 
 @router.delete('/{id}')
-async def delete_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> bool:
+async def delete_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+    """Удаляет запись из таблицы StaticIp по id.
+
+    Args:
+        id (int): id записи.
+        token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
+    """    
     await StaticIp.get(id=id).delete()
-    return True

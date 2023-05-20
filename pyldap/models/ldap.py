@@ -9,9 +9,6 @@ class CustomerLdap(BaseModel):
 
     Args:
         BaseModel (_type_): pydantic model.
-
-    Returns:
-        _type_: -.
     """    
     name: str
     last_logon: Union[str, None]
@@ -45,9 +42,6 @@ class ComputerLdap(BaseModel):
 
     Args:
         BaseModel (_type_): pydantic model.
-
-    Returns:
-        _type_: -.
     """    
     os: str
     version_os: str
@@ -67,9 +61,6 @@ class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
     Args:
         CustomerLdap (_type_): модель пользователя домена.
         ComputerLdap (_type_): модуль компьютера домена.
-
-    Returns:
-        _type_: -.
     """    
     last_logon: datetime
     unit: List[str]
@@ -91,5 +82,10 @@ class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
 
 
 class ResponseLdap(BaseModel):
+    """Модель стандартного ответа от AD по протоколу LDAP.
+
+    Args:
+        BaseModel (_type_): Pydantic объект.
+    """    
     description: str
     resp_type: str

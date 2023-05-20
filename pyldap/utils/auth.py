@@ -12,6 +12,11 @@ env.read_env()
 
 
 class Authentification(HTTPBearer):
+    """Основной класс для реализации авторизации/аутентификации.
+
+    Args:
+        HTTPBearer (_type_): FastAPI класс.
+    """    
     
     pwd_schema = CryptContext(schemes=["bcrypt"], deprecated="auto")
     ALGORITHM: Final = env('ALGORITHM')
@@ -40,7 +45,7 @@ class Authentification(HTTPBearer):
             token (str): токен аутентификации.
 
         Returns:
-            bool: успешная путентификация.
+            bool: статус.
         """       
         cache_token = cache.get_value('token')
         decod_token = jwt.decode(token, self.SECRET, algorithms=self.ALGORITHM)

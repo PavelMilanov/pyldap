@@ -5,6 +5,11 @@ from enum import Enum
 
 
 class AuthSchema(BaseModel):
+    """Модель для авторизации.
+
+    Args:
+        BaseModel (_type_): Pydantic объект.
+    """    
     username: str = Field()
     password: str = Field()
 
@@ -29,6 +34,11 @@ class AuthSchema(BaseModel):
 
 
 class StaticIp(BaseModel):
+    """Модель для валидации данных при работе с таблицей StaticIp по REST API.
+
+    Args:
+        BaseModel (_type_): Pydantic объект.
+    """    
     ip: str = Field()
     description: str = Field()
     
@@ -42,6 +52,11 @@ class StaticIp(BaseModel):
 
 
 class GetStaticIp(StaticIp):
+    """Модель для получения записи из таблицы StaticIp по REST API.
+
+    Args:
+        StaticIp (_type_): _description_
+    """    
     id: int = Field()
     
     class Config:

@@ -30,7 +30,7 @@ env.read_env()
 
 
 class Ldap3Connector:
-
+    """Основной класс для взаимодействия с AD по протоколу LDAP."""
     _SERVER: Final = Server(env('DC'), get_info=ALL)
     _LOGIN: Final = env('LOGIN')
     _PASSWORD: Final = env('PASSWORD')

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body, Security
+from fastapi import APIRouter, Body, Security
 from fastapi.security import HTTPAuthorizationCredentials
 from utils.connector import domain
 from utils.auth import Authentification
@@ -12,7 +12,19 @@ router = APIRouter(
 token_auth_scheme = Authentification()
 
 @router.post('/login')
-async def login(form: AuthSchema = Body()):
+async def login(form: AuthSchema = Body()) -> str:
+    """Авторизация под пользователем в домене.
+    При успешной авторизации возврашает токен/
+
+    Args:
+        form (AuthSchema, optional): {
+            username: str,
+            password: str
+            }. Defaults to Body().
+
+    Returns:
+        str: токен авторизации.
+    """    
     resp = await domain.ldap_authentificate(form.username, form.password)
     if resp:
         token = await token_auth_scheme.generate_token(form.username, form.password)
@@ -20,5 +32,8 @@ async def login(form: AuthSchema = Body()):
 
 @router.get('/authentication')
 async def authentication(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
-    test = await token_auth_scheme.check_token(token.credentials)
-    return True
+    """Аутентификая по токену.
+    Args:
+        token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
+    """    
+    token = await token_auth_scheme.check_token(token.credentials)
