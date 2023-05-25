@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from utils.connector import domain
 # from .auth import ldap_auth
+from .import ldap
 
 
 router = APIRouter(
@@ -15,17 +15,17 @@ async def get_organizations_schema():
     Returns:
         _type_: _description_
     """    
-    resp = await domain.search_organizations_schema()
+    resp = await ldap.search_organizations_schema()
     return resp
 
 @router.get('/tree')
 async def get_organizations_tree():
-    resp = await domain.search_organizations_tree()
+    resp = await ldap.search_organizations_tree()
     return resp
 
 @router.get('/count')
 async def get_count_organizations():
-    resp = await domain.get_count_organizations()
+    resp = await ldap.get_count_organizations()
     return resp
 
 # @router.get('/{unit}')

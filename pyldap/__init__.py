@@ -1,1 +1,6 @@
-__version__ = '0.1.0'
+from environs import Env
+
+env = Env()
+env.read_env()
+
+__version__ = env('VERSION')

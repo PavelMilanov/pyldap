@@ -43,6 +43,7 @@ async def set_static_ip(item: schema.StaticIp, token: HTTPAuthorizationCredentia
     try:
         new_item = await StaticIp.create(ip=item.ip, description=item.description)
     except Exception as e:
+        print(e)
         
 @router.get('/{id}')
 async def get_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> schema.GetStaticIp:

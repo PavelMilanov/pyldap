@@ -11,7 +11,7 @@ from ldap3 import (
     MODIFY_REPLACE
     )
 from ldap3.core.exceptions import LDAPAttributeError, LDAPKeyError, LDAPBindError
-from environs import Env
+from .import env
 import json
 import ssl
 from typing import List, Dict, Final
@@ -23,10 +23,7 @@ from models.ldap import (
     CustomerLdapDescribe
     )
 from pydantic import ValidationError
-
-
-env = Env()
-env.read_env()
+from loguru import logger
 
 
 class Ldap3Connector:
@@ -41,9 +38,9 @@ class Ldap3Connector:
     def __init__(self):
         try:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                print(dc)
+                logger.info(dc)
         except Exception as e:
-            print(e)
+            logger.error(e)
 
     async def get_domain_users(self) -> List[CustomerLdap] | None:
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
@@ -77,7 +74,7 @@ class Ldap3Connector:
                     ))
                 return users
         except Exception as e:
-            print(e)
+            logger.error(e)
             return None
 
     async def get_domain_user(self, name: str) -> CustomerLdap | None:
@@ -89,6 +86,7 @@ class Ldap3Connector:
         Returns:
             Customer | None: {
                 name=str,
+                description=str,
                 last_logon=datetime,
                 member_of=list(str)
             }
@@ -99,6 +97,7 @@ class Ldap3Connector:
                 user = json.loads(dc.entries[0].entry_to_json())
                 print(user)
                 name=str(user['attributes']['name'][0])
+                description=str(user['attributes']['description'][0])
                 try:
                     last_logon=str(user['attributes']['lastLogon'][0])
                     member_of=list(user['attributes']['memberOf'])
@@ -107,10 +106,12 @@ class Ldap3Connector:
                     member_of=None    
                 return CustomerLdap(
                     name=name,
+                    description=description,
                     last_logon=last_logon,
                     member_of=member_of,
                 )
         except IndexError as e:  # пользователь не найден
+            print(e)
             return None
             
     async def get_count_users(self) -> int:
@@ -336,6 +337,7 @@ class Ldap3Connector:
         Returns:
             CustomerLdapDescribe | None: {
                 name=str,
+                description=str,
                 last_logon=datetime,
                 member_of=list,
                 os=str,
@@ -348,6 +350,7 @@ class Ldap3Connector:
         if user is not None and computer is not None:
             return CustomerLdapDescribe(
                 name=user.name,
+                description=user.description,
                 last_logon=user.last_logon,
                 member_of=user.member_of,
                 os=computer.os,

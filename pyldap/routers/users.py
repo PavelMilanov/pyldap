@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends
-from utils.connector import domain
 from typing import List, Dict
 # from .auth import ldap_auth
-
+from .import ldap
 
 router = APIRouter(
     prefix='/api/v1/ldap3/users',
@@ -17,12 +16,12 @@ async def get_customers() -> List:
     Returns:
         List: Список CustomerLdap сущностей.
     """    
-    resp = await domain.get_domain_users()
+    resp = await ldap.get_domain_users()
     return [customer for customer in resp]
 
 @router.get('/count')
 async def get_users_count() -> int:
-    resp = await domain.get_count_users()  # вывод количества всех пользователей
+    resp = await ldap.get_count_users()  # вывод количества всех пользователей
     return resp
 
 @router.get('/{customer}')
@@ -38,7 +37,7 @@ async def get_customer_info(
     Returns:
         Dict | None: модель CustomerLdapDescribe.
     """    
-    resp = await domain.get_customer_desctibe(customer)
+    resp = await ldap.get_customer_desctibe(customer)
     return resp
 
 @router.delete('/{user}')
@@ -46,5 +45,5 @@ async def delete_user_by_name(
         user: str,
         # token: str = Depends(ldap_auth)
     ):
-    resp = await domain.delete_user(name=user)
+    resp = await ldap.delete_user(name=user)
     return resp

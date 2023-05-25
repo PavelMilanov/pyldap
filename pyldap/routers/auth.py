@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Body, Security
 from fastapi.security import HTTPAuthorizationCredentials
-from utils.connector import domain
 from utils.auth import Authentification
 from models.schema import AuthSchema
+from .import ldap
+
 
 router = APIRouter(
     prefix='/api/auth',
@@ -25,7 +26,7 @@ async def login(form: AuthSchema = Body()) -> str:
     Returns:
         str: токен авторизации.
     """    
-    resp = await domain.ldap_authentificate(form.username, form.password)
+    resp = await ldap.ldap_authentificate(form.username, form.password)
     if resp:
         token = await token_auth_scheme.generate_token(form.username, form.password)
         return token

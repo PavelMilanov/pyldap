@@ -2,13 +2,9 @@ from fastapi.security import HTTPBearer
 from passlib.context import CryptContext
 from jose import jwt
 from typing import Final
-from environs import Env
+from .import env
 from datetime import date
 from db.redis import cache
-
-
-env = Env()
-env.read_env()
 
 
 class Authentification(HTTPBearer):

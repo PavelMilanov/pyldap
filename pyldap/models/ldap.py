@@ -11,6 +11,7 @@ class CustomerLdap(BaseModel):
         BaseModel (_type_): pydantic model.
     """    
     name: str
+    description: str
     last_logon: Union[str, None]
     member_of: Union[List[str], None]
     

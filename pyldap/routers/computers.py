@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Path, Query, Depends
-from utils.connector import domain
 from typing import Dict
 # from .auth import ldap_auth
+from .import ldap
+
 
 router = APIRouter(
     prefix='/api/v1/ldap3/computers',
@@ -22,7 +23,7 @@ async def get_computer(
     #     os=computer.os,
     #     unit=computer.unit
     # ) for computer in resp]
-    resp = await domain.get_domain_computer(name=customer)
+    resp = await ldap.get_domain_computer(name=customer)
     if resp is not None:
         return resp
 

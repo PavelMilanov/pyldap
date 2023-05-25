@@ -4,6 +4,8 @@ from routers import computers, organizations, users, auth, network
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from db.redis import RedisConnector
 from environs import Env
+from loguru import logger
+
 
 env = Env()
 env.read_env()
@@ -38,7 +40,7 @@ tags_metadata = [
 app = FastAPI(
     title='Python LDAP-connector',
     description=description,
-    version='0.1.0',
+    version=env('VERSION'),
     prefix='/api/',
     openapi_url='/api/openapi.json',
     docs_url='/api/docs',
@@ -79,6 +81,10 @@ async def startup_event():
         generate_schemas=True,
         add_exception_handlers=True,
     )
+
+    logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} | {level} | {message}',
+        level='INFO', rotation='5 MB',
+        compression='tar')
 
 @app.on_event("shutdown")
 async def shutdown_event():

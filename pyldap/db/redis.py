@@ -16,6 +16,7 @@ class RedisConnector:
     
     def get_value(self, key: str):
         return self.connect.get(key)
-        
+    
+    
 
 cache = RedisConnector(ip=env('REDIS_HOST'))
