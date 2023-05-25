@@ -1,3 +1,4 @@
+import json
 from ldap3 import (
     Server,
     Connection,
@@ -11,9 +12,7 @@ from ldap3 import (
     MODIFY_REPLACE
     )
 from ldap3.core.exceptions import LDAPAttributeError, LDAPKeyError, LDAPBindError
-from .import env
-import json
-import ssl
+from .import env, cache
 from typing import List, Dict, Final
 from models.ldap import (
     OrganizationLdap,
@@ -309,6 +308,29 @@ class Ldap3Connector:
         except IndexError as e:  # компьютер не найден
             return None
 
+    def get_computers(self) -> List[str]:
+        """Возвращает список имен компьютеров в лесу.
+        Используется для периодического опроса ip адреса
+        компьютера по dns имени.
+
+        Returns:
+            List[str]: ['customer00001','customer00002']
+        """        
+        search = f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}'
+        filter_pattern = '(&(objectClass=computer))'
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+                dc.search(search_base=search, search_filter=filter_pattern)
+                tree = []
+                computers = dc.entries
+                for computer in computers:
+                    data = json.loads(computer.entry_to_json())  #  CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=_
+                    item = computer.entry_dn.split(',')[0][3:].lower()  # CUSTOMER0000
+                    tree.append(item)
+                return tree
+        except Exception() as e:
+            print(e)
+    
     async def delete_computer(self, name: str) -> ResponseLdap:
         """Удаляет компьютер в контейнере AD.
 
@@ -348,6 +370,7 @@ class Ldap3Connector:
         user = await self.get_domain_user(name)
         computer = await self.get_domain_computer(name)
         if user is not None and computer is not None:
+            ip = cache.get_value(user.name)
             return CustomerLdapDescribe(
                 name=user.name,
                 description=user.description,
@@ -356,6 +379,7 @@ class Ldap3Connector:
                 os=computer.os,
                 version_os=computer.version_os,
                 unit=computer.unit,
+                ip=ip
             )
     
     async def ldap_authentificate(self, name, password) -> bool:

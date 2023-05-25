@@ -5,6 +5,7 @@ from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from db.redis import RedisConnector
 from environs import Env
 from loguru import logger
+from utils.background_tasks import background
 
 
 env = Env()
@@ -67,6 +68,10 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} | {level} | {message}',
+        level='INFO', rotation='5 MB',
+        compression='tar')
+
 @app.on_event("startup")
 async def startup_event():
     USER = env('POSTGRES_USER')
@@ -82,9 +87,7 @@ async def startup_event():
         add_exception_handlers=True,
     )
 
-    logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} | {level} | {message}',
-        level='INFO', rotation='5 MB',
-        compression='tar')
+    background.start()
 
 @app.on_event("shutdown")
 async def shutdown_event():

@@ -65,6 +65,7 @@ class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
     """    
     last_logon: datetime
     unit: List[str]
+    ip: str
     
     @validator('last_logon')
     def formated_datetime(cls, data):
