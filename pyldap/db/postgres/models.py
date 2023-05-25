@@ -1,10 +1,8 @@
 from tortoise import Tortoise, fields, run_async
 from tortoise.models import Model
 from environs import Env
+from .. import env
 
-
-env = Env()
-env.read_env()
 
 USER = env('POSTGRES_USER')
 PASSWORD = env('POSTGRES_PASSWORD')
@@ -22,7 +20,6 @@ TORTOISE_ORM = {
             },
         }
     }
-
 
 
 class StaticIp(Model):

@@ -1,9 +1,6 @@
 import redis
-from environs import Env
+from .import env
 
-
-env = Env()
-env.read_env()
 
 class RedisConnector:
     
