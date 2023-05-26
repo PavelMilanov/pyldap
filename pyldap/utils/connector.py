@@ -41,7 +41,7 @@ class Ldap3Connector:
         except Exception as e:
             logger.error(e)
 
-    async def get_domain_users(self) -> List[CustomerLdap] | None:
+    async def get_domain_users(self) -> List[CustomerLdap]:
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
 
         Returns:
@@ -52,29 +52,28 @@ class Ldap3Connector:
                 member_of=list(str),
             }
         """        
-        try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=ALL_ATTRIBUTES)
-                data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
-                sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
-                users = []
-                for user in sorted_data:
-                    name=str(user['attributes']['name'][0])
-                    try:
-                        last_logon=str(user['attributes']['lastLogon'][0])
-                        member_of=list(user['attributes']['memberOf'])
-                    except KeyError as e:  # пользователь состоит только в группе domain user
-                        last_logon=None
-                        member_of=None
-                    users.append(CustomerLdap(
+        with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+            dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=ALL_ATTRIBUTES)
+            data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
+            sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
+            users = []
+            for user in sorted_data:
+                name=str(user['attributes']['name'][0])
+                description = 'нет описания'  # этого атрибута может не быть, по умолчанию задаем строку
+                try:
+                    last_logon=str(user['attributes']['lastLogon'][0])
+                    member_of=list(user['attributes']['memberOf'])
+                    description=str(user['attributes']['description'][0])
+                except KeyError as e:  # пользователь состоит только в группе domain user
+                    last_logon=None
+                    member_of=None
+                users.append(CustomerLdap(
                         name=name,
+                        description=description,
                         last_logon=last_logon,
                         member_of=member_of,
                     ))
-                return users
-        except Exception as e:
-            logger.error(e)
-            return None
+            return users
 
     async def get_domain_user(self, name: str) -> CustomerLdap | None:
         """Ищет пользователя в домене и возвращает pydantic-модель.
@@ -94,10 +93,10 @@ class Ldap3Connector:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter=f'(&(objectClass=person)(cn={name}))', attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
                 user = json.loads(dc.entries[0].entry_to_json())
-                print(user)
                 name=str(user['attributes']['name'][0])
-                description=str(user['attributes']['description'][0])
+                description = 'нет описания'  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
+                    description=str(user['attributes']['description'][0])
                     last_logon=str(user['attributes']['lastLogon'][0])
                     member_of=list(user['attributes']['memberOf'])
                 except KeyError:  # пользователь состоит только в группе domain user
@@ -182,11 +181,9 @@ class Ldap3Connector:
                         units_tree[str(tree_item)] = tree_subitems
                     else:
                         units_tree[str(tree_item)] = []
-                print(units_tree)
                 return units_tree
         except Exception as e:
             print(e)
-            return None
 
     # async def search_organization_by_name(self, name: str) -> OrganizationLdap | None:
     #     """Ищет конейнер организации в AD и возвращает pydantic-модель.
@@ -370,7 +367,7 @@ class Ldap3Connector:
         user = await self.get_domain_user(name)
         computer = await self.get_domain_computer(name)
         if user is not None and computer is not None:
-            ip = cache.get_value(user.name)
+            ip = cache.get_value(name)
             return CustomerLdapDescribe(
                 name=user.name,
                 description=user.description,

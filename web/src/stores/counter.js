@@ -14,18 +14,21 @@ export const defaultStore = defineStore('default', {
       tableRender: [],
       tableFull: []
     },
-    
     pagination: {
       count: 0, // количество страниц, исходя из размера страницы
-      range: 15, // размер таблицы на одной странице
+      range: 20, // размер таблицы на одной странице
       currentPage: 0, // номер страницы пагинации
+    },
+    customers: {
+      tableFull: []
     },
     BACKEND: import.meta.env.VITE_APP_BACKEND
   }),
   getters: {
     getUser: (state) => state.user,
     getNetworkTable: (state) => state.network,
-    getPaginationInfo: (state) => state.pagination
+    getPaginationInfo: (state) => state.pagination,
+    getCustomersTable: (state) => state.customers,
   },
   actions: {
     async login(login, password) {
@@ -90,6 +93,18 @@ export const defaultStore = defineStore('default', {
     },
     setPaginationPage(page) {
       this.pagination.currentPage = page
+    },
+    async getCustomersList() {
+      let cache = []
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/`, { headers }).then(
+        function (response) {
+          cache = response.data
+        }
+      ).catch(function (error) {
+        console.log(error)
+      })
+      this.customers.tableFull = cache
     }
   },
 })

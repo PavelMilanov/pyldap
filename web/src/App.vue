@@ -11,5 +11,4 @@ var user = store.user
 <template>
   <Home v-if="user.isActive" />
   <Auth v-else />
-  <!-- <Auth /> -->
 </template>

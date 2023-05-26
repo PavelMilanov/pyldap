@@ -58,7 +58,7 @@ export default {
 
 <template>
     <div class="network mx-auto" >
-        <div class="table-menu p-3 mx-auto" style="height: 5%;">
+        <div class="p-3 mx-auto" style="height: 5%;">
             <div class="d-flex justify-content-start" role="search">
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
@@ -117,11 +117,6 @@ export default {
 </template>
 
 <style lang="less">
-
-.network {
-    width: 85%;
-    margin-top: 3%;
-}
 
 .d-flex {
     height: 4vh;

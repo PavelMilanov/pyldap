@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Path, Query, Depends
+from fastapi import APIRouter, Query, Security
+from fastapi.security import HTTPAuthorizationCredentials
 from typing import Dict
-# from .auth import ldap_auth
+from .auth import token_auth_scheme
 from .import ldap
 
 
@@ -12,17 +13,9 @@ router = APIRouter(
 
 @router.get('/')
 async def get_computer(
-        # computer: str = Query(default=None, description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
-        # attribute: ComputerAttributes = Query(default=ComputerAttributes.cn, description='Атрибуты для поиска с фильтрами'),
-        customer: str
-        # token: str = Depends(ldap_auth)
+        customer: str = Query(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
+        token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
         ) -> Dict | None:
-    # resp = await domain.get_computer(name=computer, attribute=attribute.name, attribute_value=value)
-    # return [ComputerSchema(
-    #     name=computer.name,
-    #     os=computer.os,
-    #     unit=computer.unit
-    # ) for computer in resp]
     resp = await ldap.get_domain_computer(name=customer)
     if resp is not None:
         return resp

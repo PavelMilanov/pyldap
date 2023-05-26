@@ -11,9 +11,9 @@ class RedisConnector:
         resp = self.connect.set(key, value)
         print(resp)
     
-    def get_value(self, key: str):
-        return self.connect.get(key)
-    
-    
-
-cache = RedisConnector(ip=env('REDIS_HOST'))
+    def get_value(self, key: str) -> str:
+        try:
+            data = self.connect.get(key)
+            return data.decode('utf-8')
+        except AttributeError as e:
+            return '-'
