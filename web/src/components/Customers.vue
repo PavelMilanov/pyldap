@@ -43,6 +43,12 @@ export default {
             this.search = ''
             this.store.getCustomersList()
         },
+        preinput() {
+            this.search = "customer"  // добавляет текст при начале ввода поиска
+        },
+        inputout() {
+            this.search = ""
+        }
     },
     created() {
         this.store.getCustomersList()
@@ -52,12 +58,9 @@ export default {
 
 <template>
     <div class="customers mx-auto">
-        <div class="p-3 mx-auto" style="height: 5%;">
-            <div class="d-flex justify-content-start" role="search">
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRow">Редактировать</button>
-                <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" @keyup.enter="searchModeOn(search)" v-model="search">
+        <div class="p-3 mx-auto" style="width: 70rem;">
+            <div class="d-flex justify-content-center" role="search">
+                <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" @mouseout="inputout()" @click="preinput()" @keyup.enter="searchModeOn(search)" v-model="search">
                 <button class="btn btn-outline-success" @click="searchModeOn(search)">Найти</button>
                 <button v-if="searchMode" class="btn btn-info" @click="searchModeOff()">Назад</button>
             </div>
