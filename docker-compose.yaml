@@ -11,6 +11,8 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - server_logs:/logs
     networks:
       - application
 
@@ -66,3 +68,4 @@ networks:
 volumes:
   cache:
   db:
+  server_logs:

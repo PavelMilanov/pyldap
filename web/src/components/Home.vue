@@ -21,15 +21,12 @@ export default {
     },
     data() {
         return {
-            component: 0
+            component: 0,
         }
     },
     methods: {
     
     },
-    created() {
-        // this.store.getNetworkList()
-    }
 }
 </script>
 
