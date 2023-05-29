@@ -1,9 +1,11 @@
+from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer
 from passlib.context import CryptContext
 from jose import jwt
 from typing import Final
 from .import env, cache
 from datetime import date
+from loguru import logger
 
 
 class Authentification(HTTPBearer):
@@ -17,7 +19,21 @@ class Authentification(HTTPBearer):
     ALGORITHM: Final = env('ALGORITHM')
     SECRET: Final = env('SECRET')
     
-    
+    def __init__(self, auto_error: bool = True):
+        super().__init__(auto_error=auto_error)
+
+    async def __call__(self, request: Request) -> None:
+        token = await super().__call__(request)
+        logger.info(token)
+        if token.scheme.lower() != 'bearer':
+            if self.auto_error:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail='Invalid authentication credentials',
+                )
+        else:
+            await self.__check_token(token.credentials)
+
     async def generate_token(self, username: str, password: str) -> str:
         """Генерирует токен аутентификации при корректном вводе логина и пароля.
 
@@ -33,23 +49,30 @@ class Authentification(HTTPBearer):
         cache.set_value('token', token)
         return token
 
-    async def check_token(self, token: str) -> bool:
+    async def __check_token(self, token: str) -> None:
         """Проверяет валидность токена.
 
         Args:
             token (str): токен аутентификации.
-
-        Returns:
-            bool: статус.
         """       
         cache_token = cache.get_value('token')
-        decod_token = jwt.decode(token, self.SECRET, algorithms=self.ALGORITHM)
-        if date.fromisoformat(decod_token['expired_date']) < date.today():
-            print('токен не валиден')
-            return False
-        else:
-            print('токен валиден')
-            return True
+        try:
+            decod_token = jwt.decode(token, self.SECRET, algorithms=self.ALGORITHM)
+            if date.fromisoformat(decod_token['expired_date']) < date.today():
+                logger.warning('Token is not valid')
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail='Credentials not found',
+                )
+                cache.delete_value('token')
+            else:
+                logger.success('Token is valid')
+        except jwt.JWTError as e:
+            logger.warning(e)
+            raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail='Invalid token',
+                )
 
     async def __expired_date(self) -> date:
         """Валидация токена.
@@ -58,4 +81,4 @@ class Authentification(HTTPBearer):
             date: Дата окончания валидности токена.
         """        
         current_date = date.today()
-        return date(current_date.year, current_date.month, current_date.day+2)
+        return date(current_date.year, current_date.month, current_date.day-2)

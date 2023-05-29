@@ -31,10 +31,10 @@ async def login(form: AuthSchema = Body()) -> str:
         token = await token_auth_scheme.generate_token(form.username, form.password)
         return token
 
-@router.get('/authentication')
-async def authentication(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
-    """Аутентификая по токену.
-    Args:
-        token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
-    """    
-    token = await token_auth_scheme.check_token(token.credentials)
+# @router.get('/authentication')
+# async def authentication(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+#     """Аутентификая по токену.
+#     Args:
+#         token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
+#     """    
+#     token = await token_auth_scheme.check_token(token.credentials)
