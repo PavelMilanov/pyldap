@@ -77,7 +77,7 @@ class Authentification(HTTPBearer):
             else:
                 logger.success('Token is valid')
         except jwt.JWTError as e:
-            logger.warning(e)
+            logger.exception(e)
             raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail='Invalid token',

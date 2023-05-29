@@ -68,9 +68,9 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} | {level} | {message}',
+logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} |{file}:{module}:{function}:{line} | {level} ({message})',
         level='INFO', rotation='5 MB',
-        compression='tar')
+        compression='tar', backtrace=True, diagnose=True)
 
 @app.on_event("startup")
 async def startup_event():

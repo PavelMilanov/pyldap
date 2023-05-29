@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Security, Depends
+from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials
 from db.postgres.models import StaticIp
 from models import schema
@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_static_ip_all(token: HTTPAuthorizationCredentials = Depends(token_auth_scheme)) -> List[schema.GetStaticIp]:
+async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List[schema.GetStaticIp]:
     """Возвращает список табличных данных.
     Args:
         token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
