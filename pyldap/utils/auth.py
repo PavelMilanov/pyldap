@@ -12,7 +12,7 @@ class Authentification(HTTPBearer):
     """Основной класс для реализации авторизации/аутентификации.
 
     Args:
-        HTTPBearer (_type_): FastAPI класс.
+        HTTPBearer (_type_): FastApi класc.
     """    
     
     pwd_schema = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -23,6 +23,14 @@ class Authentification(HTTPBearer):
         super().__init__(auto_error=auto_error)
 
     async def __call__(self, request: Request) -> None:
+        """Основной метод авторизации.
+
+        Args:
+            request (Request): request.
+
+        Raises:
+            HTTPException: Ошибка авторизации.
+        """        
         token = await super().__call__(request)
         logger.info(token)
         if token.scheme.lower() != 'bearer':
@@ -75,10 +83,11 @@ class Authentification(HTTPBearer):
                 )
 
     async def __expired_date(self) -> date:
-        """Валидация токена.
+        """Устанавливает срок жизни токена.
+        По-умолчанию: 1 сутки.
 
         Returns:
             date: Дата окончания валидности токена.
         """        
         current_date = date.today()
-        return date(current_date.year, current_date.month, current_date.day-2)
+        return date(current_date.year, current_date.month, current_date.day+1)
