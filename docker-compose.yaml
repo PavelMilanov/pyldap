@@ -20,7 +20,7 @@ services:
     build:
       context: ./web
       args:
-        - listen_ip=0.0.0.0
+        - listen_ip=$NGINX_HOST
     container_name: frontend
     restart: always
     env_file:

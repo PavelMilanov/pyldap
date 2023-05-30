@@ -8,7 +8,7 @@ export const defaultStore = defineStore('default', {
   state: () => ({
     user: {
       isActive: localStorage.isActive,
-      token: '',
+      token: localStorage.token,
     },
     network: {
       tableRender: [],
@@ -42,12 +42,14 @@ export const defaultStore = defineStore('default', {
         console.log(error)
       })
       if (responseData != null) {
-        this.user.token = responseData
+        localStorage.token = responseData
         localStorage.isActive = true
+        this.user.token = localStorage.token
         this.user.isActive = localStorage.isActive
       }
       else {
         localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       }
     },
     async getNetworkList() {
