@@ -58,15 +58,19 @@ class Ldap3Connector:
             sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
             users = []
             for user in sorted_data:
+                # print(user)
                 name=str(user['attributes']['name'][0])
+                # print(name)
                 description = 'нет описания'  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
                     last_logon=str(user['attributes']['lastLogon'][0])
                     member_of=list(user['attributes']['memberOf'])
                     description=str(user['attributes']['description'][0])
+                    print(description, name)
                 except KeyError as e:  # пользователь состоит только в группе domain user
                     last_logon=None
                     member_of=None
+                # print(description, name)
                 users.append(CustomerLdap(
                         name=name,
                         description=description,
@@ -93,6 +97,7 @@ class Ldap3Connector:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter=f'(&(objectClass=person)(cn={name}))', attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
                 user = json.loads(dc.entries[0].entry_to_json())
+                # print(user)
                 name=str(user['attributes']['name'][0])
                 description = 'нет описания'  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
@@ -101,7 +106,7 @@ class Ldap3Connector:
                     member_of=list(user['attributes']['memberOf'])
                 except KeyError:  # пользователь состоит только в группе domain user
                     last_logon=None
-                    member_of=None    
+                    member_of=None
                 return CustomerLdap(
                     name=name,
                     description=description,
@@ -110,7 +115,6 @@ class Ldap3Connector:
                 )
         except IndexError as e:  # пользователь не найден
             print(e)
-            return None
             
     async def get_count_users(self) -> int:
         """Возвращает суммарное количество пользователей в контейнере AD.

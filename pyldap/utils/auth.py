@@ -5,6 +5,7 @@ from jose import jwt
 from typing import Final
 from .import env, cache
 from datetime import date
+import calendar
 from loguru import logger
 
 
@@ -91,4 +92,8 @@ class Authentification(HTTPBearer):
             date: Дата окончания валидности токена.
         """        
         current_date = date.today()
-        return date(current_date.year, current_date.month, current_date.day+1)
+        last_day = calendar.monthrange(current_date.year, current_date.month)[1]
+        if current_date.day == last_day:
+            return date(current_date.year, current_date.month+1, 1)
+        else:
+            return date(current_date.year, current_date.month, current_date.day+1)

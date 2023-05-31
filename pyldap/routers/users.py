@@ -11,7 +11,7 @@ router = APIRouter(
 
 
 @router.get('/')
-async def get_customers() -> List | None:
+async def get_customers(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List | None:
     """Вывод сортированный список всех пользователей AD с атрибутами CustomerLdap.
 
     Returns:
