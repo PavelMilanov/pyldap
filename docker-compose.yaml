@@ -12,7 +12,7 @@ services:
       - postgres
       - redis
     volumes:
-      - server_logs:/logs
+      - server_logs:/server/logs
     networks:
       - application
 
