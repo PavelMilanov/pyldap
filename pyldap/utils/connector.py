@@ -53,30 +53,27 @@ class Ldap3Connector:
             }
         """        
         with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-            dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=ALL_ATTRIBUTES)
+            dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=[ALL_ATTRIBUTES])
             data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
             sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
             users = []
             for user in sorted_data:
                 # print(user)
                 name=str(user['attributes']['name'][0])
-                # print(name)
-                description = 'нет описания'  # этого атрибута может не быть, по умолчанию задаем строку
+                description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
+                    description=str(user['attributes']['description'][0])
                     last_logon=str(user['attributes']['lastLogon'][0])
                     member_of=list(user['attributes']['memberOf'])
-                    description=str(user['attributes']['description'][0])
-                    print(description, name)
-                except KeyError as e:  # пользователь состоит только в группе domain user
+                except KeyError:  # пользователь состоит только в группе domain user
                     last_logon=None
                     member_of=None
-                # print(description, name)
                 users.append(CustomerLdap(
-                        name=name,
-                        description=description,
-                        last_logon=last_logon,
-                        member_of=member_of,
-                    ))
+                    name=name,
+                    description=description,
+                    last_logon=last_logon,
+                    member_of=member_of,
+                ))
             return users
 
     async def get_domain_user(self, name: str) -> CustomerLdap | None:
@@ -99,7 +96,7 @@ class Ldap3Connector:
                 user = json.loads(dc.entries[0].entry_to_json())
                 # print(user)
                 name=str(user['attributes']['name'][0])
-                description = 'нет описания'  # этого атрибута может не быть, по умолчанию задаем строку
+                description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
                     description=str(user['attributes']['description'][0])
                     last_logon=str(user['attributes']['lastLogon'][0])
