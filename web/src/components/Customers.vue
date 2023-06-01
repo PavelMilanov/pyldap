@@ -68,27 +68,35 @@ export default {
                 <button v-if="searchMode" class="btn btn-info" @click="searchModeOff()">Назад</button>
             </div>
         </div>
-        <div class="p-3 mx-auto">
+        <div class="">
             <div v-if="!searchMode" class="row row-cols-auto justify-content-center">
-                <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" v-for="(item, index) in this.store.getCustomersTable.tableFull" :key="index" style="width: 18rem; margin: 0.5em;">
-                    <div class="card-body">
+                <div class="card shadow p-3 mb-3 bg-body-tertiary rounded" v-for="(item, index) in this.store.getCustomersTable.tableFull" :key="index" style="width: 18rem; margin: 0.5em;">
+                    <div class="card-header">
                         <h5 class="card-title">{{ item.name }}</h5>
+                    </div>
+                    <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">{{ item.member_of }}</li>
+                            <li class="list-group-item">{{ item.member_of.join(', ') }}</li>
                             <li class="list-group-item">{{ item.description }}</li>
                         </ul>
+                    </div>
+                    <div class="card-footer">
                         <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>
                 </div>
             </div>
             <div v-else class="row row-cols-auto justify-content-center">
                 <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" v-for="(item, index) in searchForm" :key="index" style="width: 18rem; margin: 0.5em;">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h5 class="card-title">{{ item.name }}</h5>
+                    </div>
+                    <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">{{ item.member_of }}</li>
+                            <li class="list-group-item">{{ item.member_of.join(', ') }}</li>
                             <li class="list-group-item">{{ item.description }}</li>
                         </ul>
+                    </div>
+                    <div class="card-footer">
                         <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>
                 </div>
