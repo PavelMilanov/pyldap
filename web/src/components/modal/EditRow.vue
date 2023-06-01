@@ -59,7 +59,7 @@ export default {
 
 <template>
     <div class="modal fade" id="editRow" tabindex="-1" aria-labelledby="editRowLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editRowLabel">Редактирование записи</h5>

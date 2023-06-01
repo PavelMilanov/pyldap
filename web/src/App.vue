@@ -5,7 +5,6 @@ import { defaultStore } from './stores/counter'
 
 const store = defaultStore()
 var user = store.user
-console.log(user.isActive)
 </script>
 
 <template>

@@ -24,17 +24,29 @@ async def get_customers(token: HTTPAuthorizationCredentials = Security(token_aut
 async def get_customer_info(
         customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
         token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ) -> Dict | None:
+    ) -> Dict:
     """Возвращает полную информацию о пользователе домена.
 
     Args:
         customer (str): имя customer.
 
     Returns:
-        Dict | None: модель CustomerLdapDescribe.
+        Dict: модель CustomerLdapDescribe.
     """    
     resp = await ldap.get_customer_desctibe(customer)
-    return resp
+    if resp is not None:
+        return resp
+    else:
+        return {
+            'os': 'not found',
+            'version_os': 'not found',
+            'unit': [],
+            'name': 'not found',
+            'description': 'not found',
+            'last_logon': 'not found',
+            'member_of': [],
+            'ip': 'not found'
+        }
 
 @router.get('/count')
 async def get_users_count() -> int:

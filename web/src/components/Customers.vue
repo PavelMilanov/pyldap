@@ -1,12 +1,11 @@
 <script>
 import { defaultStore } from '../stores/counter'
+import CustomerDescribe from './modal/CustomerDescribe.vue'
 
 export default {
-    // components: {
-    //     Auth,
-    //     RootMenu,
-    //     VerticalMenu
-    // },
+    components: {
+       CustomerDescribe
+    },
     setup() {
         const store = defaultStore()
         return { store }
@@ -16,6 +15,7 @@ export default {
             searchMode: false,
             search: '',
             searchForm: [],  // рендер при поиске
+            CustomerName: '',
         }
     },
     methods: {
@@ -48,6 +48,9 @@ export default {
         },
         inputout() {
             this.search = ""
+        },
+        getDescribe(CustomerName) {
+            this.CustomerName = CustomerName
         }
     },
     created() {
@@ -74,7 +77,7 @@ export default {
                             <li class="list-group-item">{{ item.member_of }}</li>
                             <li class="list-group-item">{{ item.description }}</li>
                         </ul>
-                        <a class="btn btn-primary">Подробнее</a>
+                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>
                 </div>
             </div>
@@ -86,11 +89,12 @@ export default {
                             <li class="list-group-item">{{ item.member_of }}</li>
                             <li class="list-group-item">{{ item.description }}</li>
                         </ul>
-                        <a class="btn btn-primary">Подробнее</a>
+                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>
                 </div>
             </div>
         </div>
+        <CustomerDescribe :name="this.CustomerName"/>
     </div>
 </template>
 
