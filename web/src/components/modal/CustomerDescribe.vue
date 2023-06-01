@@ -44,10 +44,10 @@ export default {
                         <div class="mb-3">
                             <p>Ip: {{ this.store.getCustomerInfo.ip }}</p>
                             <p>Был виден в сети: {{ this.store.getCustomerInfo.last_logon }}</p>
-                            <p>Группы: {{ this.store.getCustomerInfo.member_of.join(', ') }}</p>
+                            <p>Группы: {{ this.store.getCustomerInfo.member_of ? this.store.getCustomerInfo.member_of.join(', ') : '' }}</p>
                             <p>ОС: {{ this.store.getCustomerInfo.os }}</p>
                             <p>Версия ОС: {{ this.store.getCustomerInfo.version_os }}</p>
-                            <p>Подразделение: {{ this.store.getCustomerInfo.unit.join(', ') }}</p>
+                            <p>Подразделение: {{ this.store.getCustomerInfo.unit ? this.store.getCustomerInfo.unit.join(', ') : '' }}</p>
                         </div>
                     </form>
                 </div>
