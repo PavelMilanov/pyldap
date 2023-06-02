@@ -39,10 +39,10 @@ export default {
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                            <p>Описание: {{ this.store.getCustomerInfo.description }}</p>
+                            <p>Описание: {{ this.store.getCustomerInfo.description ? this.store.getCustomerInfo.description : '' }}</p>
                         </div>
                         <div class="mb-3">
-                            <p>Ip: {{ this.store.getCustomerInfo.ip }}</p>
+                            <p>Ip: {{ this.store.getCustomerInfo.ip ? this.store.getCustomerInfo.ip : '' }}</p>
                             <p>Был виден в сети: {{ this.store.getCustomerInfo.last_logon }}</p>
                             <p>Группы: {{ this.store.getCustomerInfo.member_of ? this.store.getCustomerInfo.member_of.join(', ') : '' }}</p>
                             <p>ОС: {{ this.store.getCustomerInfo.os }}</p>

@@ -348,14 +348,14 @@ class Ldap3Connector:
                 resp_type=str(dc.result['type'])
             )
 
-    async def get_customer_desctibe(self, name) -> CustomerLdapDescribe | None:
+    async def get_customer_desctibe(self, name) -> CustomerLdapDescribe:
         """Возвращает общую модель CustomerLdap и ComputerLdap.
 
         Args:
             name (_type_): имя customer.
 
         Returns:
-            CustomerLdapDescribe | None: {
+            CustomerLdapDescribe: {
                 name=str,
                 description=str,
                 last_logon=datetime,
@@ -367,18 +367,28 @@ class Ldap3Connector:
         """        
         user = await self.get_domain_user(name)
         computer = await self.get_domain_computer(name)
-        if user is not None and computer is not None:
-            ip = cache.get_value(name)
+        if computer is None:
             return CustomerLdapDescribe(
-                name=user.name,
-                description=user.description,
-                last_logon=user.last_logon,
-                member_of=user.member_of,
-                os=computer.os,
-                version_os=computer.version_os,
-                unit=computer.unit,
-                ip=ip
-            )
+            name=user.name,
+            description=user.description,
+            last_logon=user.last_logon,
+            member_of=user.member_of,
+            os='',
+            version_os='',
+            unit=[''],
+            ip=''
+        )
+        ip = cache.get_value(name)
+        return CustomerLdapDescribe(
+            name=user.name,
+            description=user.description,
+            last_logon=user.last_logon,
+            member_of=user.member_of,
+            os=computer.os,
+            version_os=computer.version_os,
+            unit=computer.unit,
+            ip=ip
+        )
     
     async def ldap_authentificate(self, name, password) -> bool:
         """Ldap-аутентификация администратора домена.

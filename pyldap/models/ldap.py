@@ -75,11 +75,12 @@ class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
     def formated_datetime(cls, data):
         return data
 
-    @validator('member_of')
-    def formated_member_of(cls, data):
+    @validator('member_of', 'unit')
+    def formated_member_of_and_unit(cls, data):
         if data is not None:
             return data
-        return []
+        else:
+            return []
 
     @validator('unit')
     def formated_unit(cls, data):
