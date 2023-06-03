@@ -13,7 +13,7 @@ router = APIRouter(
 token_auth_scheme = Authentification()
 
 @router.post('/login')
-async def login(form: AuthSchema = Body()) -> str:
+async def login(form: AuthSchema = Body()) -> str | None:
     """Авторизация под пользователем в домене.
     При успешной авторизации возврашает токен/
 
@@ -24,17 +24,9 @@ async def login(form: AuthSchema = Body()) -> str:
             }. Defaults to Body().
 
     Returns:
-        str: токен авторизации.
+        str | None: токен авторизации.
     """    
     resp = await ldap.ldap_authentificate(form.username, form.password)
     if resp:
         token = await token_auth_scheme.generate_token(form.username, form.password)
         return token
-
-# @router.get('/authentication')
-# async def authentication(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
-#     """Аутентификая по токену.
-#     Args:
-#         token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
-#     """    
-#     token = await token_auth_scheme.check_token(token.credentials)

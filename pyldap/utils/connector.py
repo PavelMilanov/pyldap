@@ -373,7 +373,6 @@ class Ldap3Connector:
                 user = json.loads(dc.entries[0].entry_to_json())
                 if user['attributes']['name'][0].lower() == name.lower():  # проверка на ввод данных администратора домена
                     return True
-                # raise LDAPBindError('Вход только для администратора домена')
         except LDAPBindError:
             return False
 

@@ -10,11 +10,15 @@ export default {
         return {
             login: '',
             password: '',
+            status: '',
         }
     },
     methods: {
         async authentification(login, password) {  
-            await this.store.login(login, password)
+            let status = await this.store.login(login, password)
+            if (status == 'failure') {
+                this.status = status
+            }
         },
     }
 }
@@ -26,13 +30,16 @@ export default {
             <p>Авторизация</p>
         </div>
         <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInput" placeholder="Login" v-model="this.login">
+            <input type="text" class="form-control" v-bind:class="{'is-invalid': status == 'failure' }" id="floatingInput" placeholder="Login" v-model="this.login">
             <label for="floatingInput">Логин</label>
             <div id="help" class="form-text">Вход разрешен администратору домена</div>
         </div>
         <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" @keyup.enter="authentification(this.login, this.password)" v-model="this.password">
+            <input type="password" class="form-control" id="floatingPassword" v-bind:class="{'is-invalid': status == 'failure' }" placeholder="Password" @keyup.enter="authentification(this.login, this.password)" v-model="this.password">
             <label for="floatingPassword">Пароль</label>
+            <div class="invalid-feedback">
+                Неправильный логин или пароль!
+          </div>
         </div>
         <div class="d-flex justify-content-center form-floating">
             <button @click="authentification(this.login, this.password)" class="form-login btn btn-primary">Вход</button>
@@ -53,4 +60,5 @@ export default {
     margin-bottom: 5%;
     width: 70%;
 }
+
 </style>

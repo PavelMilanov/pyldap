@@ -50,10 +50,12 @@ export const defaultStore = defineStore('default', {
         localStorage.isActive = true
         this.user.token = localStorage.token
         this.user.isActive = localStorage.isActive
+        return 'success'
       }
       else {
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        return 'failure'
       }
     },
     async getNetworkList() {
