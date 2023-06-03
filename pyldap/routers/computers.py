@@ -40,6 +40,6 @@ async def get_computer(
 #     resp = await domain.delete_computer(name=computer)
 #     return resp
 
-# @router.get('/test')
-# def test():
-#     ldap.get_computers()
+@router.get('/test')
+def test():
+    ldap.get_computers(mode='dn-pooling')

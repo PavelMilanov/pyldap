@@ -35,25 +35,25 @@ export default {
         <div class="main container-fluid bg-secondary bg-gradient text-white">
             <nav class="navbar-header">
                 <div @click="this.component = 0" class="navbar-header-item">
-                    <p>Home</p>
+                    <p>Меню</p>
                 </div>
                 <div @click="this.component = 1" class="navbar-header-item">
-                    <p>Network</p>
+                    <p>Статические адреса</p>
                 </div>
                 <div @click="this.component = 2" class="navbar-header-item">
-                    <p>Customers</p>
+                    <p>Пользователи</p>
                 </div>
-                <div @click="this.component = 3" class="navbar-header-item">
+                <!-- <div @click="this.component = 3" class="navbar-header-item">
                     <p>Computers</p>
-                </div>
+                </div> -->
                 <div @click="this.component = 4" class="navbar-header-item">
-                    <p>Units</p>
+                    <p>Подразделения</p>
                 </div>
             </nav>
         </div>
         <Network v-if="this.component === 1"/>
         <Customers v-else-if="this.component === 2"/>
-        <Computers v-else-if="this.component === 3"/>
+        <!-- <Computers v-else-if="this.component === 3"/> -->
         <Units v-else-if="this.component === 4"/>
     </div>
 </template>

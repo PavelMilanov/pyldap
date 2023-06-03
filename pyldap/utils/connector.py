@@ -229,52 +229,7 @@ class Ldap3Connector:
                 for org in subunit:
                     count += 1
         return count
-                    
-    # async def add_organization(self, name: str) -> ResponseLdap:
-    #     """Создает подразделение в контейнере AD.
 
-    #     Args:
-    #         name (str): Название подраздленения.
-
-    #     Returns:
-    #         ResponseLdap: {
-    #             description=str,
-    #             resp_type=str(addResponse)
-    #         }
-    #     """        
-    #     try:
-    #         with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-    #             dc.add(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', object_class=['organizationalUnit', 'top'], attributes=None)
-    #             return ResponseLdap(
-    #                 description=str(dc.result['description']),
-    #                 resp_type=str(dc.result['type'])
-    #             )
-    #     except Exception as e:
-    #         print(e)
-
-    # async def delete_organization(self, name: str) -> ResponseLdap:
-    #     """Удаляет подразделение в контейнере AD.
-
-    #     Args:
-    #         name (str): Название подраздленения.
-
-    #     Returns:
-    #         ResponseLdap: {
-    #             description=str,
-    #             resp_type=str(delResponse)
-    #         }
-    #     """
-    #     try:
-    #         with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-    #             dc.delete(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}')
-    #             print(dc.result)
-    #             return ResponseLdap(
-    #                 description=str(dc.result['description']),
-    #                 resp_type=str(dc.result['type'])
-    #             )
-    #     except Exception as e:
-    #         print(e)
-    
     async def get_domain_computer(self, name: str) -> ComputerLdap | None:
         """Возврщает pydantic-модель компьютера в контейнере AD.
 
@@ -306,27 +261,34 @@ class Ldap3Connector:
         except IndexError as e:  # компьютер не найден
             return None
 
-    def get_computers(self) -> List[str]:
-        """Возвращает список имен компьютеров в лесу.
-        Используется для периодического опроса ip адреса
-        компьютера по dns имени.
-
-        Returns:
-            List[str]: ['customer00001','customer00002']
-        """        
+    def get_computers(self) -> List[str]: 
         search = f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}'
         filter_pattern = '(&(objectClass=computer))'
         try:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.search(search_base=search, search_filter=filter_pattern)
-                tree = []
+                dn_items = []
                 computers = dc.entries
                 for computer in computers:
-                    data = json.loads(computer.entry_to_json())  #  CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=_
-                    item = computer.entry_dn.split(',')[0][3:].lower()  # CUSTOMER0000
-                    tree.append(item)
-                return tree
-        except Exception() as e:
+                    data = json.loads(computer.entry_to_json())  # CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=_
+                    # print(computer.entry_dn)
+                    # item = computer.entry_dn.split(',')[0][3:].lower()  # CUSTOMER0000
+                    item = computer.entry_dn
+                    dn_items.append(item)
+                    return dn_items
+                    # elif mode == 'dn-pooling':
+                    #     customer = computer.entry_dn.split(',')[0][3:].lower()
+                    #     unit = computer.entry_dn.split(',')[1:-4]  # CN=CUSTOMER0003,OU=_,OU=_
+                    #     if len(unit) == 1:
+                    #         unit = unit[0][3:]  # unit
+                    #         dn[unit] = customer
+                    #     elif len(unit) > 1:
+                    #         format_unit = ''
+                    #         for item in unit:
+                    #             format_unit += item[3:] + '-'  # subunit-unit
+                    #             dn[format_unit[:-1]] = customer
+                            # print(customer, format_unit[:-1])
+        except Exception as e:
             print(e)
     
     async def delete_computer(self, name: str) -> ResponseLdap:

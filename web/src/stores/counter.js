@@ -23,6 +23,7 @@ export const defaultStore = defineStore('default', {
       tableFull: []
     },
     customer: {},
+    units: {},
     BACKEND: import.meta.env.VITE_APP_BACKEND
   }),
   getters: {
@@ -31,6 +32,7 @@ export const defaultStore = defineStore('default', {
     getPaginationInfo: (state) => state.pagination,
     getCustomersTable: (state) => state.customers,
     getCustomerInfo: (state) => state.customer,
+    getUnits: (state) => state.units,
   },
   actions: {
     async login(login, password) {
@@ -125,6 +127,19 @@ export const defaultStore = defineStore('default', {
         console.log(error)
       })
       this.customer = responseData
+    },
+    async getUnitsTree() {
+      let responseData
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/organizations/tree`, { headers }).then(
+        function (response) {
+          responseData = response.data
+          console.log(responseData)
+        }
+      ).catch(function (error) {
+        console.log(error)
+      })
+      this.units = responseData
     }
   },
 })
