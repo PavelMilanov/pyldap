@@ -365,15 +365,15 @@ class Ldap3Connector:
         Returns:
             bool: успешная аутентификация.
         """        
-        search_tree = f'ou={self._OU},dc={self._DC1},dc={self._DC2}'
+        search_tree = f'cn=Users,dc={self._DC1},dc={self._DC2}'
         search_filter = f'(&(objectClass=person)(cn={name}))'
         try:
-            with Connection(self._SERVER, user=f'fso.rsnet\{name.lower()}', password=password, authentication=NTLM) as dc:
+            with Connection(self._SERVER, user=f'{self._DC1}.{self._DC2}\{name.lower()}', password=password, authentication=NTLM) as dc:
                 dc.search(search_base=search_tree, search_filter=search_filter, attributes=['name'])
                 user = json.loads(dc.entries[0].entry_to_json())
                 if user['attributes']['name'][0].lower() == name.lower():  # проверка на ввод данных администратора домена
                     return True
-                raise LDAPBindError('Вход только для администратора домена')
+                # raise LDAPBindError('Вход только для администратора домена')
         except LDAPBindError:
             return False
 
