@@ -32,50 +32,34 @@ export default {
 
 <template>
     <div>
-        <div class="main container-fluid bg-secondary bg-gradient text-white">
-            <nav class="navbar-header">
-                <div @click="this.component = 0" class="navbar-header-item">
-                    <p>Меню</p>
-                </div>
-                <div @click="this.component = 1" class="navbar-header-item">
-                    <p>Статические адреса</p>
-                </div>
-                <div @click="this.component = 2" class="navbar-header-item">
-                    <p>Пользователи</p>
-                </div>
-                <!-- <div @click="this.component = 3" class="navbar-header-item">
-                    <p>Computers</p>
-                </div> -->
-                <div @click="this.component = 4" class="navbar-header-item">
-                    <p>Подразделения</p>
-                </div>
-            </nav>
+        <nav class="navbar navbar-expand-lg bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand"><img src="../assets/bootstrap.svg" alt="Bootstrap" width="40" height="30"></a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li @click="this.component = 1" class="nav-item">
+              <a class="nav-link" aria-current="page">Статические адреса</a>
+            </li>
+            <li @click="this.component = 2" class="nav-item">
+              <a class="nav-link">Пользователи</a>
+            </li>
+            <li @click="this.component = 3" class="nav-item">
+              <a class="nav-link">Подразделения</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link">Disabled</a>
+            </li> -->
+          </ul>
         </div>
+      </div>
+    </nav>
         <Network v-if="this.component === 1"/>
         <Customers v-else-if="this.component === 2"/>
         <!-- <Computers v-else-if="this.component === 3"/> -->
-        <Units v-else-if="this.component === 4"/>
+        <Units v-else-if="this.component === 3"/>
     </div>
 </template>
 
 <style lang="less">
-.navbar-header {
-    display: flex;
-    justify-content: space-around;
-    height: 7vh;
-
-    .navbar-header-item {
-        margin: 1%;
-    }
-
-    .search {
-        display: flex;
-    }
-
-    div:hover {
-        border: 1.5px solid rgb(238, 238, 238);
-        border-radius: 10%;
-    }
-}
 
 </style>

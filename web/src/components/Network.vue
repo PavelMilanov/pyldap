@@ -73,8 +73,8 @@ export default {
                 <thead class="table-light">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Static Ip</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Ip адрес</th>
+                        <th scope="col">Описание</th>
                     </tr>
                 </thead>
                 <tbody v-if="!searchMode" class="table-group-divider">
