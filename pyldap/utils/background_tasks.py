@@ -10,6 +10,7 @@ background = BackgroundScheduler()
 
 @background.scheduled_job('cron', hour=23)
 def scheduled_nslookup_for_customer():
+    """Добавляет в кеш ip адреса и dns имена компьютеров в AD по расписанию."""    
     logger.info('run dns polling for customers')
     data = ldap.get_computers()
     for item in data:
