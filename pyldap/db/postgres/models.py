@@ -32,3 +32,15 @@ class StaticIp(Model):
 
     def __str__(self):
         return self.ip
+
+
+class Act(Model):
+    id = fields.IntField(pk=True)
+    customer = fiilds.CharField(unique=True)
+    unit = fiilds.CharField()
+    
+    class Meta:
+        table = 'acts'
+    
+    def __str__(self):
+        return self.customer
