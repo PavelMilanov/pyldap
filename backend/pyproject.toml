@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "backend"
 version = "0.1.0"
-description = ""
+description = "python ldap server"
 authors = ["pavel_milanov <milanov71@icloud.com>"]
 readme = "README.md"
 
