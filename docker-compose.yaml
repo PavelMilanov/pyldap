@@ -3,7 +3,7 @@ version: '3.9'
 services:
   backend:
     build:
-      context: ./pyldap
+      context: ./backend/backend
     container_name: backend
     restart: always
     env_file:

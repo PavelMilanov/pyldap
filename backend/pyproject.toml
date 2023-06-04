@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "pyldap"
+name = "backend"
 version = "0.1.0"
 description = ""
-authors = ["Pavel Milanov <milanov71@icloud.com>"]
+authors = ["pavel_milanov <milanov71@icloud.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 fastapi = "^0.95.0"
 uvicorn = "^0.21.1"
 ldap3 = "^2.9.1"
@@ -21,7 +21,6 @@ tortoise-orm = "^0.19.3"
 asyncpg = "^0.27.0"
 aerich = "^0.7.1"
 apscheduler = "^3.10.1"
-
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.2"
