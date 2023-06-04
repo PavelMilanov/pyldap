@@ -5,6 +5,7 @@ from models import schema
 from .auth import token_auth_scheme
 from tortoise.exceptions import DoesNotExist
 from typing import List
+from loguru import logger
 
 
 router = APIRouter(
@@ -25,7 +26,7 @@ async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token
         resp = await StaticIp.all().values()
         return [schema.GetStaticIp(**item) for item in resp]
     except DoesNotExist as e:
-        print(e)
+        logger.exception(e)
     except TypeError as e:  # пустой список
         return []
 
@@ -43,11 +44,11 @@ async def set_static_ip(item: schema.StaticIp, token: HTTPAuthorizationCredentia
     try:
         new_item = await StaticIp.create(ip=item.ip, description=item.description)
     except Exception as e:
-        print(e)
+        logger.exception(e)
         
 @router.get('/{id}')
 async def get_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> schema.GetStaticIp:
-    """_summary_
+    """Возвращает таблицу StaticIp в виде списка.
 
     Args:
         id (int): Возвращает запись из таблицы StaticIp по id.
@@ -63,7 +64,7 @@ async def get_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(
         resp = await StaticIp.get(id=id).values()
         return schema.GetStaticIp(**resp)
     except DoesNotExist as e:
-        print(e)
+        logger.exception(e)
 
 @router.put('/{id}')
 async def change_static_ip(id: int, item: schema.StaticIp, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
@@ -82,7 +83,7 @@ async def change_static_ip(id: int, item: schema.StaticIp, token: HTTPAuthorizat
         resp.update_from_dict(item.dict())
         await resp.save()
     except DoesNotExist as e:
-        print(e)
+        logger.exception(e)
 
 @router.delete('/{id}')
 async def delete_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
