@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
-# from .auth import ldap_auth
+from fastapi import APIRouter, Security, Response
+from fastapi.security import HTTPAuthorizationCredentials
+from .auth import token_auth_scheme
 from .import ldap
 
 
@@ -19,35 +20,13 @@ async def get_organizations_schema():
     return resp
 
 @router.get('/tree')
-async def get_organizations_tree():
+async def get_organizations_tree(response: Response):
     resp = await ldap.search_organizations_tree()
+    count = await ldap.get_count_organizations()
+    response.headers['x-unit-count'] = str(count)
     return resp
 
-@router.get('/count')
-async def get_count_organizations():
-    resp = await ldap.get_count_organizations()
-    return resp
-
-# @router.get('/{unit}')
-# async def get_organization_by_name(
-#         unit: str,
-#         # token: str = Depends(ldap_auth)
-#     ):
-#     resp = await domain.search_organization_by_name(name=unit)
-#     return resp
-
-# @router.post('/{unit}')
-# async def add_organization_by_name(
-#         unit: str,
-#         # token: str = Depends(ldap_auth)
-#     ):
-#     resp = await domain.add_organization(name=unit)
-#     return resp
-
-# @router.delete('/{unit}')
-# async def delete_organization_by_name(
-#         unit: str,
-#         # token: str = Depends(ldap_auth)
-#     ):
-#     resp = await domain.delete_organization(name=unit)
+# @router.get('/count')
+# async def get_count_organizations():
+#     resp = await ldap.get_count_organizations()
 #     return resp

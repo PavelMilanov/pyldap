@@ -39,7 +39,7 @@ class Ldap3Connector:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 logger.info(dc)
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
 
     async def get_domain_users(self) -> List[CustomerLdap]:
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
@@ -58,7 +58,6 @@ class Ldap3Connector:
             sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
             users = []
             for user in sorted_data:
-                # print(user)
                 name=str(user['attributes']['name'][0])
                 description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
@@ -111,7 +110,7 @@ class Ldap3Connector:
                     member_of=member_of,
                 )
         except IndexError as e:  # пользователь не найден
-            print(e)
+            logger.exception(e)
             
     async def get_count_users(self) -> int:
         """Возвращает суммарное количество пользователей в контейнере AD.
@@ -122,28 +121,27 @@ class Ldap3Connector:
         users = await self.get_domain_users()
         return len(users)
     
-    async def delete_user(self, name: str)-> ResponseLdap:
-        """Удаляет пользователя в контейнере AD.
+    # async def delete_user(self, name: str)-> ResponseLdap:
+    #     """Удаляет пользователя в контейнере AD.
 
-        Args:
-            name (str): имя пользователя.
+    #     Args:
+    #         name (str): имя пользователя.
 
-        Returns:
-            ResponseLdap: {
-                description=str,
-                resp_type=str(addResponse)
-            }
-        """        
-        try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                dc.delete(dn=f'cn={name.lower()},ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}')
-                print(dc.result)
-                return ResponseLdap(
-                    description=str(dc.result['description']),
-                    resp_type=str(dc.result['type'])
-                )
-        except Exception as e:
-            print(e)
+    #     Returns:
+    #         ResponseLdap: {
+    #             description=str,
+    #             resp_type=str(addResponse)
+    #         }
+    #     """        
+    #     try:
+    #         with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+    #             dc.delete(dn=f'cn={name.lower()},ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}')
+    #             return ResponseLdap(
+    #                 description=str(dc.result['description']),
+    #                 resp_type=str(dc.result['type'])
+    #             )
+    #     except Exception as e:
+    #         logger.exception(e)
 
     async def search_organizations_schema(self) -> Dict | None:
         """Возвращает все подразделения в контейнере домена.
@@ -157,7 +155,7 @@ class Ldap3Connector:
                 units = [json.loads(unit.entry_to_json()) for unit in dc.entries]
                 return units
         except Exception as e:
-            print(e)
+            logger.exception(e)
             return None
 
     async def search_organizations_tree(self) -> Dict[str, List[str]] | None:
@@ -184,36 +182,7 @@ class Ldap3Connector:
                         units_tree[str(tree_item)] = []
                 return units_tree
         except Exception as e:
-            print(e)
-
-    # async def search_organization_by_name(self, name: str) -> OrganizationLdap | None:
-    #     """Ищет конейнер организации в AD и возвращает pydantic-модель.
-
-    #     Args:
-    #         name (str): Название организации.
-
-    #     Returns:
-    #         Organization | None: {
-    #             name=str,
-    #             created_at=datetime,
-    #             changed_at=datetime,
-    #             dn=str 
-    #         }
-    #     """        
-    #     try:
-    #         with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-    #             dc.search(search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_scope=SUBTREE, search_filter=f'(&(objectClass=organizationalUnit)(name={name}))', attributes=ALL_ATTRIBUTES)
-    #             unit = dc.entries[0]
-    #             print(unit.entry_to_json())
-    #             return Organization(
-    #                 name=str(unit['name']),
-    #                 created_at=str(unit['whenCreated']),
-    #                 changed_at=str(unit['whenChanged']),
-    #                 dn=str(unit['distinguishedName'])
-    #             )
-    #     except Exception as e:
-    #         print(e)
-    #         return None
+            logger.exception(e)
 
     async def get_count_organizations(self) -> int:
         """Возвращает число подразделений в контейнере AD.
@@ -249,7 +218,6 @@ class Ldap3Connector:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.search(search_base=search, search_filter=filter_pattern, attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
                 computer = json.loads(dc.entries[0].entry_to_json())
-                print(computer)
                 os=computer['attributes']['operatingSystem'][0],
                 version=str(computer['attributes']['operatingSystemVersion'][0])
                 unit=str(computer['attributes']['distinguishedName'][0])
@@ -259,6 +227,7 @@ class Ldap3Connector:
                     unit=unit,
                 )
         except IndexError as e:  # компьютер не найден
+            logger.exception(e)
             return None
 
     def get_computers(self) -> List[str]: 
@@ -289,26 +258,26 @@ class Ldap3Connector:
                     #             dn[format_unit[:-1]] = customer
                             # print(customer, format_unit[:-1])
         except Exception as e:
-            print(e)
+            logger.exception(e)
     
-    async def delete_computer(self, name: str) -> ResponseLdap:
-        """Удаляет компьютер в контейнере AD.
+    # async def delete_computer(self, name: str) -> ResponseLdap:
+    #     """Удаляет компьютер в контейнере AD.
 
-        Args:
-            name (str): Название компьютера.
+    #     Args:
+    #         name (str): Название компьютера.
 
-        Returns:
-            ResponseLdap: {
-                description=str,
-                resp_type=str(delResponse)
-            }
-        """
-        with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-            dc.delete(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}')
-            return ResponseLdap(
-                description=str(dc.result['description']),
-                resp_type=str(dc.result['type'])
-            )
+    #     Returns:
+    #         ResponseLdap: {
+    #             description=str,
+    #             resp_type=str(delResponse)
+    #         }
+    #     """
+    #     with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+    #         dc.delete(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}')
+    #         return ResponseLdap(
+    #             description=str(dc.result['description']),
+    #             resp_type=str(dc.result['type'])
+    #         )
 
     async def get_customer_desctibe(self, name) -> CustomerLdapDescribe:
         """Возвращает общую модель CustomerLdap и ComputerLdap.
@@ -373,8 +342,6 @@ class Ldap3Connector:
                 user = json.loads(dc.entries[0].entry_to_json())
                 if user['attributes']['name'][0].lower() == name.lower():  # проверка на ввод данных администратора домена
                     return True
-        except LDAPBindError:
+        except LDAPBindError as e:
+            logger.exception(e)
             return False
-
-
-domain = Ldap3Connector()

@@ -20,26 +20,6 @@ async def get_computer(
     if resp is not None:
         return resp
 
-# @router.get('/unit/{unit}')
-# async def get_computers_by_unit(
-#         unit: str,
-#         # token: str = Depends(ldap_auth)
-#     ):
-#     return "в разработке"
-
-# @router.get('/name/{name}')
-# async def get_computer_by_name(name: str):
-#     resp = await domain.get_computer(name)
-#     return resp
-
-# @router.delete('/{computer}')
-# async def delete_computer_by_name(
-#         computer: str,
-#         # token: str = Depends(ldap_auth)
-#     ):
-#     resp = await domain.delete_computer(name=computer)
-#     return resp
-
 @router.get('/test')
 def test():
     ldap.get_computers(mode='dn-pooling')

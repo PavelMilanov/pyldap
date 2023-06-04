@@ -40,11 +40,3 @@ async def get_customer_info(
 async def get_users_count() -> int:
     resp = await ldap.get_count_users()  # вывод количества всех пользователей
     return resp
-
-@router.delete('/customer')
-async def delete_user_by_name(
-        user: str,
-        # token: str = Depends(ldap_auth)
-    ):
-    resp = await ldap.delete_user(name=user)
-    return resp
