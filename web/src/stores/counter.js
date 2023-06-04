@@ -136,8 +136,7 @@ export const defaultStore = defineStore('default', {
       await axios.get(`http://${this.BACKEND}/api/v1/ldap3/organizations/tree`, { headers }).then(
         function (response) {
           responseData = response.data
-          console.log(response.headers['x-unit-count'])
-          console.log(response.headers)
+          console.log(response.headers.get('x-unit-count'))
         }
       ).catch(function (error) {
         console.log(error)

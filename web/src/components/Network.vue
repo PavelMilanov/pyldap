@@ -60,12 +60,12 @@ export default {
     <div class="network mx-auto" >
         <div class="p-3 mx-auto">
             <div class="d-flex justify-content-start" role="search">
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRow">Редактировать</button>
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
+                <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editRow">Редактировать</button>
                 <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" @keyup.enter="searchModeOn(search)" v-model="search">
                 <button class="btn btn-outline-success" @click="searchModeOn(search)">Найти</button>
-                <button v-if="searchMode" class="btn btn-info" @click="searchModeOff()">Назад</button>  <!--Для того, чтобы выйти из режима редактирования-->
+                <button v-if="searchMode" class="btn btn-outline-secondary" @click="searchModeOff()">Назад</button>  <!--Для того, чтобы выйти из режима редактирования-->
             </div>
         </div>
         <div class="p-3 mx-auto">

@@ -65,7 +65,7 @@ export default {
             <div class="d-flex justify-content-center" role="search">
                 <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" @mouseout="inputout()" @click="preinput()" @keyup.enter="searchModeOn(search)" v-model="search">
                 <button class="btn btn-outline-success" @click="searchModeOn(search)">Найти</button>
-                <button v-if="searchMode" class="btn btn-info" @click="searchModeOff()">Назад</button>
+                <button v-if="searchMode" class="btn btn-outline-secondary" @click="searchModeOff()">Назад</button>
             </div>
         </div>
         <div class="mx-auto">
