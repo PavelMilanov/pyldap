@@ -86,13 +86,3 @@ class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
     def formated_unit(cls, data):
         if data is not None:
             return data
-
-
-class ResponseLdap(BaseModel):
-    """Модель стандартного ответа от AD по протоколу LDAP.
-
-    Args:
-        BaseModel (_type_): Pydantic объект.
-    """    
-    description: str
-    resp_type: str

@@ -20,6 +20,6 @@ async def get_computer(
     if resp is not None:
         return resp
 
-@router.get('/test')
-def test():
-    ldap.get_computers(mode='dn-pooling')
+# @router.get('/test')
+# def test():
+#     test = ldap.get_computers()

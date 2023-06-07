@@ -3,7 +3,7 @@ import calendar
 
 
 def expired_date(year, month, day):
-        """Моделирует метод __expired_date класса pyldap.utils.auth.Authentification"""
+        """Моделирует метод __expired_date класса backend.utils.auth.Authentification"""
         current_date = date(year, month, day)     
         last_day = calendar.monthrange(current_date.year, current_date.month)[1]
         if current_date.day == last_day:

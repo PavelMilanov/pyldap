@@ -16,7 +16,6 @@ from .import env, cache
 from typing import List, Dict, Final
 from models.ldap import (
     OrganizationLdap,
-    ResponseLdap,
     CustomerLdap,
     ComputerLdap,
     CustomerLdapDescribe
@@ -121,28 +120,6 @@ class Ldap3Connector:
         users = await self.get_domain_users()
         return len(users)
     
-    # async def delete_user(self, name: str)-> ResponseLdap:
-    #     """Удаляет пользователя в контейнере AD.
-
-    #     Args:
-    #         name (str): имя пользователя.
-
-    #     Returns:
-    #         ResponseLdap: {
-    #             description=str,
-    #             resp_type=str(addResponse)
-    #         }
-    #     """        
-    #     try:
-    #         with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-    #             dc.delete(dn=f'cn={name.lower()},ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}')
-    #             return ResponseLdap(
-    #                 description=str(dc.result['description']),
-    #                 resp_type=str(dc.result['type'])
-    #             )
-    #     except Exception as e:
-    #         logger.exception(e)
-
     async def search_organizations_schema(self) -> Dict | None:
         """Возвращает все подразделения в контейнере домена.
 
@@ -240,44 +217,11 @@ class Ldap3Connector:
                 computers = dc.entries
                 for computer in computers:
                     data = json.loads(computer.entry_to_json())  # CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=_
-                    # print(computer.entry_dn)
-                    # item = computer.entry_dn.split(',')[0][3:].lower()  # CUSTOMER0000
                     item = computer.entry_dn
                     dn_items.append(item)
-                    return dn_items
-                    # elif mode == 'dn-pooling':
-                    #     customer = computer.entry_dn.split(',')[0][3:].lower()
-                    #     unit = computer.entry_dn.split(',')[1:-4]  # CN=CUSTOMER0003,OU=_,OU=_
-                    #     if len(unit) == 1:
-                    #         unit = unit[0][3:]  # unit
-                    #         dn[unit] = customer
-                    #     elif len(unit) > 1:
-                    #         format_unit = ''
-                    #         for item in unit:
-                    #             format_unit += item[3:] + '-'  # subunit-unit
-                    #             dn[format_unit[:-1]] = customer
-                            # print(customer, format_unit[:-1])
+                return dn_items
         except Exception as e:
             logger.exception(e)
-    
-    # async def delete_computer(self, name: str) -> ResponseLdap:
-    #     """Удаляет компьютер в контейнере AD.
-
-    #     Args:
-    #         name (str): Название компьютера.
-
-    #     Returns:
-    #         ResponseLdap: {
-    #             description=str,
-    #             resp_type=str(delResponse)
-    #         }
-    #     """
-    #     with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-    #         dc.delete(dn=f'ou={name},ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}')
-    #         return ResponseLdap(
-    #             description=str(dc.result['description']),
-    #             resp_type=str(dc.result['type'])
-    #         )
 
     async def get_customer_desctibe(self, name) -> CustomerLdapDescribe:
         """Возвращает общую модель CustomerLdap и ComputerLdap.

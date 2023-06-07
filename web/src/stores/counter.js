@@ -23,7 +23,9 @@ export const defaultStore = defineStore('default', {
       tableFull: []
     },
     customer: {},
-    units: {},
+    units: {
+      tree: {},
+    },
     BACKEND: import.meta.env.VITE_APP_BACKEND
   }),
   getters: {
@@ -32,7 +34,7 @@ export const defaultStore = defineStore('default', {
     getPaginationInfo: (state) => state.pagination,
     getCustomersTable: (state) => state.customers,
     getCustomerInfo: (state) => state.customer,
-    getUnits: (state) => state.units,
+    getUnits: (state) => state.units.tree,
   },
   actions: {
     async login(login, password) {
@@ -44,6 +46,8 @@ export const defaultStore = defineStore('default', {
         responseData = response.data
       }).catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
       if (responseData != null) {
         localStorage.token = responseData
@@ -67,6 +71,8 @@ export const defaultStore = defineStore('default', {
         }
       ).catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
       this.network.tableFull = cache
       this.network.tableRender = []
@@ -84,6 +90,8 @@ export const defaultStore = defineStore('default', {
         'description': description
       }, { headers }).then().catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
     },
     async editNetworkRow(params) {
@@ -94,6 +102,8 @@ export const defaultStore = defineStore('default', {
         'description': params.description
       }, { headers }).then().catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
     },
     async removeNetworkRow(id) {
@@ -101,6 +111,8 @@ export const defaultStore = defineStore('default', {
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
       await axios.delete(`http://${this.BACKEND}/api/v1/network/${param}`, { headers }).then().catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
     },
     setPaginationPage(page) {
@@ -115,6 +127,8 @@ export const defaultStore = defineStore('default', {
         }
       ).catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
       this.customers.tableFull = cache
     },
@@ -127,6 +141,8 @@ export const defaultStore = defineStore('default', {
         }
       ).catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
       this.customer = responseData
     },
@@ -136,12 +152,27 @@ export const defaultStore = defineStore('default', {
       await axios.get(`http://${this.BACKEND}/api/v1/ldap3/organizations/tree`, { headers }).then(
         function (response) {
           responseData = response.data
-          console.log(response.headers.get('x-unit-count'))
         }
       ).catch(function (error) {
         console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
       })
-      this.units = responseData
+      this.units.tree = responseData
+    },
+    async GetUnitComputersList(unit) {
+      let responseData
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/organizations/${unit}`, { headers }).then(
+        function (response) {
+          responseData = response.data
+        }
+      ).catch(function (error) {
+        console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
+      })
+      return responseData
     }
   },
 })

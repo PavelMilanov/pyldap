@@ -1,5 +1,6 @@
 import redis
 from .import env
+from typing import Set
 
 
 class RedisConnector:
