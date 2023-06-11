@@ -7,7 +7,7 @@ poetry.lock
 .config.env
 # Logs
 logs
-act/
+files/
 
 node_modules
 .DS_Store

@@ -19,7 +19,3 @@ async def get_computer(
     resp = await ldap.get_domain_computer(name=customer)
     if resp is not None:
         return resp
-
-# @router.get('/test')
-# def test():
-#     test = ldap.get_computers()

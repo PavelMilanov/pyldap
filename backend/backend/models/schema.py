@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, UUID4
 from datetime import datetime
 from typing import Union, List, Dict
 from enum import Enum
@@ -20,18 +20,6 @@ class AuthSchema(BaseModel):
                 'password': 'domain-password'
             }
         }
-
-# class CustomerSchema(BaseModel):
-#     name: str
-#     last_logon: Union[datetime, None]
-#     member_of: Union[List[str], None]
-
-
-# class ComputerSchema(BaseModel):
-#     name: str
-#     os: Dict[str,str]
-#     unit: List[str]
-
 
 class StaticIp(BaseModel):
     """Модель для валидации данных при работе с таблицей StaticIp по REST API.
@@ -67,3 +55,9 @@ class GetStaticIp(StaticIp):
                 'description': 'description'
             }
         }
+
+
+class ActSchema(BaseModel):
+    id: UUID4 = Field()
+    customer: str = Field()
+    file: str = Field(alias='file_name')

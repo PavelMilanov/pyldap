@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Security, Response
+from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials
 from .auth import token_auth_scheme
 from .import ldap
+from typing import Dict, List
 from utils.utilits import generate_computer_list_from_unit_free
 
 
@@ -12,7 +13,7 @@ router = APIRouter(
 
 @router.get('/schema')
 async def get_organizations_schema():
-    """Получение схемы всех подраздений со всеми отрибутами.
+    """Возвращает схему всех подраздений со всеми отрибутами.
 
     Returns:
         _type_: _description_
@@ -21,17 +22,33 @@ async def get_organizations_schema():
     return resp
 
 @router.get('/tree')
-async def get_organizations_tree(response: Response, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+async def get_organizations_tree(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> Dict[str, List[str]]:
+    """Возвращает иерархию подраздений AD.
+
+    Args:
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+
+    Returns:
+        Dict[str, List[str]]: {
+            "unit": ["subunit1", "subunit2"],
+            "unit2: [subunit1"]
+            }
+    """    
     resp = await ldap.search_organizations_tree()
     return resp
 
 @router.get('/{unit}')
-def get_computers_for_unit(unit: str, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+def get_computers_for_unit(
+    unit: str,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> List[str]:
+    """Возвращает список пользователей для конткретного подразделения AD.
+
+    Args:
+        unit (str): Название подраздления.
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+
+    Returns:
+        List[str]: ["user1", "user2"]
+    """    
     return generate_computer_list_from_unit_free(unit.upper())
-
-
-
-# @router.get('/count')
-# async def get_count_organizations():
-#     resp = await ldap.get_count_organizations()
-#     return resp

@@ -31,7 +31,10 @@ async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token
         return []
 
 @router.post('/')
-async def set_static_ip(item: schema.StaticIp, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+async def set_static_ip(
+    item: schema.StaticIp,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ):
     """Добавляет запись в таблицу StaticIp.
 
     Args:
@@ -47,7 +50,10 @@ async def set_static_ip(item: schema.StaticIp, token: HTTPAuthorizationCredentia
         logger.exception(e)
         
 @router.get('/{id}')
-async def get_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> schema.GetStaticIp:
+async def get_static_ip(
+    id: int,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> schema.GetStaticIp:
     """Возвращает таблицу StaticIp в виде списка.
 
     Args:
@@ -67,7 +73,10 @@ async def get_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(
         logger.exception(e)
 
 @router.put('/{id}')
-async def change_static_ip(id: int, item: schema.StaticIp, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+async def change_static_ip(
+    id: int, item: schema.StaticIp,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ):
     """Обновлеяет запись из таблицы StaticIp по id.
 
     Args:
@@ -86,7 +95,10 @@ async def change_static_ip(id: int, item: schema.StaticIp, token: HTTPAuthorizat
         logger.exception(e)
 
 @router.delete('/{id}')
-async def delete_static_ip(id: int, token: HTTPAuthorizationCredentials = Security(token_auth_scheme)):
+async def delete_static_ip(
+    id: int,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ):
     """Удаляет запись из таблицы StaticIp по id.
 
     Args:

@@ -37,6 +37,7 @@ class StaticIp(Model):
 class Act(Model):
     id = fields.UUIDField(pk=True)
     customer = fields.CharField(max_length=13, unique=True)
+    file_name = fields.TextField()
     
     class Meta:
         table = 'acts'

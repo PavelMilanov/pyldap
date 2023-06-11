@@ -22,8 +22,8 @@ async def get_customers(token: HTTPAuthorizationCredentials = Security(token_aut
 
 @router.get('/{customer}')
 async def get_customer_info(
-        customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
-        token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> Dict | None:
     """Возвращает полную информацию о пользователе домена.
 
