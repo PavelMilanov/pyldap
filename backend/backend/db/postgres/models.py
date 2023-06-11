@@ -35,9 +35,8 @@ class StaticIp(Model):
 
 
 class Act(Model):
-    id = fields.IntField(pk=True)
+    id = fields.UUIDField(pk=True)
     customer = fields.CharField(max_length=13, unique=True)
-    unit = fields.CharField(max_length=100)
     
     class Meta:
         table = 'acts'

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import computers, organizations, users, auth, network
+from routers import computers, organizations, users, auth, network, files
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from db.redis import RedisConnector
 from environs import Env
@@ -35,6 +35,10 @@ tags_metadata = [
     {
         'name': 'Network',
         'description': 'работа с сетью.'
+    },
+    {
+        'name': 'Files',
+        'description': 'обслуживание статических файлов.'
     }
 ] 
 
@@ -59,6 +63,7 @@ app.include_router(computers.router)
 app.include_router(organizations.router)
 app.include_router(users.router)
 app.include_router(network.router)
+app.include_router(files.router)
 
 app.add_middleware(
     CORSMiddleware,
