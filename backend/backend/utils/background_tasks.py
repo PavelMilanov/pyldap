@@ -20,6 +20,7 @@ def scheduled_nslookup_for_customer():
 
 @background.scheduled_job('cron', hour=0)
 def scheduled_parse_computer_for_unit():
+    """Сопоставляет подразделение домена с пользователями."""    
     logger.info('run add computer for unit')
     data = ldap.get_computers()
     for item in data:

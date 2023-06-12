@@ -4,6 +4,7 @@ from typing import List, Dict
 from .auth import token_auth_scheme
 from .import ldap
 
+
 router = APIRouter(
     prefix='/api/v1/ldap3/users',
     tags=['Users']

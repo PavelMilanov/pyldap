@@ -5,11 +5,7 @@ from enum import Enum
 
 
 class CustomerLdap(BaseModel):
-    """Модель пользователя домена.
-
-    Args:
-        BaseModel (_type_): pydantic model.
-    """    
+    """Модель пользователя домена."""    
     name: str
     description: str
     last_logon: Union[str, None]
@@ -31,6 +27,7 @@ class CustomerLdap(BaseModel):
 
 
 class OrganizationLdap(BaseModel):
+    """Модель подразделения домена."""    
     name: str
     created_at: Union[str, None] # "2017-01-27 13:26:52+00:00"
     changed_at: str
@@ -43,11 +40,7 @@ class OrganizationLdap(BaseModel):
 
 
 class ComputerLdap(BaseModel):
-    """Модель компьютера домена.
-
-    Args:
-        BaseModel (_type_): pydantic model.
-    """    
+    """Модель компьютера домена."""    
     os: str
     version_os: str
     unit: Union[str, None]

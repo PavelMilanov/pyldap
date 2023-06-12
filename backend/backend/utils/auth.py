@@ -13,7 +13,7 @@ class Authentification(HTTPBearer):
     """Основной класс для реализации авторизации/аутентификации.
 
     Args:
-        HTTPBearer (_type_): FastApi класc.
+        HTTPBearer (class): FastApi.
     """    
     
     pwd_schema = CryptContext(schemes=["bcrypt"], deprecated="auto")
