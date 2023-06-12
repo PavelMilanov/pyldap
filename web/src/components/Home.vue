@@ -21,12 +21,15 @@ export default {
     },
     data() {
         return {
-            component: 0,
+            page: localStorage.page,
         }
     },
     methods: {
-    
-    },
+      goPage(number) {
+        localStorage.page = number
+        this.page = number
+      }
+  }
 }
 </script>
 
@@ -34,31 +37,31 @@ export default {
     <div>
         <nav class="navbar navbar-expand-lg bg-light">
       <div class="container-fluid">
-        <a @click="this.component = 0" class="navbar-brand">
+        <a @click="goPage(0)" class="navbar-brand">
             <img src="../assets/bootstrap.svg" alt="Bootstrap" width="40" height="30">
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-            <li @click="this.component = 1" class="nav-item">
+            <li @click="goPage(1)" class="nav-item">
               <a class="nav-link" aria-current="page">Статические адреса</a>
             </li>
-            <li @click="this.component = 2" class="nav-item">
+            <li @click="goPage(2)" class="nav-item">
               <a class="nav-link">Пользователи</a>
             </li>
-            <li @click="this.component = 3" class="nav-item">
+            <li @click="goPage(3)" class="nav-item">
               <a class="nav-link">Подразделения</a>
             </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link">Disabled</a>
-            </li> -->
+            <li @click="goPage(4)" class="nav-item disabled">
+              <a class="nav-link">Акты</a>
+            </li>
           </ul>
         </div>
       </div>
     </nav>
-        <Network v-if="this.component === 1"/>
-        <Customers v-else-if="this.component === 2"/>
+        <Network v-if="this.page === 1"/>
+        <Customers v-else-if="this.page === 2"/>
         <!-- <Computers v-else-if="this.component === 3"/> -->
-        <Units v-else-if="this.component === 3"/>
+        <Units v-else-if="this.page === 3"/>
     </div>
 </template>
 
