@@ -51,9 +51,9 @@ export default {
             <li @click="goPage(3)" class="nav-item">
               <a class="nav-link">Подразделения</a>
             </li>
-            <li @click="goPage(4)" class="nav-item disabled">
+            <!-- <li @click="goPage(4)" class="nav-item disabled">
               <a class="nav-link">Акты</a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>

@@ -51,7 +51,7 @@ async def download_act(
     """    
     resp = await Act.get(customer=customer).values()
     file = ActSchema(**resp)
-    return FileResponse(path=file.file, filename=f'{customer}.pdf', media_type='multipart/form-data')
+    return FileResponse(path=file.file, filename=f'{customer}', media_type='multipart/form-data')
 
 @router.put('/act/{customer}/change')
 async def change_act(
@@ -73,11 +73,11 @@ async def change_act(
     async with aiofiles.open(f'{ACT_DIR}/{file.filename}', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
-    resp = await Act.filter(customer=customer).update(f'{ACT_DIR}/{file.filename}')
+    resp = await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{file.filename}')
     await aiofiles.os.remove(old_file)
     return 'ok'
 
-@router.delete('/act/{customer}`/delete')
+@router.delete('/act/{customer}/delete')
 async def delete_act(
     customer: str,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)

@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import download from 'downloadjs'
 
 
 export const defaultStore = defineStore('default', {
@@ -35,6 +36,7 @@ export const defaultStore = defineStore('default', {
     getCustomersTable: (state) => state.customers,
     getCustomerInfo: (state) => state.customer,
     getUnits: (state) => state.units.tree,
+    backendUrl: (state) => state.BACKEND
   },
   actions: {
     async login(login, password) {
@@ -162,7 +164,7 @@ export const defaultStore = defineStore('default', {
     },
     async GetUnitComputersList(unit) {
       let responseData
-      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      const headers = { 'Authorization': `Bearer ${this.user.token}`}
       await axios.get(`http://${this.BACKEND}/api/v1/ldap3/organizations/${unit}`, { headers }).then(
         function (response) {
           responseData = response.data
@@ -173,6 +175,19 @@ export const defaultStore = defineStore('default', {
         localStorage.removeItem("token")
       })
       return responseData
+    },
+    async GetAct(customer) {
+      const headers = { 'Authorization': `Bearer ${this.user.token}`, 'Content-Type': 'multipart/form-data' }
+      await axios.get(`http://${this.BACKEND}/api/v1/files/act/${customer}/download`, { headers, responseType: 'blob' }).then(
+        function (response) {
+          const content = response.headers['content-type']
+          download(response.data, customer, content)
+        }
+      ).catch(function (error) {
+        console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
+      })
     }
   },
 })
