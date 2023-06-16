@@ -23,8 +23,9 @@ export default {
 
 <template>
     <div>
-        <p>This is Computers page</p>
+        <p>This is Acts page</p>
     </div>
 </template>
 
-<style lang="less"></style>
+<style lang="less">
+</style>

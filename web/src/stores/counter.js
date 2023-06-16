@@ -50,6 +50,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
       if (responseData != null) {
         localStorage.token = responseData
@@ -75,6 +76,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
       this.network.tableFull = cache
       this.network.tableRender = []
@@ -94,6 +96,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
     },
     async editNetworkRow(params) {
@@ -106,6 +109,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
     },
     async removeNetworkRow(id) {
@@ -115,6 +119,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
     },
     setPaginationPage(page) {
@@ -131,6 +136,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
       this.customers.tableFull = cache
     },
@@ -145,6 +151,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
       this.customer = responseData
     },
@@ -159,6 +166,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
       this.units.tree = responseData
     },
@@ -173,6 +181,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
       return responseData
     },
@@ -187,6 +196,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
+        this.$forceUpdate()
       })
     }
   },

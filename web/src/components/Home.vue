@@ -2,7 +2,7 @@
 import { defaultStore } from '../stores/counter'
 import Auth from './Auth.vue'
 import Customers from './Customers.vue'
-import Computers from './Computers.vue'
+import Acts from './Acts.vue'
 import Units from './Units.vue'
 import Network from './Network.vue'
 
@@ -11,7 +11,7 @@ export default {
     components: {
         Auth,
         Customers,
-        Computers,
+        Acts,
         Units,
         Network
     },
@@ -51,17 +51,17 @@ export default {
             <li @click="goPage(3)" class="nav-item">
               <a class="nav-link">Подразделения</a>
             </li>
-            <!-- <li @click="goPage(4)" class="nav-item disabled">
+            <li @click="goPage(4)" class="nav-item disabled">
               <a class="nav-link">Акты</a>
-            </li> -->
+            </li>
           </ul>
         </div>
       </div>
     </nav>
         <Network v-if="this.page === 1"/>
         <Customers v-else-if="this.page === 2"/>
-        <!-- <Computers v-else-if="this.component === 3"/> -->
         <Units v-else-if="this.page === 3"/>
+        <Acts v-else-if="this.page === 4"/>
     </div>
 </template>
 

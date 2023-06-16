@@ -30,8 +30,8 @@ async def upload_act(
     Returns:
         str: статус.
     """
-    await Act.create(customer=customer, file_name=f'{ACT_DIR}/{file.filename}')
-    async with aiofiles.open(f'{ACT_DIR}/{file.filename}', 'wb') as resp_file:
+    await Act.create(customer=customer, file_name=f'{ACT_DIR}/{customer}')
+    async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
     return 'ok'
@@ -68,13 +68,13 @@ async def change_act(
     Returns:
         str: статус.
     """    
-    resp = await Act.get(customer=customer).values()
-    old_file = resp['file_name']
-    async with aiofiles.open(f'{ACT_DIR}/{file.filename}', 'wb') as resp_file:
+    # resp = await Act.get(customer=customer).values()
+    # old_file = resp['file_name']
+    await aiofiles.os.remove(f'{ACT_DIR}/{customer}')
+    async with aiofiles.open(f'{ACT_DIR}/{customer}', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
-    resp = await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{file.filename}')
-    await aiofiles.os.remove(old_file)
+    resp = await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{customer}')
     return 'ok'
 
 @router.delete('/act/{customer}/delete')
@@ -90,8 +90,8 @@ async def delete_act(
     Returns:
         str: статус.
     """    
-    resp = await Act.get(customer=customer).values()
-    old_file = resp['file_name']
+    # resp = await Act.get(customer=customer).values()
+    # old_file = resp['file_name']
     await Act.get(customer=customer).delete()
-    await aiofiles.os.remove(old_file)
+    await aiofiles.os.remove(f'{ACT_DIR}/{customer}')
     return 'ok'

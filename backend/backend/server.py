@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from routers import computers, organizations, users, auth, network, files
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
@@ -57,6 +58,8 @@ app = FastAPI(
         'email': 'pawel.milanov@yandex.ru'
     }
 )
+
+app.mount("/files", StaticFiles(directory="files"), name="files")
 
 app.include_router(auth.router)
 app.include_router(computers.router)

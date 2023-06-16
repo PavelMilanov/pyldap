@@ -105,7 +105,7 @@ export default {
                         <a class="btn btn-primary align-center" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>
                     <div v-else class="card-footer text-center">
-                        <a class="btn btn-primary align-center" data-bs-toggle="modal" data-bs-target="#CustomerDescribe">Посмотреть</a>
+                        <a class="btn btn-primary align-center" :href="`http://${this.store.backendUrl}/files/acts/${item.name}.pdf`" target="_blank">Посмотреть</a>
                     </div>
                 </div>
             </div>
@@ -135,7 +135,7 @@ export default {
                         <a class="btn btn-primary align-center" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>
                     <div v-else class="card-footer text-center">
-                        <a class="btn btn-primary align-center" data-bs-toggle="modal" data-bs-target="#CustomerDescribe">Посмотреть</a>
+                        <a class="btn btn-primary align-center" :href="`http://${this.store.backendUrl}/files/acts/${item.name}.pdf`" target="_blank">Посмотреть</a>
                     </div>
                 </div>
             </div>
