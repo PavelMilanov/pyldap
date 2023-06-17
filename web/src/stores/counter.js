@@ -36,7 +36,7 @@ export const defaultStore = defineStore('default', {
     getCustomersTable: (state) => state.customers,
     getCustomerInfo: (state) => state.customer,
     getUnits: (state) => state.units.tree,
-    backendUrl: (state) => state.BACKEND
+    backendUrl: (state) => state.BACKEND,
   },
   actions: {
     async login(login, password) {

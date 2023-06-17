@@ -33,7 +33,7 @@ export default {
 
 <template>
     <div class="row">
-      <div class="col-2">
+      <div class="col-2 p-4">
         <nav id="navbar-unit" class="h-100 flex-column align-items-stretch pe-4 border-end">
           <nav class="nav nav-pills flex-column" v-for="(subtree, tree) in this.store.getUnits" :key="tree">
             <a class="nav-link" :href="`#${tree}`" @click="getComputers(tree)">{{ tree }}</a>

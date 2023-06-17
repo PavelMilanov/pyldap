@@ -21,29 +21,28 @@ export default {
     },
     data() {
         return {
-            page: localStorage.page,
+            page: 0
         }
     },
     methods: {
       goPage(number) {
-        localStorage.page = number
         this.page = number
-      }
-  }
+      },
+  },
 }
 </script>
 
 <template>
     <div>
-        <nav class="navbar navbar-expand-lg bg-light">
-      <div class="container-fluid">
-        <a @click="goPage(0)" class="navbar-brand">
+      <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+          <a @click="goPage(0)" class="navbar-brand">
             <img src="../assets/bootstrap.svg" alt="Bootstrap" width="40" height="30">
-        </a>
+          </a>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li @click="goPage(1)" class="nav-item">
-              <a class="nav-link" aria-current="page">Статические адреса</a>
+              <a class="nav-link">Статические адреса</a>
             </li>
             <li @click="goPage(2)" class="nav-item">
               <a class="nav-link">Пользователи</a>
@@ -51,14 +50,30 @@ export default {
             <li @click="goPage(3)" class="nav-item">
               <a class="nav-link">Подразделения</a>
             </li>
-            <li @click="goPage(4)" class="nav-item disabled">
+            <li @click="goPage(4)" class="nav-item">
               <a class="nav-link">Акты</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-        <Network v-if="this.page === 1"/>
+    <div v-if="this.page === 0" class="mx-auto">
+      <div class="row">
+        <div class="col-3 p-4">
+          p1
+        </div>
+        <div class="col-3 p-4">
+          p2
+        </div>
+        <div class="col-3 p-4">
+          p3
+        </div>
+        <div class="col-3 p-4">
+          p4
+        </div>
+      </div>
+    </div>
+        <Network v-else-if="this.page === 1"/>
         <Customers v-else-if="this.page === 2"/>
         <Units v-else-if="this.page === 3"/>
         <Acts v-else-if="this.page === 4"/>
