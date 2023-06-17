@@ -38,7 +38,7 @@ export default {
 
 <template>
     <div class="acts mx-auto">
-        <div class="p-3 mx-auto" style="width: 70rem;">
+        <div class="p-4 mx-auto" style="width: 70rem;">
             <div class="d-flex justify-content-center" role="search">
                 <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addRow">Добавить</button>
                 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#removeRow">Удалить</button>
@@ -48,11 +48,12 @@ export default {
                 <button v-if="searchMode" class="btn btn-outline-secondary" @click="searchModeOff()">Назад</button>
             </div>
         </div>
-        <div class="mx-auto">
-            <vue-pdf-embed v-if="searchMode" :source="`http://${this.store.backendUrl}/files/acts/${this.act.link}`" />
+        <div class="mx-auto d-flex justify-content-center">
+            <vue-pdf-embed v-if="searchMode" :width=1280 :source="`http://${this.store.backendUrl}/files/acts/${this.act.link}`" />
         </div>
     </div>
 </template>
 
 <style lang="less">
+
 </style>

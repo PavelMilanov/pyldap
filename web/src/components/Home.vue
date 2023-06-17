@@ -57,21 +57,47 @@ export default {
         </div>
       </div>
     </nav>
-    <div v-if="this.page === 0" class="mx-auto">
-      <div class="row">
-        <div class="col-3 p-4">
-          p1
+    <div v-if="this.page === 0" class="mb-3 mx-auto">
+      <div class="home container-fluid text-center">
+        <div class="p-3 row">
+          <div class="col-6">
+            <div class="card">
+              <div class="card-header">
+                <p class="card-title">Навигация</p>
+              </div>
+              <div class="card-body">
+                <ol class="list-group list-group-numbered">
+                  <li class="list-group-item">Статические адреса</li>
+                  <li class="list-group-item">Пользователи</li>
+                  <li class="list-group-item">Подразделения</li>
+                  <li class="list-group-item">Акты</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card">
+              <div class="card-header">
+                <p class="card-title">Инфо</p>
+              </div>
+              <div class="body">
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-4">
+            <div class="card">
+              <p class="card-title"></p>
+            </div>
+          </div> -->
         </div>
-        <div class="col-3 p-4">
-          p2
-        </div>
-        <div class="col-3 p-4">
-          p3
-        </div>
-        <div class="col-3 p-4">
-          p4
-        </div>
-      </div>
+        <!-- <div class="p-3 row">
+          <div class="col-4">
+            <div class="card">
+              <p class="card-title"></p>
+            </div>
+          </div>
+        </div> -->
+    </div>
     </div>
         <Network v-else-if="this.page === 1"/>
         <Customers v-else-if="this.page === 2"/>
