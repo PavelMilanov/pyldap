@@ -13,6 +13,7 @@ services:
       - redis
     volumes:
       - server_logs:/server/logs
+      - acts:/server/files/acts
     networks:
       - application
 
@@ -27,6 +28,8 @@ services:
       - ./.config.env
     depends_on:
       - backend
+    volumes:
+      - acts:/files
     networks:
       - application
     ports:
@@ -69,3 +72,4 @@ volumes:
   cache:
   db:
   server_logs:
+  acts:
