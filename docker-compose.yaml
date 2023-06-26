@@ -22,6 +22,7 @@ services:
       context: ./web
       args:
         - listen_ip=
+        - version=${VERSION}
     container_name: frontend
     restart: always
     env_file:
