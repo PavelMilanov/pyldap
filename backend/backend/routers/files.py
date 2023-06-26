@@ -90,8 +90,6 @@ async def delete_act(
     Returns:
         str: статус.
     """    
-    # resp = await Act.get(customer=customer).values()
-    # old_file = resp['file_name']
     await Act.get(customer=customer).delete()
-    await aiofiles.os.remove(f'{ACT_DIR}/{customer}')
+    await aiofiles.os.remove(f'{ACT_DIR}/{customer}.pdf')
     return 'ok'

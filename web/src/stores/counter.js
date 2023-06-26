@@ -198,6 +198,39 @@ export const defaultStore = defineStore('default', {
         localStorage.removeItem("token")
         this.$forceUpdate()
       })
-    }
+    },
+    async UploadAct(data, customer) {
+      const headers = { 'Authorization': `Bearer ${this.user.token}`, 'Content-Type': 'multipart/form-data' }
+      let formData = new FormData()
+      formData.append('file', data)
+      await axios.post(`http://${this.BACKEND}/api/v1/files/act/${customer}/upload`, formData, { headers }).then(
+        function (response) {
+          console.log(response)
+        }
+      ).catch(function (error) {
+        console.log(error)
+      })
+    },
+    async ChangeAct(data, customer) {
+      const headers = { 'Authorization': `Bearer ${this.user.token}`, 'Content-Type': 'multipart/form-data' }
+      let formData = new FormData()
+      formData.append('file', data)
+      await axios.put(`http://${this.BACKEND}/api/v1/files/act/${customer}/change`, formData, { headers }).then(
+        function (response) {
+          console.log(response)
+        }
+      ).catch(function (error) {
+        console.log(error)
+      })
+    },
+    async removeAct(customer) {
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.delete(`http://${this.BACKEND}/api/v1/files/act/${customer}/delete`, { headers }).then(
+        function (response) {
+          console.log(response)
+        }).catch(function (error) {
+        console.log(error)
+      })
+    },
   },
 })
