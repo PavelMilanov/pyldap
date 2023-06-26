@@ -33,12 +33,12 @@ export default {
 </script>
 
 <template>
-    <div>
-      <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-          <a @click="goPage(0)" class="navbar-brand">
-            <img src="../assets/bootstrap.svg" alt="Bootstrap" width="40" height="30">
-          </a>
+  <div>
+    <nav class="navbar navbar-expand-lg bg-light">
+      <div class="container-fluid">
+        <a @click="goPage(0)" class="navbar-brand">
+          <img src="../assets/bootstrap.svg" alt="Bootstrap" width="40" height="30">
+        </a>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li @click="goPage(1)" class="nav-item">
@@ -97,13 +97,13 @@ export default {
             </div>
           </div>
         </div> -->
+      </div>
     </div>
-    </div>
-        <Network v-else-if="this.page === 1"/>
-        <Customers v-else-if="this.page === 2"/>
-        <Units v-else-if="this.page === 3"/>
-        <Acts v-else-if="this.page === 4"/>
-    </div>
+    <Network v-else-if="this.page === 1"/>
+    <Customers v-else-if="this.page === 2"/>
+    <Units v-else-if="this.page === 3"/>
+    <Acts v-else-if="this.page === 4"/>
+  </div>
 </template>
 
 <style lang="less">
