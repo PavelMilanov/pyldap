@@ -33,7 +33,6 @@ class Authentification(HTTPBearer):
             HTTPException: Ошибка авторизации.
         """        
         token = await super().__call__(request)
-        logger.info(token)
         if token.scheme.lower() != 'bearer':
             if self.auto_error:
                 raise HTTPException(
@@ -56,7 +55,6 @@ class Authentification(HTTPBearer):
         expired_date = await self.__expired_date()
         token = jwt.encode({'expired_date': str(expired_date)}, self.SECRET, algorithm=self.ALGORITHM)
         cache.set_value('token', token)
-        logger.success('Successfully login with token')
         return token
 
     async def __check_token(self, token: str) -> None:

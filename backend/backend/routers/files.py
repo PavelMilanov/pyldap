@@ -6,6 +6,7 @@ import aiofiles, aiofiles.os
 from .auth import token_auth_scheme
 from db.postgres.models import Act
 from models.schema import ActSchema
+from loguru import logger
 
 
 router = APIRouter(
@@ -34,6 +35,7 @@ async def upload_act(
     async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
+        logger.info(f'Загружен акт {file.filename} для {customer}')
     return 'ok'
 
 @router.get('/act/{customer}/download')
@@ -75,6 +77,7 @@ async def change_act(
         content = await file.read()
         await resp_file.write(content)
     resp = await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{customer}')
+    logger.info(f'Загружен новый акт {file.filename} для {customer}')
     return 'ok'
 
 @router.delete('/act/{customer}/delete')
@@ -92,4 +95,5 @@ async def delete_act(
     """    
     await Act.get(customer=customer).delete()
     await aiofiles.os.remove(f'{ACT_DIR}/{customer}.pdf')
+    logger.info(f'Удален акт для {customer}')
     return 'ok'
