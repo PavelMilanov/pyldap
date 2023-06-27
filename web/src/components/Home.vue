@@ -22,7 +22,6 @@ export default {
     data() {
         return {
           page: 0,
-          APP_VERSION: import.meta.env.VITE_APP_VERSION,
         }
     },
     methods: {
@@ -82,7 +81,7 @@ export default {
                 <p class="card-title">Инфо</p>
               </div>
               <div class="body">
-                Версия: {{ this.APP_VERSION }}
+
               </div>
             </div>
           </div>

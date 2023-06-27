@@ -11,6 +11,7 @@ export default {
             login: '',
             password: '',
             status: '',
+            APP_VERSION: import.meta.env.VITE_APP_VERSION,
         }
     },
     methods: {
@@ -32,7 +33,7 @@ export default {
         <div class="form-floating">
             <input type="text" class="form-control" :class="{'is-invalid': status == 'failure' }" id="floatingInput" placeholder="Login" v-model="this.login">
             <label for="floatingInput">Логин</label>
-            <div id="help" class="form-text">Вход разрешен администратору домена</div>
+            <div id="help" class="form-text text-center">Вход разрешен администратору домена</div>
         </div>
         <div class="form-floating">
             <input type="password" class="form-control" id="floatingPassword" :class="{'is-invalid': status == 'failure' }" placeholder="Password" @keyup.enter="authentification(this.login, this.password)" v-model="this.password">
@@ -43,6 +44,9 @@ export default {
         </div>
         <div class="d-flex justify-content-center form-floating">
             <button @click="authentification(this.login, this.password)" class="form-login btn btn-primary">Вход</button>
+        </div>
+        <div class="d-flex mb-1 justify-content-center">
+            <p class="form-text text-center">Версия: {{ this.APP_VERSION }}</p>
         </div>
     </div>
 </template>
