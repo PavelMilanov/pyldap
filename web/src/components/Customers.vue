@@ -74,14 +74,10 @@ export default {
         <div class="mx-auto">
             <div v-if="!searchMode" class="row row-cols-auto justify-content-center">
                 <div class="card shadow p-3 mb-3 bg-body-tertiary rounded" v-for="(item, index) in this.store.getCustomersTable.tableFull" :key="index" style="width: 18rem; margin: 0.5em;">
-
                     <div class="card-body">
                         <h5 class="card-title text-center">{{ item.name }}</h5>
+                        <p class="card-card-subtitle text-center text-body-secondary">{{ item.description }}</p>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">{{ item.member_of.join(', ') }}</li>
-                        <li class="list-group-item">{{ item.description }}</li>
-                    </ul>
                     <div class="card-footer text-center">
                         <a class="btn btn-primary align-center" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>
@@ -89,13 +85,11 @@ export default {
             </div>
             <div v-else class="row row-cols-auto justify-content-center">
                 <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" v-for="(item, index) in searchForm" :key="index" style="width: 18rem; margin: 0.5em;">
+
                     <div class="card-body">
-                        <h5 class="card-text text-center">{{ item.name }}</h5>
+                        <h5 class="card-title text-center">{{ item.name }}</h5>
+                        <p class="card-card-subtitle text-center text-body-secondary">{{ item.description }}</p>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">{{ item.member_of.join(', ') }}</li>
-                        <li class="list-group-item">{{ item.description }}</li>
-                    </ul>
                     <div class="card-footer text-center">
                         <a class="btn btn-primary align-center" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
                     </div>

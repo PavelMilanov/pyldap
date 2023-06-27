@@ -18,6 +18,9 @@ export default {
     methods: {
         getCustomerInfo(name) {
             this.store.getCustomerDescribeInfo(name)
+        },
+        async downloadCustomerAct() {
+            await this.store.DownloadAct(this.name)
         }
     },
     watch: {
@@ -52,6 +55,7 @@ export default {
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="downloadCustomerAct()">Скачать акт</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                 </div>
             </div>

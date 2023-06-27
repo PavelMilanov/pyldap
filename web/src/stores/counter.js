@@ -185,7 +185,7 @@ export const defaultStore = defineStore('default', {
       })
       return responseData
     },
-    async GetAct(customer) {
+    async DownloadAct(customer) {
       const headers = { 'Authorization': `Bearer ${this.user.token}`, 'Content-Type': 'multipart/form-data' }
       await axios.get(`http://${this.BACKEND}/api/v1/files/act/${customer}/download`, { headers, responseType: 'blob' }).then(
         function (response) {
