@@ -1,11 +1,10 @@
 FROM node:16.20 as build
 
 ARG listen_ip
-ARG version
 
 COPY . /.
 RUN npm install
-RUN echo "VITE_APP_BACKEND=${listen_ip}" > .env && echo "VITE_APP_VERSION=${version}" >> .env
+RUN echo "VITE_APP_BACKEND=${listen_ip}" > .env
 RUN npm run build
 
 
