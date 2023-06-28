@@ -5,7 +5,7 @@ ARG version
 
 COPY . /.
 RUN npm install
-RUN echo "VITE_APP_BACKEND=${listen_ip}" > .env && echo "VITE_APP_VERSION=${version}"
+RUN echo "VITE_APP_BACKEND=${listen_ip}" > .env && echo "VITE_APP_VERSION=${version}" >> .env
 RUN npm run build
 
 FROM nginx:stable
