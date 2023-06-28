@@ -57,7 +57,7 @@ export default {
         },
     },
     created() {
-        this.store.getCustomersList()
+        // this.store.getCustomersList() // отрисовка списка при логе в приложении 1 раз
     }
 }
 </script>

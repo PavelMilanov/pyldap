@@ -28,6 +28,11 @@ export default {
       goPage(number) {
         this.page = number
       },
+      logout() {
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
+        location.reload()
+      }
   },
   created() {
     this.store.getCustomersList()
@@ -58,6 +63,11 @@ export default {
             </li>
           </ul>
         </div>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+              <a @click="logout()" class="nav-link mx-4">Выход</a>
+          </li>
+        </ul>
       </div>
     </nav>
     <div v-if="this.page === 0" class="mb-3 mx-auto">
