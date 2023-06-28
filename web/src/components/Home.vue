@@ -44,7 +44,7 @@ export default {
   <div>
     <nav class="navbar navbar-expand-lg bg-light">
       <div class="container-fluid">
-        <a @click="goPage(0)" class="navbar-brand">
+        <a @click="goPage(0)" :href="``" class="navbar-brand">
           <img src="../assets/bootstrap.svg" alt="Bootstrap" width="40" height="30">
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
