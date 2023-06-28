@@ -29,6 +29,9 @@ export default {
         this.page = number
       },
   },
+  created() {
+    this.store.getCustomersList()
+  }
 }
 </script>
 
@@ -81,7 +84,7 @@ export default {
                 <p class="card-title">Инфо</p>
               </div>
               <div class="body">
-
+                <p class="card-text m-2">Всего пользователей: {{ this.store.getCustomersCount }}</p>
               </div>
             </div>
           </div>

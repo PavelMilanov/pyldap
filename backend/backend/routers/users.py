@@ -36,8 +36,3 @@ async def get_customer_info(
     """    
     resp = await ldap.get_customer_desctibe(customer)
     return resp
-
-@router.get('/count')
-async def get_users_count() -> int:
-    resp = await ldap.get_count_users()  # вывод количества всех пользователей
-    return resp

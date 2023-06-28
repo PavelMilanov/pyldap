@@ -110,15 +110,6 @@ class Ldap3Connector:
                 )
         except IndexError as e:  # пользователь не найден
             logger.exception(e)
-            
-    async def get_count_users(self) -> int:
-        """Возвращает суммарное количество пользователей в контейнере AD.
-
-        Returns:
-            int: count.
-        """        
-        users = await self.get_domain_users()
-        return len(users)
     
     async def search_organizations_schema(self) -> Dict | None:
         """Возвращает все подразделения в контейнере домена.
