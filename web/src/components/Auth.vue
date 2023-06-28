@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-    <div class="auth mx-auto border border-secondary-subtle shadow-lg bg-body-tertiary rounded">
+    <div class="auth mx-auto border border-secondary-subtle shadow-lg bg-body-tertiary rounded-3">
         <div class="d-flex justify-content-center">
             <p>Авторизация</p>
         </div>

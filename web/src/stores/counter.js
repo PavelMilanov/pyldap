@@ -27,7 +27,7 @@ export const defaultStore = defineStore('default', {
     units: {
       tree: {},
     },
-    customersCount: 0,
+    customersCount: localStorage.customersCount,
     BACKEND: import.meta.env.VITE_APP_BACKEND
   }),
   getters: {
@@ -141,7 +141,7 @@ export const defaultStore = defineStore('default', {
         location.reload()
       })
       this.customers.tableFull = cache
-      this.customersCount = cache.length
+      localStorage.customersCount = cache.length
     },
     async getCustomerDescribeInfo(customer) {
       let responseData
