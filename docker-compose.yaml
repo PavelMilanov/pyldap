@@ -25,8 +25,6 @@ services:
         - version=
     container_name: frontend
     restart: always
-    # env_file:
-    #   - ./.config.env
     depends_on:
       - backend
     volumes:
