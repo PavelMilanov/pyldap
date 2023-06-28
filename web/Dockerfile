@@ -1,14 +1,15 @@
 FROM node:16.20 as build
 
 ARG listen_ip
+ARG version
 
 COPY . /.
 RUN npm install
-RUN echo "VITE_APP_BACKEND=${listen_ip}" > .env
+RUN echo "VITE_APP_BACKEND=${listen_ip}" > .env && echo "VITE_APP_VERSION=${version}"
 RUN npm run build
 
-
 FROM nginx:stable
+
 ARG listen_ip
 
 RUN rm /etc/nginx/conf.d/default.conf && mkdir /www
