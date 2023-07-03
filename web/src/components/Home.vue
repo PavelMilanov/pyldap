@@ -50,22 +50,22 @@ export default {
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li @click="goPage(1)" class="nav-item">
-              <a class="nav-link">Статические адреса</a>
+              <button class="btn btn-light nav-link">Статические адреса</button>
             </li>
             <li @click="goPage(2)" class="nav-item">
-              <a class="nav-link">Пользователи</a>
+              <button class="btn btn-light nav-link">Пользователи</button>
             </li>
             <li @click="goPage(3)" class="nav-item">
-              <a class="nav-link">Подразделения</a>
+              <button class="btn btn-light nav-link">Подразделения</button>
             </li>
             <li @click="goPage(4)" class="nav-item">
-              <a class="nav-link">Акты</a>
+              <button class="btn btn-light nav-link">Акты</button>
             </li>
           </ul>
         </div>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-              <a @click="logout()" class="nav-link mx-4">Выход</a>
+              <button @click="logout()" class="btn btn-light nav-link mx-4">Выход</button>
           </li>
         </ul>
       </div>
