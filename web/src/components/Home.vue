@@ -119,7 +119,7 @@ export default {
                     <div class="accordion-item">
                       <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
-                          Акты.
+                          Акты
                         </button>
                       </h2>
                       <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionNavigation">

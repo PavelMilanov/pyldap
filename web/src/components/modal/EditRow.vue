@@ -1,11 +1,13 @@
 <script>
 import { defaultStore } from '../../stores/counter'
+import { useNotification } from '@kyvg/vue3-notification'
 
 export default {
 
     setup() {
         const store = defaultStore()
-        return { store }
+        const notify = useNotification()
+        return { store, notify }
     },
     data() {
         return {
@@ -18,7 +20,7 @@ export default {
         }
     },
     watch: {
-        ip(newIp, oldIp) {
+        ip(newIp) {
             var re = /([0-9]{1,3}[\.]){3}[0-9]{1,3}/
             var ipAddress = re.exec(newIp)
             if (ipAddress != null) {
@@ -52,6 +54,10 @@ export default {
             this.form.ip = ''
             this.form.description = ''
             this.store.getNetworkList()
+            this.$notify({
+                type: 'success',
+                text: 'Запись изменена!',
+            })
         }
     }
 }

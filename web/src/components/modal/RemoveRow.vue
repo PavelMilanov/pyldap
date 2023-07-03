@@ -1,11 +1,13 @@
 <script>
 import { defaultStore } from '../../stores/counter'
+import { useNotification } from '@kyvg/vue3-notification'
 
 export default {
 
     setup() {
         const store = defaultStore()
-        return { store }
+        const notify = useNotification()
+        return { store, notify }
     },
     data() {
         return {
@@ -24,6 +26,10 @@ export default {
             await this.store.removeNetworkRow(param)
             this.ip = ''
             this.store.getNetworkList()
+            this.$notify({
+                type: 'success',
+                text: 'Запись удалена!',
+            })
         }
     }
 }

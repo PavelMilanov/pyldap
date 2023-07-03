@@ -73,7 +73,7 @@ export default {
         </div>
         <div class="mx-auto">
             <div v-if="!searchMode" class="row row-cols-auto justify-content-center">
-                <div class="card shadow p-3 mb-3 bg-body-tertiary rounded" v-for="(item, index) in this.store.getCustomersTable.tableFull" :key="index" style="width: 18rem; margin: 0.5em;">
+                <div class="card shadow p-3 mb-3 bg-body-tertiary rounded" v-for="(item, index) in this.store.getCustomersTable.tableFull" :key="index" style="width: 16rem; margin: 0.5em;">
                     <div class="card-body">
                         <h5 class="card-title text-center">{{ item.name }}</h5>
                         <p class="card-card-subtitle text-center text-body-secondary">{{ item.description }}</p>

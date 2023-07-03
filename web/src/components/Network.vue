@@ -1,5 +1,4 @@
 <script>
-import { registerRuntimeHelpers } from '@vue/compiler-core'
 import { defaultStore } from '../stores/counter'
 import AddRow from './modal/AddRow.vue'
 import EditRow from './modal/EditRow.vue'
@@ -21,7 +20,7 @@ export default {
             searchMode: false,
             search: '',
             searchForm: [],  // рендер при поиске
-            tableIndex: 1
+            tableIndex: 1,
         }
     },
     methods: {
@@ -48,7 +47,7 @@ export default {
         },
         changePage(index) {
             this.store.setPaginationPage(index)
-        }
+        },
     },
     created() {
         this.store.getNetworkList()
@@ -112,6 +111,7 @@ export default {
             <AddRow />
             <EditRow />
             <RemoveRow />
+            <notifications position="bottom right" width="300" class="my-notification" />
         </div>
     </div>
 </template>
@@ -153,5 +153,9 @@ th:nth-child(2) {
 
 th:last-child {
     width: 50vh;
+}
+
+.my-notification {
+    height: 100px;
 }
 </style>

@@ -1,4 +1,3 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import download from 'downloadjs'
@@ -78,7 +77,7 @@ export const defaultStore = defineStore('default', {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
-        location.reload()
+        // location.reload()
       })
       this.network.tableFull = cache
       this.network.tableRender = []
@@ -94,12 +93,15 @@ export const defaultStore = defineStore('default', {
       await axios.post(`http://${this.BACKEND}/api/v1/network/`, {
         'ip': ip,
         'description': description
-      }, { headers }).then().catch(function (error) {
-        console.log(error)
-        localStorage.removeItem("isActive")
-        localStorage.removeItem("token")
-        location.reload()
-      })
+      }, { headers }).then(
+        function (response) {
+          console.log(response)
+        }).catch(function (error) {
+          console.log(error)
+          localStorage.removeItem("isActive")
+          localStorage.removeItem("token")
+          location.reload()
+        })
     },
     async editNetworkRow(params) {
       let id = params.id

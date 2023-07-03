@@ -24,7 +24,7 @@ export default {
         }
     },
     watch: {
-        name(name, oldname) {
+        name(name) {
             this.getCustomerInfo(name)
         }
     },
