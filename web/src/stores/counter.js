@@ -100,7 +100,7 @@ export const defaultStore = defineStore('default', {
           console.log(error)
           localStorage.removeItem("isActive")
           localStorage.removeItem("token")
-          location.reload()
+          // location.reload()
         })
     },
     async editNetworkRow(params) {

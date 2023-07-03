@@ -4,7 +4,6 @@ import AddRow from './modal/AddRow.vue'
 import EditRow from './modal/EditRow.vue'
 import RemoveRow from './modal/RemoveRow.vue'
 
-
 export default {
     components: {
         AddRow,
@@ -111,7 +110,7 @@ export default {
             <AddRow />
             <EditRow />
             <RemoveRow />
-            <notifications position="bottom right" width="300" class="my-notification" />
+            <notifications position="bottom right" width="300" classes="my-notification" />
         </div>
     </div>
 </template>
@@ -157,5 +156,6 @@ th:last-child {
 
 .my-notification {
     height: 100px;
+    background-color: antiquewhite;
 }
 </style>
