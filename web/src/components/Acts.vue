@@ -28,7 +28,7 @@ export default {
     methods: {
         searchModeOn(link) {
             this.searchMode = true
-            this.act.link = link + '.pdf/'
+            this.act.link = link + '.pdf'
             this.act.name = ""
         },
         searchModeOff() {
