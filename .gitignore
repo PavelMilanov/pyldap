@@ -8,7 +8,7 @@ poetry.lock
 # Logs
 logs
 files/
-
+backend/Makefile
 node_modules
 .DS_Store
 dist

@@ -21,8 +21,8 @@ services:
     build:
       context: ./web
       args:
-        - listen_ip=
-        - version=
+        - listen_ip=0.0.0.0
+        - version=v0.0.0
     container_name: frontend
     restart: always
     depends_on:

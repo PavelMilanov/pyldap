@@ -38,7 +38,7 @@ export default {
           <nav class="nav nav-pills flex-column" v-for="(subtree, tree) in this.store.getUnits" :key="tree">
             <a class="nav-link" :href="`#${tree}`" @click="getComputers(tree)">{{ tree }}</a>
             <nav class="nav nav-pills flex-column" v-for="(item, index) in subtree" :key="index">
-              <a class="nav-link ms-3 my-1" :href="`#${tree}-${item}`" @click="getComputers(`${tree}-${item}`)">{{ item }}</a>
+              <a class="nav-link ms-3" :href="`#${tree}-${item}`" @click="getComputers(`${tree}-${item}`)">{{ item }}</a>
             </nav>
           </nav>
         </nav>
