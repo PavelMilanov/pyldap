@@ -28,7 +28,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - acts:/files
+      - acts:/files/acts
     healthcheck:
       test: curl --fail http://localhost || exit 1
       interval: 30s
