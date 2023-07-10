@@ -96,7 +96,8 @@ async def startup_event():
     )
 
     background.start()
+    background.print_jobs()
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    pass
+    background.shutdown()
