@@ -21,7 +21,7 @@ export default {
             searchMode: false,
             act: {
                 name: '',
-                link: ''
+                link: 'template.pdf'  // по-умолчанию грузится шаблон
             }
         }
     },
@@ -56,8 +56,15 @@ export default {
                 <button v-if="searchMode" class="btn btn-outline-secondary" @click="searchModeOff()">Назад</button>
             </div>
         </div>
-        <div class="mx-auto d-flex justify-content-center">
-            <vue-pdf-embed v-if="searchMode" :width=1280 :source="`http://${this.store.backendUrl}/files/acts/${this.act.link}`" />
+        <div class="row mx-auto">
+            <div class="col-4 p-4 d-flex justify-content-center" style="height: 5rem;">
+                <button type="button" class="btn btn-primary" v-if="searchMode">Подробнее</button>
+            </div>
+            <div class="col-8 p-4 act-area">
+                <div class="mx-auto d-flex justify-content-center">
+                    <vue-pdf-embed :width=960 :source="`http://${this.store.backendUrl}/files/acts/${this.act.link}`" />
+                </div>
+            </div>
         </div>
         <AddAct />
         <ChangeAct />
@@ -66,5 +73,13 @@ export default {
 </template>
 
 <style lang="less">
+canvas {
+    border: 1px solid rgba(34, 60, 80, 0.2);
+    box-shadow: 0px 5px 10px 5px rgba(34, 60, 80, 0.2);
+    border-radius: 5px;
+}
 
+.act-area {
+    height: 160rem;
+}
 </style>

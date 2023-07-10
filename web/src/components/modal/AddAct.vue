@@ -43,7 +43,7 @@ export default {
                     </div>
                     <div class="input-group">
                         <input type="file" class="form-control" ref="file" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" v-on:change="handleFileUpload()">
-                        <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04" @click="uploadFile()">Отправить</button>
+                        <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04" data-bs-dismiss="modal" @click="uploadFile()">Отправить</button>
                     </div>
                 </div>
                 <div class="modal-footer">

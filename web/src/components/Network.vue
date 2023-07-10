@@ -110,7 +110,7 @@ export default {
             <AddRow />
             <EditRow />
             <RemoveRow />
-            <notifications position="bottom right" width="300" classes="my-notification" />
+            <notifications position="bottom right" width="300" />
         </div>
     </div>
 </template>
@@ -154,8 +154,4 @@ th:last-child {
     width: 50vh;
 }
 
-.my-notification {
-    height: 100px;
-    background-color: antiquewhite;
-}
 </style>
