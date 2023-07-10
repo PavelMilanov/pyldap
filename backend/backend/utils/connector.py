@@ -278,5 +278,5 @@ class Ldap3Connector:
                 if user['attributes']['name'][0].lower() == name.lower():  # проверка на ввод данных администратора домена
                     return True
         except LDAPBindError as e:
-            logger.exception(e)
+            logger.error(e)
             return False

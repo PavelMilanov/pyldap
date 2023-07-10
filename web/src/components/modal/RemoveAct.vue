@@ -1,21 +1,28 @@
 <script>
 import { defaultStore } from '../../stores/counter'
+import { useNotification } from '@kyvg/vue3-notification'
 
 export default {
 
     setup() {
         const store = defaultStore()
-        return { store }
+        const notify = useNotification()
+        return { store, notify }
     },
     data() {
         return {
-            customer: ''
+            customer: 'customer'
         }
     },
     methods: {
         async remove() {
             await this.store.removeAct(this.customer)
             this.customer = ''
+            this.$notify({
+                type: 'success',
+                title: 'Уведомление',
+                text: 'Файл удален!',
+            })
         }
     },
 }
@@ -46,4 +53,5 @@ export default {
     </div>
 </template>
 
-<style lang="less"></style>
+<style lang="less">
+</style>

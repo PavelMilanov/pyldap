@@ -21,8 +21,9 @@ export default {
             searchMode: false,
             act: {
                 name: '',
-                link: 'template.pdf'  // по-умолчанию грузится шаблон
-            }
+                link: 'template.pdf',  // по-умолчанию грузится шаблон
+                displayName: 'Шаблон акта' 
+            },
         }
     },
     methods: {
@@ -30,9 +31,12 @@ export default {
             this.searchMode = true
             this.act.link = link + '.pdf'
             this.act.name = ""
+            this.act.displayName = link
         },
         searchModeOff() {
             this.searchMode = false
+            this.act.link = 'template.pdf'
+            this.act.displayName = 'Шаблон акта'
         },
         preinput() {
             this.act.name = "customer"  // добавляет текст при начале ввода поиска
@@ -57,8 +61,18 @@ export default {
             </div>
         </div>
         <div class="row mx-auto">
-            <div class="col-4 p-4 d-flex justify-content-center" style="height: 5rem;">
-                <button type="button" class="btn btn-primary" v-if="searchMode">Подробнее</button>
+            <div class="col-4 p-4 d-flex justify-content-center">
+                <div class="mx-auto">
+                    <div class="card shadow rounded" style="width: 30rem;">
+                        <div class="card-body">
+                            <h6 class="card-subtitle text-body-secondary d-flex justify-content-center">
+                                {{ act.displayName }}
+                            </h6>
+                            <p v-if="!searchMode" class="card-text">Для отображения нужного акта используй поиск. Если акт не отображается - значит его нет в базе данных.</p>
+                            <p v-else class="card-text">Посмотреть <a target="_blank" :href="`http://${this.store.backendUrl}/files/acts/${this.act.link}`">подробнее</a></p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-8 p-4 act-area">
                 <div class="mx-auto d-flex justify-content-center">
@@ -69,6 +83,7 @@ export default {
         <AddAct />
         <ChangeAct />
         <RemoveAct />
+        <notifications position="bottom left" width="300" />
     </div>
 </template>
 

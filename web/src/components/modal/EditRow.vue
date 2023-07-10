@@ -56,6 +56,7 @@ export default {
             this.store.getNetworkList()
             this.$notify({
                 type: 'success',
+                title: 'Уведомление',
                 text: 'Запись изменена!',
             })
         }

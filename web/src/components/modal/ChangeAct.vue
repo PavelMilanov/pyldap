@@ -1,16 +1,18 @@
 <script>
 import { defaultStore } from '../../stores/counter'
+import { useNotification } from '@kyvg/vue3-notification'
 
 export default {
 
     setup() {
         const store = defaultStore()
-        return { store }
+        const notify = useNotification()
+        return { store, notify }
     },
     data() {
         return {
             file: '',
-            customer: ''
+            customer: 'customer'
         }
     },
     methods: {
@@ -19,10 +21,16 @@ export default {
         },
         async uploadFile() {
             await this.store.ChangeAct(this.file, this.customer)
+            this.$notify({
+                type: 'success',
+                title: 'Уведомление',
+                text: 'Файл изменен!',
+            })
+            this.clearData()
         },
         clearData() {
             this.file = ''
-            this.customer = ''
+            this.customer = 'customer'
         }
     },
 }
@@ -45,7 +53,7 @@ export default {
                     <div class="input-group">
                         <input type="file" class="form-control" ref="file" id="inputGroupFile04"
                             aria-describedby="inputGroupFileAddon04" aria-label="Upload" v-on:change="handleFileUpload()">
-                        <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04"
+                        <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04" data-bs-dismiss="modal"
                             @click="uploadFile()">Отправить</button>
                     </div>
                 </div>

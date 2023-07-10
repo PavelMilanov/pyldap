@@ -1,16 +1,18 @@
 <script>
 import { defaultStore } from '../../stores/counter'
+import { useNotification } from '@kyvg/vue3-notification'
 
 export default {
 
     setup() {
         const store = defaultStore()
-        return { store }
+        const notify = useNotification()
+        return { store, notify }
     },
     data() {
         return {
             file: '',
-            customer: ''
+            customer: 'customer'
         }
     },
     methods: {
@@ -19,10 +21,16 @@ export default {
         },
         async uploadFile() {
             await this.store.UploadAct(this.file, this.customer)
+            this.$notify({
+                type: 'success',
+                title: 'Уведомление',
+                text: 'Файл добавлен!',
+            })
+            this.clearData()
         },
         clearData() {
             this.file = ''
-            this.customer = ''
+            this.customer = 'customer'
         }
     },
 }

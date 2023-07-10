@@ -73,8 +73,6 @@ class Authentification(HTTPBearer):
                     detail='Credentials not found',
                 )
                 cache.delete_value('token')
-            else:
-                logger.success('Token is valid')
         except jwt.JWTError as e:
             logger.exception(e)
             raise HTTPException(
