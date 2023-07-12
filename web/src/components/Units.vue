@@ -34,8 +34,6 @@ export default {
 <template>
     <div class="row">
       <div class="col-2 p-4">
-        <!-- <div class="d-flex" style="height: 200px;"> -->
-          <!-- </div> -->
           <ol>
             <li v-for="(subtree, tree) in this.store.getUnits" :key="tree">
               <a class="tree-link" :href="`#${tree}`" @click="getComputers(tree)">{{ tree }}</a>

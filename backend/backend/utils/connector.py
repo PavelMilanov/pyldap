@@ -194,8 +194,8 @@ class Ldap3Connector:
                     version_os=version,
                     unit=unit,
                 )
-        except IndexError as e:  # компьютер не найден
-            logger.exception(e)
+        except IndexError:  # компьютер не найден
+            logger.error(f'компьютер {name} не найден в лесу')
             return None
 
     def get_computers(self) -> List[str]: 

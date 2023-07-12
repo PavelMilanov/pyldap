@@ -22,7 +22,7 @@ export const defaultStore = defineStore('default', {
     customers: {
       tableFull: []
     },
-    customer: {},
+    // customer: {},
     units: {
       tree: {},
     },
@@ -34,7 +34,7 @@ export const defaultStore = defineStore('default', {
     getNetworkTable: (state) => state.network,
     getPaginationInfo: (state) => state.pagination,
     getCustomersTable: (state) => state.customers,
-    getCustomerInfo: (state) => state.customer,
+    // getCustomerInfo: (state) => state.customer,
     getUnits: (state) => state.units.tree,
     getCustomersCount: (state) => state.customersCount,
     backendUrl: (state) => state.BACKEND,
@@ -158,7 +158,8 @@ export const defaultStore = defineStore('default', {
         localStorage.removeItem("token")
         location.reload()
       })
-      this.customer = responseData
+      // this.customer = responseData
+      return responseData
     },
     async getUnitsTree() {
       let responseData
