@@ -31,7 +31,7 @@ async def upload_act(
     Returns:
         str: статус.
     """
-    await Act.create(customer=customer, file_name=f'{ACT_DIR}/{customer}')
+    await Act.create(customer=customer, file_name=f'{ACT_DIR}/{customer}.pdf')
     async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
@@ -72,8 +72,8 @@ async def change_act(
     """    
     # resp = await Act.get(customer=customer).values()
     # old_file = resp['file_name']
-    await aiofiles.os.remove(f'{ACT_DIR}/{customer}')
-    async with aiofiles.open(f'{ACT_DIR}/{customer}', 'wb') as resp_file:
+    await aiofiles.os.remove(f'{ACT_DIR}/{customer}.pdf')
+    async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
     resp = await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{customer}')

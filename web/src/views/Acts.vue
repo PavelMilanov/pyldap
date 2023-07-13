@@ -1,9 +1,9 @@
 <script>
 import { defaultStore } from '../stores/counter'
 import VuePdfEmbed from 'vue-pdf-embed'
-import AddAct from './modal/AddAct.vue'
-import ChangeAct from './modal/ChangeAct.vue'
-import RemoveAct from './modal/RemoveAct.vue'
+import AddAct from '../components/AddAct.vue'
+import ChangeAct from '../components/ChangeAct.vue'
+import RemoveAct from '../components/RemoveAct.vue'
 
 export default {
     components: {
@@ -44,6 +44,9 @@ export default {
         inputout() {
             this.search = ""
         },
+        async downloadAct(act) {
+            await this.store.DownloadAct(act)
+        },
     },
 }
 </script>
@@ -60,7 +63,7 @@ export default {
                 <button v-if="searchMode" class="btn btn-outline-secondary" @click="searchModeOff()">Назад</button>
             </div>
         </div>
-        <div class="row mx-auto">
+        <div class="row">
             <div class="col-4 p-4 d-flex justify-content-center">
                 <div class="mx-auto">
                     <div class="card shadow rounded" style="width: 30rem;">
@@ -69,7 +72,10 @@ export default {
                                 {{ act.displayName }}
                             </h6>
                             <p v-if="!searchMode" class="card-text">Для отображения нужного акта используй поиск. Если акт не отображается - значит его нет в базе данных.</p>
-                            <p v-else class="card-text">Посмотреть <a target="_blank" :href="`http://${this.store.backendUrl}/files/acts/${this.act.link}`">подробнее</a></p>
+                            <div v-else>
+                                <p class="card-text">Открыть в отдельном<a target="_blank" :href="`http://${this.store.backendUrl}/files/acts/${this.act.link}`">окне.</a></p>
+                                <a class="card-text" href="#" @click="downloadAct(act.displayName)">Скачать.</a>
+                            </div>
                         </div>
                     </div>
                 </div>

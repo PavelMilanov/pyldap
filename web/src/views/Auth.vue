@@ -19,6 +19,8 @@ export default {
             let status = await this.store.login(login, password)
             if (status == 'failure') {
                 this.status = status
+            } else {
+                this.$router.replace('/')
             }
         },
     }

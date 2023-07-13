@@ -1,5 +1,5 @@
 <script>
-import { defaultStore } from '../../stores/counter'
+import { defaultStore } from '../stores/counter'
 import { useNotification } from '@kyvg/vue3-notification'
 
 export default {

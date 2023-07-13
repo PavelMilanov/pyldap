@@ -51,10 +51,10 @@ export default {
             let data = await this.store.getCustomerDescribeInfo(CustomerName)
             this.customer = data  // записать новые  
         },
-        downloadAct(CustomerName) {
-            this.store.GetAct(CustomerName)
-        },
     },
+    created() {
+        this.store.getCustomersList()
+    }
 }
 </script>
 
@@ -68,8 +68,8 @@ export default {
             </div>
         </div>
         <div class="row">
-            <div class="col-2 border-top border-end">
-                <table class="table ">
+            <div class="col-3 border-top border-end shadow rounded">
+                <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">Атрибут</th>
@@ -98,10 +98,6 @@ export default {
                             <td>{{ this.customer.os }} {{ this.customer.version_os }}</td>
                         </tr>
                         <tr>
-                            <th>Виден в сети</th>
-                            <td>{{ this.customer.last_logon }}</td>
-                        </tr>
-                        <tr>
                             <th>Группы</th>
                             <td>{{ this.customer.member_of ? this.customer.member_of.join(', ') : '' }}</td>
                         </tr>
@@ -112,9 +108,9 @@ export default {
                     </tbody>
                 </table>
             </div>
-            <div class="col-10 customer-container">
-                <div v-if="!searchMode" class="row row-cols-auto justify-content-center">
-                    <div class="card shadow p-3 mb-3 bg-body-tertiary rounded" v-for="(item, index) in this.store.getCustomersTable.tableFull" :key="index" style="width: 16rem; margin: 0.5em;">
+            <div class="col-9 customer-container">
+                <div v-if="!searchMode" class="row row-cols-auto">
+                    <div class="card shadow bg-body-tertiary rounded" v-for="(item, index) in this.store.getCustomersTable.tableFull" :key="index" style="width: 16rem; margin: 0.5em;">
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ item.name }}</h5>
                             <p class="card-card-subtitle text-center text-body-secondary">{{ item.description }}</p>
@@ -125,13 +121,13 @@ export default {
                     </div>
                 </div>
                 <div v-else class="row row-cols-auto justify-content-center">
-                    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" v-for="(item, index) in searchForm" :key="index" style="width: 18rem; margin: 0.5em;">
+                    <div class="card shadow bg-body-tertiary rounded" v-for="(item, index) in searchForm" :key="index" style="width: 18rem; margin: 0.5em;">
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ item.name }}</h5>
                             <p class="card-card-subtitle text-center text-body-secondary">{{ item.description }}</p>
                         </div>
                         <div class="card-footer text-center">
-                            <a class="btn btn-primary align-center" data-bs-toggle="modal" data-bs-target="#CustomerDescribe" @click="getDescribe(item.name)">Подробнее</a>
+                            <a class="btn btn-primary align-center" @click="getDescribe(item.name)">Подробнее</a>
                         </div>
                     </div>
                 </div>

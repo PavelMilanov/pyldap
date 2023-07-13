@@ -1,8 +1,8 @@
 <script>
 import { defaultStore } from '../stores/counter'
-import AddRow from './modal/AddRow.vue'
-import EditRow from './modal/EditRow.vue'
-import RemoveRow from './modal/RemoveRow.vue'
+import AddRow from '../components/AddRow.vue'
+import EditRow from '../components/EditRow.vue'
+import RemoveRow from '../components/RemoveRow.vue'
 
 export default {
     components: {
