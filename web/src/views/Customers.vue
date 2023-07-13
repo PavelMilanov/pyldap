@@ -2,9 +2,7 @@
 import { defaultStore } from '../stores/counter'
 
 export default {
-    components: {
-       
-    },
+
     setup() {
         const store = defaultStore()
         return { store }

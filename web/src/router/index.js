@@ -6,7 +6,7 @@ import CustomersView from '../views/Customers.vue'
 import UnitsView from '../views/Units.vue'
 import ActsView from '../views/Acts.vue'
 import AuthView from '../views/Auth.vue'
-
+import ActRender from '../views/ActRender.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,7 +39,15 @@ const router = createRouter({
         {
             path: '/acts',
             name: 'acts',
-            component: ActsView
+            redirect: {path: '/acts/template'},
+            component: ActsView,
+            children: [
+                {
+                    path: '/acts/:id',
+                    name: 'act',
+                    component: ActRender,
+                },
+            ]
         },
     ]
 })
