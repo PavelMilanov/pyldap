@@ -5,8 +5,13 @@ from .import cache
 from loguru import logger
 
 
+job_defaults = {
+    'coalesce': False,
+    'max_instances': 1
+}
+
 ldap = Ldap3Connector()
-background = BackgroundScheduler()
+background = BackgroundScheduler(job_defaults=job_defaults)
 
 @background.scheduled_job('cron', hour=23)
 def scheduled_nslookup_for_customer():
