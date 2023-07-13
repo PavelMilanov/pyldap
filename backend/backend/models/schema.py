@@ -46,6 +46,7 @@ class GetStaticIp(StaticIp):
 
 
 class ActSchema(BaseModel):
+    """Модель загружаемого файла(акта) пользователя."""    
     id: UUID4 = Field()
     customer: str = Field()
     file: str = Field(alias='file_name')
