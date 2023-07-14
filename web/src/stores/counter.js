@@ -139,16 +139,19 @@ export const defaultStore = defineStore('default', {
     },
     async getCustomerDescribeInfo(customer) {
       let responseData
+      let responseHeader
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
       await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/${customer}`, { headers }).then(
         function (response) {
           responseData = response.data
+          responseHeader = response.headers['x-customer-act']
         }
       ).catch(function (error) {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
       })
+      responseData['act'] = responseHeader
       return responseData
     },
     async getUnitsTree() {

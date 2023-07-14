@@ -16,22 +16,20 @@ export default {
     },
     data() {
         return {
-            id : 'acts/template.pdf',  // по-умолчанию грузится шаблон
+            id: 'acts/template.pdf',  // по-умолчанию грузится шаблон
         }
     },
     watch: {
         $route(to, from) {
-            console.log(to, from)
-            this.render(to.path)
-        }
+            this.render(to)
+        },
     },
     methods: {
         async downloadAct(act) {
             await this.store.DownloadAct(act)
         },
-        render(id) {
-            console.log(id)
-            this.id = id + '.pdf'
+        render(data) {
+            this.id = data.path + '.pdf'
         }
     },
 }
@@ -56,9 +54,12 @@ export default {
             </div>
         </div>
         <div class="col-8 p-4 act-area">
-            <div class="mx-auto d-flex justify-content-center">
+            <div v-if="this.route.query.act == 'true'" class="mx-auto d-flex justify-content-center">
                 <vue-pdf-embed :width=960 :source="`http://${this.store.backendUrl}/files/${this.id}`" />
             </div>
+            <p v-else class="card-text">
+                Акт не загружен
+            </p>
         </div>
     </div>
 </template>

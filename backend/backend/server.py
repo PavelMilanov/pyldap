@@ -71,9 +71,10 @@ app.include_router(files.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[env('ALLOW_ORIGINS')],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=['GET', 'POST', 'DELETE', 'PUT'],
     allow_headers=['*'],
+    expose_headers=['X-Customer-Act']
 )
 
 logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} |{file}:{module}:{function}:{line} | {level} | {message}',

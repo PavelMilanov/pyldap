@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Path, Security
+from fastapi import APIRouter, Path, Security, Response
 from fastapi.security import HTTPAuthorizationCredentials
 from typing import List, Dict
+from db.postgres.models import Act
+from models.schema import ActSchema
 from .auth import token_auth_scheme
 from .import ldap
-
+from tortoise.exceptions import DoesNotExist
 
 router = APIRouter(
     prefix='/api/v1/ldap3/users',
@@ -23,6 +25,7 @@ async def get_customers(token: HTTPAuthorizationCredentials = Security(token_aut
 
 @router.get('/{customer}')
 async def get_customer_info(
+    response: Response,
     customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> Dict | None:
@@ -33,6 +36,11 @@ async def get_customer_info(
 
     Returns:
         Dict | None: модель CustomerLdapDescribe.
-    """    
+    """
+    try:
+        await Act.get(customer=customer).values()
+        response.headers['X-Customer-Act'] = 'true'
+    except DoesNotExist:
+        response.headers['X-Customer-Act'] = 'false'
     resp = await ldap.get_customer_desctibe(customer)
     return resp

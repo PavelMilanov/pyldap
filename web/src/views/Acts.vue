@@ -28,8 +28,12 @@ export default {
         }
     },
     methods: {
-        search(link) {
-            this.router.push(`/acts/${link}`)
+        async search(link) {
+            let customer = await this.getCustomerInfo(link)
+            this.router.push({
+                path: `/acts/${link}`,
+                query:  {act: customer['act']},
+            })
         },
         back() {
             this.router.push('/acts')
@@ -40,6 +44,10 @@ export default {
         },
         inputout() {
             this.search = ""
+        },
+        async getCustomerInfo(CustomerName) {
+            let data = await this.store.getCustomerDescribeInfo(CustomerName)
+            return data
         },
     },
 }

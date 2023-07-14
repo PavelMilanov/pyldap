@@ -36,22 +36,11 @@ class StaticIp(Model):
 
 class Act(Model):
     id = fields.UUIDField(pk=True)
+    customer = fields.TextField()
     file_name = fields.TextField()
-    customer: fields.ReverseRelation['Customer']
     
     class Meta:
         table = 'acts'
     
     def __str__(self):
         return self.file_name
-
-
-class Customer(Model):
-    name = fields.CharField(max_length=15, pk=True)
-    act = fields.ForeignKeyField('models.Act', related_name='customer', null=True)
-    
-    class Meta:
-        table = 'customers'
-        
-    def __str__(self):
-        return self.name

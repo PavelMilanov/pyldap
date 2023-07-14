@@ -39,13 +39,14 @@ const router = createRouter({
         {
             path: '/acts',
             name: 'acts',
-            redirect: {path: '/acts/template'},
+            redirect: {path: '/acts/template', query: {act: 'true'}},
             component: ActsView,
             children: [
                 {
                     path: '/acts/:id',
                     name: 'act',
                     component: ActRender,
+                    props: true,
                 },
             ]
         },
