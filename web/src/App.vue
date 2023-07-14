@@ -1,11 +1,6 @@
 <script setup>
-import Home from './views/Home.vue'
-import Auth from './views/Auth.vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-
-// const store = defaultStore()
-// var user = store.user
 
 function logout() {
   localStorage.removeItem("isActive")
@@ -58,7 +53,4 @@ function logout() {
       <RouterView />
     </section>
   </section>
-  <!-- <AuthView v-else/> -->
-  <!-- <Home v-if="user.isActive" />
-  <Auth v-else /> -->
 </template>
