@@ -81,6 +81,11 @@ logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} |{file}:{module}:{func
         level='INFO', rotation='5 MB',
         compression='tar', backtrace=True, diagnose=True)
 
+
+@app.get('/check')
+async def check():
+    return 1
+
 @app.on_event("startup")
 async def startup_event():
     USER = env('POSTGRES_USER')
