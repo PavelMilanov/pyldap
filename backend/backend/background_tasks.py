@@ -36,7 +36,6 @@ def scheduled_parse_computer_for_unit():
             format_unit += item[3:] + '-'  # subunit-unit
             cache.add_set_item(format_unit[:-1], customer)
 
-
 @dramatiq.actor
 def generate_customers_cache():
     data = ldap.get_domain_users()
