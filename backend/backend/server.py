@@ -6,7 +6,8 @@ from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from db.redis import RedisConnector
 from environs import Env
 from loguru import logger
-from utils.background_tasks import background
+from background_tasks import generate_customers_cache
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 env = Env()
@@ -42,6 +43,7 @@ tags_metadata = [
         'description': 'обслуживание статических файлов.'
     }
 ] 
+background = BackgroundScheduler()
 
 app = FastAPI(
     title='Python LDAP-connector',
@@ -100,6 +102,10 @@ async def startup_event():
         add_exception_handlers=True,
     )
 
+    background.add_job(
+        generate_customers_cache.send,
+        'interval', minutes=10 
+    )
     background.start()
     background.print_jobs()
 

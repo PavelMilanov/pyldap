@@ -33,14 +33,7 @@ class Ldap3Connector:
     _DC1: Final = env.list("DN")[1]
     _DC2: Final = env.list("DN")[2]
     
-    def __init__(self):
-        try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                logger.info(dc)
-        except Exception as e:
-            logger.exception(e)
-
-    async def get_domain_users(self) -> List[CustomerLdap]:
+    def get_domain_users(self) -> List[CustomerLdap]:
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
 
         Returns:

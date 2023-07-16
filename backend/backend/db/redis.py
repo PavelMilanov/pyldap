@@ -4,9 +4,9 @@ from typing import Set
 
 
 class RedisConnector:
-    
-    def __init__(self, ip: str = 'redis', port: int = 6379, decode_responses=True):
-        self.connect = redis.Redis(host=ip, port=port)
+
+    def __init__(self, ip: str = 'localhost', port: int = 6379):
+        self.connect = redis.Redis(host=ip, port=port, decode_responses=True)
 
     def set_value(self, key: str, value: str) -> None:
         """Redis SET command.
@@ -14,7 +14,7 @@ class RedisConnector:
         Args:
             key (str): key.
             value (str): value.
-        """        
+        """     
         self.connect.set(key, value)
     
     def get_value(self, key: str) -> str:
@@ -41,7 +41,7 @@ class RedisConnector:
         Args:
             set_name (str): key.
             set_value (str): value.
-        """        
+        """  
         self.connect.sadd(set_name, set_value)
     
     def get_set_items(self, set_name: str) -> Set[str]:
@@ -52,7 +52,7 @@ class RedisConnector:
 
         Returns:
             _Set[str]: unit's set.
-        """        
+        """
         return self.connect.sinter(set_name)
 
     def delete_set_items(self, set_name: str, set_value: str) -> None:

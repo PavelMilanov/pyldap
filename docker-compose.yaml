@@ -5,6 +5,7 @@ services:
     build:
       context: ./backend/backend
     container_name: backend
+    command: supervisord -c supervisord.conf
     restart: always
     env_file:
       - ./.config.env
