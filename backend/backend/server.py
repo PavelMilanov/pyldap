@@ -73,7 +73,7 @@ app.include_router(files.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[env('ALLOW_ORIGINS')],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=['GET', 'POST', 'DELETE', 'PUT'],
     allow_headers=['*'],
     expose_headers=['X-Customer-Act']
@@ -102,10 +102,10 @@ async def startup_event():
         add_exception_handlers=True,
     )
 
-    background.add_job(
-        generate_customers_cache.send,
-        'interval', minutes=10 
-    )
+    # background.add_job(
+    #     generate_customers_cache.send,
+    #     'interval', minutes=10 
+    # )
     background.start()
     background.print_jobs()
 

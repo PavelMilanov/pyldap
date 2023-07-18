@@ -1,4 +1,6 @@
 import dramatiq
+from dramatiq.brokers.redis import RedisBroker
+from environs import Env
 # from .connector import Ldap3Connector
 # from .utilits import get_ip_address
 # from .import cache
@@ -7,6 +9,12 @@ from utils.connector import Ldap3Connector
 from db.redis import RedisConnector
 from db.mongo import MongoConnector
 
+
+env = Env()
+env.read_env()
+
+broker = RedisBroker(url=f"redis://{env('REDIS_HOST')}:6379/{env('REDIS_BROKER_DB')}")
+dramatiq.set_broker(broker)
 
 ldap = Ldap3Connector()
 cache = RedisConnector()
@@ -40,5 +48,9 @@ def scheduled_parse_computer_for_unit():
 def generate_customers_cache():
     data = ldap.get_domain_users()
     data = [item.dict() for item in data]
-    store.insert_items(data)
+    result = store.insert_items(data)
+    print(result)
     logger.info('generated customers cache')
+
+def test():
+    store.create_customer_index()

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import download from 'downloadjs'
+import qs from 'qs'
 
 
 export const defaultStore = defineStore('default', {
@@ -122,10 +123,24 @@ export const defaultStore = defineStore('default', {
     setPaginationPage(page) {
       this.pagination.currentPage = page
     },
-    async getCustomersList() {
+    async getCustomer(customer) {
+      let responseData
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/${customer}`, { headers }).then(
+        function (response) {
+          responseData = response.data
+        }
+      ).catch(function (error) {
+        console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
+      })
+      return responseData
+    },
+    async getCustomersList(skip, limit) {
       let cache = []
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/`, { headers }).then(
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/all`, { headers, params: { skip: skip, limit: limit } }).then(
         function (response) {
           cache = response.data
         }
@@ -136,12 +151,13 @@ export const defaultStore = defineStore('default', {
       })
       this.customers.tableFull = cache
       localStorage.customersCount = cache.length
+      return cache
     },
     async getCustomerDescribeInfo(customer) {
       let responseData
       let responseHeader
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/${customer}`, { headers }).then(
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/${customer}/info`, { headers }).then(
         function (response) {
           responseData = response.data
           responseHeader = response.headers['x-customer-act']

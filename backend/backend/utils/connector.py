@@ -33,9 +33,13 @@ class Ldap3Connector:
     _DC1: Final = env.list("DN")[1]
     _DC2: Final = env.list("DN")[2]
     
-    def get_domain_users(self) -> List[CustomerLdap]:
+    async def get_domain_users(self, skip: int = 0, limit: int = 20) -> List[CustomerLdap]:       
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
-
+        
+        Args:
+            skip (int, optional): Начальный индекс списка пользователей. Defaults to 0.
+            limit (int, optional): Конечный индекс списка пользователей. Defaults to 20.
+            
         Returns:
             List[CustomerLdap] | None: {
                 name=str,
@@ -49,7 +53,7 @@ class Ldap3Connector:
             data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
             sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
             users = []
-            for user in sorted_data:
+            for user in sorted_data[skip:limit]:
                 name=str(user['attributes']['name'][0])
                 description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
@@ -85,7 +89,6 @@ class Ldap3Connector:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
                 dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter=f'(&(objectClass=person)(cn={name}))', attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
                 user = json.loads(dc.entries[0].entry_to_json())
-                # print(user)
                 name=str(user['attributes']['name'][0])
                 description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
@@ -102,7 +105,7 @@ class Ldap3Connector:
                     member_of=member_of,
                 )
         except IndexError as e:  # пользователь не найден
-            logger.exception(e)
+            logger.error(e)
     
     async def search_organizations_schema(self) -> Dict | None:
         """Возвращает все подразделения в контейнере домена.
@@ -207,11 +210,11 @@ class Ldap3Connector:
         except Exception as e:
             logger.exception(e)
 
-    async def get_customer_desctibe(self, name) -> CustomerLdapDescribe:
+    async def get_customer_desctibe(self, name: str) -> CustomerLdapDescribe:
         """Возвращает общую модель CustomerLdap и ComputerLdap.
 
         Args:
-            name (_type_): имя customer.
+            name (str): имя customer.
 
         Returns:
             CustomerLdapDescribe: {
@@ -249,12 +252,12 @@ class Ldap3Connector:
             ip=ip
         )
     
-    async def ldap_authentificate(self, name, password) -> bool:
+    async def ldap_authentificate(self, name: str, password: str) -> bool:
         """Ldap-аутентификация администратора домена.
 
         Args:
-            name (_type_): логин.
-            password (_type_): пароль.
+            name (str): логин.
+            password (str): пароль.
 
         Raises:
             LDAPBindError: неверный пользователь.
