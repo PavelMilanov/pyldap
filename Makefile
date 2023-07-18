@@ -1,4 +1,4 @@
-
+# make release ip=192.168.1.1 v=1.2.3
 ip=
 v=
 
