@@ -4,7 +4,7 @@ from typing import List, Dict
 from db.postgres.models import Act
 from models.schema import ActSchema
 from .auth import token_auth_scheme
-from .import ldap
+from .import ldap, cache
 from tortoise.exceptions import DoesNotExist
 
 router = APIRouter(
@@ -15,6 +15,7 @@ router = APIRouter(
 
 @router.get('/all')
 async def get_customers(
+    response: Response,
     skip: int = 0,
     limit: int = 20,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
@@ -23,9 +24,11 @@ async def get_customers(
 
     Returns:
         List: Список CustomerLdap сущностей.
-    """    
-    resp = await ldap.get_domain_users(skip, limit)
-    return [customer for customer in resp]
+    """
+    header = cache.get_value('customers_count')
+    response.headers['X-Customers-Count'] = str(header)
+    resp = cache.get_json_set('customers', skip=skip, limit=limit)
+    return resp
 
 
 @router.get('/{customer}/info')

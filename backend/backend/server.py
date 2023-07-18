@@ -1,13 +1,16 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from routers import computers, organizations, users, auth, network, files
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
-from db.redis import RedisConnector
+from apscheduler.schedulers.background import BackgroundScheduler
 from environs import Env
 from loguru import logger
-from background_tasks import generate_customers_cache
-from apscheduler.schedulers.background import BackgroundScheduler
+
+from routers import computers, organizations, users, auth, network, files
+from background_tasks import (
+    scheduled_generate_customers_cache,
+    scheduled_parse_computer_for_unit,
+    )
 
 
 env = Env()
@@ -76,7 +79,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=['GET', 'POST', 'DELETE', 'PUT'],
     allow_headers=['*'],
-    expose_headers=['X-Customer-Act']
+    expose_headers=['X-Customer-Act', 'X-Customers-Count']
 )
 
 logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} |{file}:{module}:{function}:{line} | {level} | {message}',
@@ -87,7 +90,7 @@ logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} |{file}:{module}:{func
 async def check():
     return 1
 
-@app.on_event("startup")
+@app.on_event('startup')
 async def startup_event():
     USER = env('POSTGRES_USER')
     PASSWORD = env('POSTGRES_PASSWORD')
@@ -102,13 +105,17 @@ async def startup_event():
         add_exception_handlers=True,
     )
 
-    # background.add_job(
-    #     generate_customers_cache.send,
-    #     'interval', minutes=10 
-    # )
+    background.add_job(
+        scheduled_generate_customers_cache.send,
+        'cron', day_of_week='0-4', hour='9-17/2' 
+    )
+    background.add_job(
+        scheduled_parse_computer_for_unit.send,
+        'cron', day_of_week='0-4', hour='9-18/3'         
+    )
     background.start()
     background.print_jobs()
 
-@app.on_event("shutdown")
+@app.on_event('shutdown')
 async def shutdown_event():
     background.shutdown()

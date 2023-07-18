@@ -16,7 +16,6 @@ FROM python:3.11-alpine
 WORKDIR /server
 
 COPY --from=builder /app/wheels /wheels
-COPY --from=builder /app/requirements.txt .
 COPY . /.
 
 ENTRYPOINT ["sh", "init.sh"]

@@ -1,13 +1,10 @@
 import dramatiq
 from dramatiq.brokers.redis import RedisBroker
 from environs import Env
-# from .connector import Ldap3Connector
-# from .utilits import get_ip_address
-# from .import cache
+from utils.utilits import get_ip_address
 from loguru import logger
 from utils.connector import Ldap3Connector
 from db.redis import RedisConnector
-from db.mongo import MongoConnector
 
 
 env = Env()
@@ -18,7 +15,6 @@ dramatiq.set_broker(broker)
 
 ldap = Ldap3Connector()
 cache = RedisConnector()
-store = MongoConnector(user='local', password='local')
 
 
 #@background.scheduled_job('cron', hour=23)
@@ -31,10 +27,14 @@ def scheduled_nslookup_for_customer():
         customer, ip = get_ip_address(computer) 
         cache.set_value(customer, ip)
 
-#@background.scheduled_job('cron', hour=0)
+@dramatiq.actor
 def scheduled_parse_computer_for_unit():
-    """Сопоставляет подразделение домена с пользователями."""    
-    logger.info('run add computer for unit')
+    """Фоновая задача.
+    
+    Периодически подключается к AD и делает список пользователей по подразделениям.
+    
+    Задача выполняется в будние дни с 9 до 18 каждые 3 часа.
+    """    
     data = ldap.get_computers()
     for item in data:
         customer = item.split(',')[0][3:].lower()
@@ -43,14 +43,28 @@ def scheduled_parse_computer_for_unit():
         for item in unit:
             format_unit += item[3:] + '-'  # subunit-unit
             cache.add_set_item(format_unit[:-1], customer)
+    logger.info('set computer for unit')
 
 @dramatiq.actor
-def generate_customers_cache():
-    data = ldap.get_domain_users()
-    data = [item.dict() for item in data]
-    result = store.insert_items(data)
-    print(result)
-    logger.info('generated customers cache')
+def scheduled_generate_customers_cache():
+    """Фоновая задача.
+    
+    Периодически подключается к AD и генерирует сортированный список всех пользователей и заносит в кеш.
+    
+    Счетчик количеста пользователей заносится в кеш.
 
-def test():
-    store.create_customer_index()
+    Задача выполняется в будние дни с 9 до 17 каждые 2 часа.
+    """    
+    del_cache = cache.del_json_set('customers')  # очишаем список
+    if del_cache == 1:
+        logger.info('flush customers cache')
+    else:
+        logger.warning('failed to flush customers cache')
+    data = ldap.get_domain_users()
+    cache.set_value('customers_count', len(data))  # счетчик всех пользователей
+    data = [item.dict() for item in data]
+    set_cache = cache.set_json_set('customers', data)  # пишем заново
+    if set_cache == 1:
+        logger.info('set customers cache')
+    else:
+        logger.warning('failed to set customer cache')

@@ -1,6 +1,6 @@
 import redis
 from .import env
-from typing import Set
+from typing import Set, List
 
 
 class RedisConnector:
@@ -63,3 +63,39 @@ class RedisConnector:
             set_value (str): value.
         """        
         self.connect.srem(set_name, set_value)
+
+    def set_json_set(self, set_name: str, value: List[dict]) -> int:
+        """Redis JSON.SET command.
+
+        Args:
+            set_name (str): key.
+            value (List[dict]): values.
+
+        Returns:
+            int: status.
+        """        
+        return self.connect.json().set(set_name, '$', value)
+    
+    def get_json_set(self, set_name: str, skip: int, limit: int) -> List[dict]:
+        """Redis JSON.GET command.
+
+        Args:
+            set_name (str): key.
+            skip (int): first index. 
+            limit (int): last index.
+
+        Returns:
+            List[dict]: values.
+        """        
+        return self.connect.json().get(set_name, f'$[{skip}:{limit}]')
+    
+    def del_json_set(self, set_name: str) -> int:
+        """Redis JSON.DEL command.
+
+        Args:
+            set_name (str): key.
+
+        Returns:
+            int: status.
+        """        
+        return self.connect.json().delete(set_name)

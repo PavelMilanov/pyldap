@@ -33,7 +33,7 @@ class Ldap3Connector:
     _DC1: Final = env.list("DN")[1]
     _DC2: Final = env.list("DN")[2]
     
-    async def get_domain_users(self, skip: int = 0, limit: int = 20) -> List[CustomerLdap]:       
+    def get_domain_users(self) -> List[CustomerLdap]:       
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
         
         Args:
@@ -53,7 +53,7 @@ class Ldap3Connector:
             data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
             sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
             users = []
-            for user in sorted_data[skip:limit]:
+            for user in sorted_data:
                 name=str(user['attributes']['name'][0])
                 description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
@@ -263,7 +263,7 @@ class Ldap3Connector:
             LDAPBindError: неверный пользователь.
 
         Returns:
-            bool: успешная аутентификация.
+            bool: статус.
         """        
         search_tree = f'cn=Users,dc={self._DC1},dc={self._DC2}'
         search_filter = f'(&(objectClass=person)(cn={name}))'
