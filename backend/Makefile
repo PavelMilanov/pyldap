@@ -1,3 +1,4 @@
+# this make only for development
 redis:
 	@docker run --rm --name test-redis -p 6379:6379 -d redis/redis-stack:latest
 
