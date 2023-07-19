@@ -4,7 +4,7 @@ from typing import List, Dict
 from db.postgres.models import Act
 from models.schema import ActSchema
 from .auth import token_auth_scheme
-from .import ldap
+from .import ldap, cache
 from tortoise.exceptions import DoesNotExist
 
 router = APIRouter(
@@ -13,17 +13,25 @@ router = APIRouter(
 )
 
 
-@router.get('/')
-async def get_customers(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List | None:
+@router.get('/all')
+async def get_customers(
+    response: Response,
+    skip: int = 0,
+    limit: int = 20,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> List | None:
     """Вывод сортированный список всех пользователей AD с атрибутами CustomerLdap.
 
     Returns:
         List: Список CustomerLdap сущностей.
-    """    
-    resp = await ldap.get_domain_users()
-    return [customer for customer in resp]
+    """
+    header = cache.get_value('customers_count')
+    response.headers['X-Customers-Count'] = str(header)
+    resp = cache.get_json_set('customers', skip=skip, limit=limit)
+    return resp
 
-@router.get('/{customer}')
+
+@router.get('/{customer}/info')
 async def get_customer_info(
     response: Response,
     customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
@@ -43,4 +51,20 @@ async def get_customer_info(
     except DoesNotExist:
         response.headers['X-Customer-Act'] = 'false'
     resp = await ldap.get_customer_desctibe(customer)
+    return resp
+
+@router.get('/{customer}')
+async def get_customer(
+    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> Dict | None:
+    """Вывод информации о пользователе AD c атрибутами CustomerLdap.
+
+    Args:
+        customer (str): имя пользователя.
+
+    Returns:
+        Dict | None: Dict | None: модель CustomerLdap.
+    """    
+    resp = await ldap.get_domain_user(customer)
     return resp

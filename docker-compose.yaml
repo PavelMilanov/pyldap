@@ -21,6 +21,24 @@ services:
       retries: 5
     networks:
       - application
+    
+  dramatiq:
+    build:
+      context: ./backend/backend
+    container_name: dramatiq
+    restart: always
+    env_file:
+      - ./.config.env
+    # volumes:
+    #   - server_logs:/server/logs
+    #   - acts:/server/files/acts
+    # healthcheck:
+    #   test: curl --fail http://localhost:8000/check || exit 1
+    #   interval: 30s
+    #   timeout: 5s
+    #   retries: 5
+    networks:
+      - application
 
   frontend:
     build:
@@ -61,7 +79,7 @@ services:
       - application
 
   redis:
-    image: redis:7
+    image: redis/redis-stack:latest
     container_name: redis
     restart: always
     volumes:

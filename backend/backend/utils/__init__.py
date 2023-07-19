@@ -5,6 +5,7 @@ from db import RedisConnector
 
 env = Env()
 env.read_env()
+
 cache = RedisConnector(ip=env('REDIS_HOST'))
 
 #  внутренние пакеты

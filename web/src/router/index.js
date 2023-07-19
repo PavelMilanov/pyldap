@@ -6,7 +6,8 @@ import CustomersView from '../views/Customers.vue'
 import UnitsView from '../views/Units.vue'
 import ActsView from '../views/Acts.vue'
 import AuthView from '../views/Auth.vue'
-import ActRender from '../views/ActRender.vue'
+import ActRender from '../components/ActRender.vue'
+import CustomerRender from '../components/CustomerRender.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,7 +30,16 @@ const router = createRouter({
         {
             path: '/customers',
             name: 'customers',
+            redirect: { path: '/customers/all' },
             component: CustomersView,
+            children: [
+                {
+                    path: '/customers/:id',
+                    name: 'customer',
+                    component: CustomerRender,
+                    props: true,
+                }
+            ]
         },
         {
             path: '/units',
@@ -57,6 +67,15 @@ export default router
 
 router.beforeEach((to, from, next) => {
     const store = defaultStore()
-    if (to.name !== 'auth' && !store.getUser.isActive) next({ name: 'auth' })  // если пользователь не авторизован, будет редирект на страницу авторизации
-    else next()
+    if (to.name !== 'auth' && !store.getUser.isActive) {  // если пользователь не авторизован, будет редирект на страницу авторизации
+        next({ name: 'auth' }) 
+    }
+    else {
+        next()
+    }
+})
+
+router.afterEach((to, from) => {
+    const store = defaultStore()
+
 })
