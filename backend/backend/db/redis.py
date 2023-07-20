@@ -1,13 +1,16 @@
 import redis
-from typing import Set, List
+from typing import Set, List, Final
+from loguru import logger
 
 from .import env
 
 
 class RedisConnector:
-
-    def __init__(self, ip: str = env('REDIS_HOST'), port: int = 6379):
-        self.connect = redis.Redis(host=ip, port=port, decode_responses=True)
+    
+    _IP: Final = (env('REDIS_HOST'))
+    _PORT: Final = 6379
+    CONN = redis.Redis(host=_IP, port=_PORT, decode_responses=True)
+        
 
     def set_value(self, key: str, value: str) -> None:
         """Redis SET command.
@@ -15,8 +18,13 @@ class RedisConnector:
         Args:
             key (str): key.
             value (str): value.
-        """     
-        self.connect.set(key, value)
+        """
+        try:     
+            self.CONN.set(key, value)
+        except Exception as e:
+            logger.exception(e)
+        finally:
+            self.CONN.close()
     
     def get_value(self, key: str) -> str:
         """Redis GET command.
@@ -28,13 +36,25 @@ class RedisConnector:
             str: value.
         """        
         try:
-            data = self.connect.get(key)
+            data = self.CONN.get(key)
             return data.decode('utf-8')
         except AttributeError as e:
             return data
+        finally:
+            self.CONN.close()
 
     def delete_value(self, key: str) -> None:
-        self.connect.delete(key)
+        """Redis DEL command.
+
+        Args:
+            key (str): key.
+        """        
+        try:
+            self.CONN.delete(key)
+        except Exception as e:
+            logger.exception(e)
+        finally:
+            self.CONN.close()
     
     def add_set_item(self, set_name: str, set_value: str) -> None:
         """Redis SADD command.
