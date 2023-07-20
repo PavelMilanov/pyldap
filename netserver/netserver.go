@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net"
 )
@@ -33,6 +34,9 @@ func clientConnection(connection net.Conn) {
 		clientData, err := connection.Read(buffer)
 		if err != nil {
 			connection.Write(([]byte("0"))) // данные не приняты
+			if err == io.EOF {
+				return
+			}
 			panic(err)
 		}
 		connection.Write(([]byte("1"))) // данные приняты успешно

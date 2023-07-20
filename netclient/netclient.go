@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os"
 	"os/exec"
 	"regexp"
 )
@@ -18,7 +19,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	serverConnet(conn)
+	status := serverConnetion(conn)
+	if status == "1" {
+		os.Exit(0)
+	}
+	os.Exit(1)
 }
 
 func parseIpAddresses() string {
@@ -48,13 +53,13 @@ func parseHostName() string {
 	return string(out)
 }
 
-func parseCurrentUser() string { // только для windows
-	cmd := exec.Command("echo %UserName%")
-	out, _ := cmd.Output()
-	return string(out)
-}
+// func parseCurrentUser() string { // только для windows
+// 	cmd := exec.Command("echo %UserName%")
+// 	out, _ := cmd.Output()
+// 	return string(out)
+// }
 
-func serverConnet(connection net.Conn) {
+func serverConnetion(connection net.Conn) string {
 	defer connection.Close()
 
 	buffer := make([]byte, 400)
@@ -65,5 +70,5 @@ func serverConnet(connection net.Conn) {
 	if err != nil {
 		fmt.Println("Error reading:", err.Error())
 	}
-	fmt.Println(string(buffer[:serverData]))
+	return string(buffer[:serverData])
 }
