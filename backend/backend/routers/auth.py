@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body, Security
 from fastapi.security import HTTPAuthorizationCredentials
+
 from utils.auth import Authentification
 from models.schema import AuthSchema
 from .import ldap

@@ -45,7 +45,8 @@ tags_metadata = [
         'name': 'Files',
         'description': 'обслуживание статических файлов.'
     }
-] 
+]
+
 background = BackgroundScheduler()
 
 app = FastAPI(

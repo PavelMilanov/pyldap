@@ -6,7 +6,7 @@ from db import RedisConnector
 env = Env()
 env.read_env()
 
-cache = RedisConnector(ip=env('REDIS_HOST'))
+cache = RedisConnector()
 
 #  внутренние пакеты
 from .connector import Ldap3Connector

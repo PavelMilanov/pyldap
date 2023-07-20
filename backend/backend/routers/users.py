@@ -1,17 +1,18 @@
 from fastapi import APIRouter, Path, Security, Response
 from fastapi.security import HTTPAuthorizationCredentials
 from typing import List, Dict
+from tortoise.exceptions import DoesNotExist
+
 from db.postgres.models import Act
 from models.schema import ActSchema
 from .auth import token_auth_scheme
 from .import ldap, cache
-from tortoise.exceptions import DoesNotExist
+
 
 router = APIRouter(
     prefix='/api/v1/ldap3/users',
     tags=['Users']
 )
-
 
 @router.get('/all')
 async def get_customers(
@@ -28,8 +29,9 @@ async def get_customers(
     header = cache.get_value('customers_count')
     response.headers['X-Customers-Count'] = str(header)
     resp = cache.get_json_set('customers', skip=skip, limit=limit)
+    if resp is None:  # если в кеше не окажется данных, взять из AD.
+        return ldap.get_domain_users(skip, limit)
     return resp
-
 
 @router.get('/{customer}/info')
 async def get_customer_info(

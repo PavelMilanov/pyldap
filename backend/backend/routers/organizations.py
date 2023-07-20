@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials
+from typing import Dict, List
+
 from .auth import token_auth_scheme
 from .import ldap
-from typing import Dict, List
 from utils.utilits import generate_computer_list_from_unit_free
 
 

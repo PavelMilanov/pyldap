@@ -45,7 +45,7 @@ export default {
                             {{ this.route.params.id == 'template'? 'Шаблон акта': id.slice(6,-4) }}
                         </h6>
                         <p v-if="this.route.params.id == 'template'" class="card-text">Для отображения нужного акта используй поиск. Если акт не отображается - значит его нет в базе данных.</p>
-                        <div v-else>
+                        <div v-else-if="this.route.params.id != 'template' && this.route.query.act == 'true'">
                             <p class="card-text">Открыть в отдельном<a target="_blank" :href="`http://${this.store.backendUrl}/files/${this.id}`">окне.</a></p>
                             <a class="card-text" href="#" @click="downloadAct(id.slice(6, -4))">Скачать.</a>
                         </div>
@@ -57,7 +57,7 @@ export default {
             <div v-if="this.route.query.act == 'true'" class="mx-auto d-flex justify-content-center">
                 <vue-pdf-embed :width=960 :source="`http://${this.store.backendUrl}/files/${this.id}`" />
             </div>
-            <p v-else class="card-text">
+            <p v-else class="card-text text-center">
                 Акт не загружен
             </p>
         </div>

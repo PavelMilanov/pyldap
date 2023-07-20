@@ -1,8 +1,9 @@
 import dramatiq
 from dramatiq.brokers.redis import RedisBroker
 from environs import Env
-from utils.utilits import get_ip_address
 from loguru import logger
+
+from utils.utilits import get_ip_address
 from utils.connector import Ldap3Connector
 from db.redis import RedisConnector
 

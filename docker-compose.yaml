@@ -4,7 +4,8 @@ services:
   backend:
     build:
       context: ./backend/backend
-    container_name: backend
+    container_name: fastapi
+    command: ["server"]
     restart: always
     env_file:
       - ./.config.env
@@ -22,16 +23,18 @@ services:
     networks:
       - application
     
-  dramatiq:
+  background:
     build:
       context: ./backend/backend
     container_name: dramatiq
+    command: ["background"]
     restart: always
     env_file:
       - ./.config.env
+    depends_on:
+      - redis
     # volumes:
-    #   - server_logs:/server/logs
-    #   - acts:/server/files/acts
+    #   - background_logs:/server/logs
     # healthcheck:
     #   test: curl --fail http://localhost:8000/check || exit 1
     #   interval: 30s
@@ -46,7 +49,7 @@ services:
       args:
         - listen_ip=0.0.0.0
         - version=v0.0.0
-    container_name: frontend
+    container_name: nginx
     restart: always
     depends_on:
       - backend
@@ -99,4 +102,5 @@ volumes:
   cache:
   db:
   server_logs:
+  background_logs:
   acts:
