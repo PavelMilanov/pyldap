@@ -11,7 +11,7 @@ function logout() {
 
 <template>
   <section>
-    <nav class="navbar navbar-expand-lg bg-light">
+    <nav v-if="router.currentRoute.value.name != 'auth'" class="navbar navbar-expand-lg bg-light">
       <div class="container-fluid">
         <a :href="``" class="navbar-brand">
           <router-link to="/" class="router-link">

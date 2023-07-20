@@ -56,7 +56,7 @@ export default {
 <style leng="less">
 
 .auth {
-    margin-top: 10%;
+    margin-top: 15%;
     width: 40vh;
 }
 
