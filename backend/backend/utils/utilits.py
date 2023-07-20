@@ -1,7 +1,8 @@
 import subprocess
 import re
-from .import cache
 from typing import List
+
+from .import cache
 
 
 def get_ip_address(customer: str) -> str:

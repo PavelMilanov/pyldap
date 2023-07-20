@@ -1,6 +1,7 @@
 import redis
-from .import env
 from typing import Set, List
+
+from .import env
 
 
 class RedisConnector:

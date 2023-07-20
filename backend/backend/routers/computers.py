@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query, Security
 from fastapi.security import HTTPAuthorizationCredentials
 from typing import Dict
+
 from .auth import token_auth_scheme
 from .import ldap
 

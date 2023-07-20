@@ -3,10 +3,11 @@ from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse
 from typing import Final
 import aiofiles, aiofiles.os
+from loguru import logger
+
 from .auth import token_auth_scheme
 from db.postgres.models import Act
 from models.schema import ActSchema
-from loguru import logger
 
 
 router = APIRouter(

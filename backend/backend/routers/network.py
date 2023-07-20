@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials
-from db.postgres.models import StaticIp
-from models import schema
-from .auth import token_auth_scheme
 from tortoise.exceptions import DoesNotExist
 from typing import List
 from loguru import logger
+
+from models import schema
+from db.postgres.models import StaticIp
+from .auth import token_auth_scheme
 
 
 router = APIRouter(

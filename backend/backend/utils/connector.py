@@ -1,4 +1,8 @@
 import json
+from ldap3.core.exceptions import LDAPAttributeError, LDAPKeyError, LDAPBindError
+from loguru import logger
+from typing import List, Dict, Final
+from pydantic import ValidationError
 from ldap3 import (
     Server,
     Connection,
@@ -11,17 +15,14 @@ from ldap3 import (
     SUBTREE,
     MODIFY_REPLACE
     )
-from ldap3.core.exceptions import LDAPAttributeError, LDAPKeyError, LDAPBindError
+
 from .import env, cache
-from typing import List, Dict, Final
 from models.ldap import (
     OrganizationLdap,
     CustomerLdap,
     ComputerLdap,
     CustomerLdapDescribe
     )
-from pydantic import ValidationError
-from loguru import logger
 
 
 class Ldap3Connector:
