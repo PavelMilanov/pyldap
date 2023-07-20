@@ -5,6 +5,7 @@ services:
     build:
       context: ./backend/backend
     container_name: backend
+    command: ["server"]
     restart: always
     env_file:
       - ./.config.env
@@ -26,7 +27,7 @@ services:
     build:
       context: ./backend/backend
     container_name: dramatiq
-    entrypoint: ["dramatiq", "background_tasks"]
+    command: ["background"]
     restart: always
     env_file:
       - ./.config.env
