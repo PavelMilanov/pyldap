@@ -16,6 +16,7 @@ FROM python:3.11-alpine
 WORKDIR /server
 
 COPY --from=builder /app/wheels /wheels
-COPY . /.
+RUN pip install --no-cache /wheels/*
+COPY . /server
 
 ENTRYPOINT ["sh", "init.sh"]

@@ -22,16 +22,18 @@ services:
     networks:
       - application
     
-  dramatiq:
+  background:
     build:
       context: ./backend/backend
     container_name: dramatiq
+    entrypoint: ["dramatiq", "background_tasks"]
     restart: always
     env_file:
       - ./.config.env
-    # volumes:
-    #   - server_logs:/server/logs
-    #   - acts:/server/files/acts
+    depends_on:
+      - redis
+    volumes:
+      - background_logs:/server/logs
     # healthcheck:
     #   test: curl --fail http://localhost:8000/check || exit 1
     #   interval: 30s
@@ -99,4 +101,5 @@ volumes:
   cache:
   db:
   server_logs:
+  background_logs:
   acts:
