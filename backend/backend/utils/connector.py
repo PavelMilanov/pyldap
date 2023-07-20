@@ -33,17 +33,16 @@ class Ldap3Connector:
     _DC1: Final = env.list("DN")[1]
     _DC2: Final = env.list("DN")[2]
     
-    def get_domain_users(self) -> List[CustomerLdap]:       
+    def get_domain_users(self, skip: int = None, limit: int = None) -> List[CustomerLdap]:       
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
         
         Args:
-            skip (int, optional): Начальный индекс списка пользователей. Defaults to 0.
-            limit (int, optional): Конечный индекс списка пользователей. Defaults to 20.
+            skip (int, optional): Начальный индекс списка пользователей. Defaults to None.
+            limit (int, optional): Конечный индекс списка пользователей. Defaults to None.
             
         Returns:
             List[CustomerLdap] | None: {
                 name=str,
-                last_logon=datetime,
                 bad_password_time=datetime,
                 member_of=list(str),
             }
@@ -53,12 +52,11 @@ class Ldap3Connector:
             data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
             sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
             users = []
-            for user in sorted_data:
+            for user in sorted_data[skip:limit]:
                 name=str(user['attributes']['name'][0])
                 description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
                     description=str(user['attributes']['description'][0])
-                    last_logon=str(user['attributes']['lastLogon'][0])
                     member_of=list(user['attributes']['memberOf'])
                 except KeyError:  # пользователь состоит только в группе domain user
                     last_logon=None
@@ -66,7 +64,6 @@ class Ldap3Connector:
                 users.append(CustomerLdap(
                     name=name,
                     description=description,
-                    last_logon=last_logon,
                     member_of=member_of,
                 ))
             return users
@@ -81,7 +78,6 @@ class Ldap3Connector:
             Customer | None: {
                 name=str,
                 description=str,
-                last_logon=datetime,
                 member_of=list(str)
             }
         """        
@@ -93,15 +89,12 @@ class Ldap3Connector:
                 description = ''  # этого атрибута может не быть, по умолчанию задаем строку
                 try:
                     description=str(user['attributes']['description'][0])
-                    last_logon=str(user['attributes']['lastLogon'][0])
                     member_of=list(user['attributes']['memberOf'])
                 except KeyError:  # пользователь состоит только в группе domain user
-                    last_logon=None
                     member_of=None
                 return CustomerLdap(
                     name=name,
                     description=description,
-                    last_logon=last_logon,
                     member_of=member_of,
                 )
         except IndexError as e:  # пользователь не найден
@@ -220,7 +213,6 @@ class Ldap3Connector:
             CustomerLdapDescribe: {
                 name=str,
                 description=str,
-                last_logon=datetime,
                 member_of=list,
                 os=str,
                 version_os=str,
@@ -233,7 +225,6 @@ class Ldap3Connector:
             return CustomerLdapDescribe(
             name=user.name,
             description=user.description,
-            last_logon=user.last_logon,
             member_of=user.member_of,
             os='',
             version_os='',
@@ -244,7 +235,6 @@ class Ldap3Connector:
         return CustomerLdapDescribe(
             name=user.name,
             description=user.description,
-            last_logon=user.last_logon,
             member_of=user.member_of,
             os=computer.os,
             version_os=computer.version_os,

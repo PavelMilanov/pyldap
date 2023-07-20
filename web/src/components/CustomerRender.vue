@@ -72,10 +72,6 @@ export default {
                         <td>{{ this.customerInfo.ip }}</td>
                     </tr>
                     <tr>
-                        <th>Виден в сети</th>
-                        <td>{{ this.customerInfo.last_logon }}</td>
-                    </tr>
-                    <tr>
                         <th>ОС</th>
                         <td>{{ this.customerInfo.os }} {{ this.customerInfo.version_os }}</td>
                     </tr>
@@ -114,7 +110,7 @@ export default {
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-center" style="margin: 2rem;">
+            <div v-if="this.customerList" class="card-footer text-center" style="margin: 2rem;">
                 <a class="btn btn-primary align-center" @click="renderCustomers(0, this.customerCount)">Загрузить больше</a>
             </div>
         </div>

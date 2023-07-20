@@ -8,16 +8,8 @@ class CustomerLdap(BaseModel):
     """Модель пользователя домена."""    
     name: str
     description: str
-    last_logon: Union[str, None]
     member_of: Union[List[str], None]
     
-    @validator('last_logon')
-    def formated_datetime(cls, data):
-        if data is not None and data.find('1601') == -1:  # 1601-01-01 00:00:00+00:00 - хз откуда такая дата
-            return datetime.strptime(data.split('.')[0], '%Y-%m-%d %H:%M:%S')  # '2017-10-09 12:05:39'
-        else:
-            return 'не авторизован'
-
     @validator('member_of')
     def formated_member_of(cls, data):
         if data is not None:
@@ -60,13 +52,9 @@ class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
         CustomerLdap (_type_): модель пользователя домена.
         ComputerLdap (_type_): модуль компьютера домена.
     """    
-    last_logon: Union[datetime, str]
     unit: List[str]
     ip: str
     
-    @validator('last_logon')
-    def formated_datetime(cls, data):
-        return data
 
     @validator('member_of', 'unit')
     def formated_member_of_and_unit(cls, data):

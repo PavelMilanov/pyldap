@@ -30,7 +30,7 @@ class RedisConnector:
             data = self.connect.get(key)
             return data.decode('utf-8')
         except AttributeError as e:
-            return '-'
+            return data
 
     def delete_value(self, key: str) -> None:
         self.connect.delete(key)

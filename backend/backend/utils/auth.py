@@ -82,7 +82,7 @@ class Authentification(HTTPBearer):
 
     async def __expired_date(self) -> date:
         """Устанавливает срок жизни токена.
-        По-умолчанию: 1 сутки.
+        По-умолчанию: 5 суток.
 
         Returns:
             date: Дата окончания валидности токена.
@@ -90,6 +90,6 @@ class Authentification(HTTPBearer):
         current_date = date.today()
         last_day = calendar.monthrange(current_date.year, current_date.month)[1]
         if current_date.day == last_day:
-            return date(current_date.year, current_date.month+1, 1)
+            return date(current_date.year, current_date.month+1, 5)
         else:
-            return date(current_date.year, current_date.month, current_date.day+1)
+            return date(current_date.year, current_date.month, current_date.day+5)
