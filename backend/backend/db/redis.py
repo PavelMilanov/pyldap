@@ -5,7 +5,7 @@ from typing import Set, List
 
 class RedisConnector:
 
-    def __init__(self, ip: str = 'localhost', port: int = 6379):
+    def __init__(self, ip: str = env('REDIS_HOST'), port: int = 6379):
         self.connect = redis.Redis(host=ip, port=port, decode_responses=True)
 
     def set_value(self, key: str, value: str) -> None:
