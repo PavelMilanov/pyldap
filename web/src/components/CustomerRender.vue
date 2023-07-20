@@ -110,7 +110,7 @@ export default {
                     </div>
                 </div>
             </div>
-            <div v-if="this.customerList" class="card-footer text-center" style="margin: 2rem;">
+            <div v-if="this.customerList && this.route.params.id == 'all'" class="card-footer text-center" style="margin: 2rem;">
                 <a class="btn btn-primary align-center" @click="renderCustomers(0, this.customerCount)">Загрузить больше</a>
             </div>
         </div>

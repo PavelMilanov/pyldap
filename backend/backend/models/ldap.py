@@ -53,7 +53,7 @@ class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
         ComputerLdap (_type_): модуль компьютера домена.
     """    
     unit: List[str]
-    ip: str
+    ip: Union[str, None]
     
 
     @validator('member_of', 'unit')
