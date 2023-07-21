@@ -11,7 +11,7 @@ import (
 func main() {
 
 	const (
-		SERVER = "172.16.2.78"
+		SERVER = "192.168.1.2"
 		PORT   = "8030"
 	)
 
@@ -30,7 +30,7 @@ func main() {
 func clientConnection(connection net.Conn) {
 	defer connection.Close() // закрываем сокет при выходе из функции
 
-	buffer := make([]byte, 400) // буфер для чтения клиентских данных
+	buffer := make([]byte, 1024) // буфер для чтения клиентских данных
 	for {
 		clientData, err := connection.Read(buffer)
 		connection.SetReadDeadline(time.Now().Add(time.Second * 5))

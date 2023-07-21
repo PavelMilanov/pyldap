@@ -14,7 +14,7 @@ import (
 func main() {
 
 	const (
-		SERVER = "172.16.2.78"
+		SERVER = "192.168.1.2"
 		PORT   = "8030"
 	)
 
@@ -30,17 +30,18 @@ func main() {
 	os.Exit(1)
 }
 
-func parseNetworkConfig() []byte {
+func parseNetworkConfig() []NetworkConfig {
 	/// vlan3 1500 4c:52:62:3a:6a:2f 172.16.2.78/24
 
-	var netData []byte
+	var netData []NetworkConfig
 	interfaces, err := net.Interfaces()
 
 	if err != nil {
 		panic(err)
 	}
 	for _, intf := range interfaces {
-		if intf.Name == "lo" { // пропускаем интерфейс loopback
+		matched, _ := regexp.MatchString(`^lo`, intf.Name)
+		if matched { // пропускаем интерфейс loopback
 			continue
 		}
 		hardAddress := intf.HardwareAddr.String()
@@ -50,39 +51,37 @@ func parseNetworkConfig() []byte {
 		/// убираем адрес ipv6
 		for _, netAddress := range netAddresses {
 			data := netAddress.String()
-			matched, _ := regexp.MatchString(`[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\/[0-9]{1,2}`, data)
+			matched, _ := regexp.MatchString(`[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}`, data)
 			if matched {
 				ip = data
 			}
+			config := NetworkConfig{
+				ethName:  intf.Name,
+				mtu:      mtu,
+				netAddr:  ip,
+				hardAddr: hardAddress,
+			}
+			// fmt.Println(config)
+			// codedConfig := config.code()
+			netData = append(netData, config)
 		}
-		config := NetworkConfig{
-			ethName:  intf.Name,
-			mtu:      mtu,
-			netAddr:  ip,
-			hardAddr: hardAddress,
-		}
-
-		codedConfig := config.code()
-		netData = append(netData, codedConfig...)
 	}
 	return netData
 }
-
-func parseHostName() []byte {
+func parseHostName() SystemConfig {
 	cmd := exec.Command("hostname")
 	out, _ := cmd.Output()
-	return []byte(out)
+	return SystemConfig{hostName: string(out)}
 }
 
 func serverConnetion(connection net.Conn) string {
 	defer connection.Close()
-	var data []byte
-	buffer := make([]byte, 400)
+	buffer := make([]byte, 1024)
 	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
-	data = append(data, netdata...)
-	data = append(data, hostdata...)
-	connection.Write(data)
+	data := PyldapProtocol{network: netdata, system: hostdata}
+	message := data.code()
+	connection.Write([]byte(message))
 	serverData, err := connection.Read(buffer)
 	connection.SetReadDeadline(time.Now().Add(time.Second * 5))
 	if err != nil {

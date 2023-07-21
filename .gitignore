@@ -5,22 +5,14 @@ __pycache__/
 poetry.lock
 .vscode
 .config.env
-# Logs
 logs
 files/
 backend/Makefile
 node_modules
 .DS_Store
 dist
-dist-ssr
-coverage
-*.local
-
-/cypress/videos/
-/cypress/screenshots/
-
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 *.jpg
 *.pdf
+netclient/netclient

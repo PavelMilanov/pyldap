@@ -7,8 +7,6 @@ type NetworkConfig struct {
 	hardAddr string
 }
 
-func (config *NetworkConfig) code() []byte {
-	// data := []byte(config.ethName + config.mtu + config.netAddr + config.hardAddr)
-
-	return []byte(config.ethName + config.mtu + config.netAddr + config.hardAddr)
+type SystemConfig struct {
+	hostName string
 }
