@@ -27,6 +27,7 @@ func main() {
 	}
 }
 
+// Основная логика взаимодействия с клиетами.
 func clientConnection(connection net.Conn) {
 	defer connection.Close() // закрываем сокет при выходе из функции
 

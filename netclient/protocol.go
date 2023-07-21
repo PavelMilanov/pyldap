@@ -5,15 +5,24 @@ import (
 	"time"
 )
 
+// Протокол для передачи служебной информации в архитектуре Pyldap.
+// Включает в себя параметры всех сетевых интерфейсов клиента: eth, ip, mtu, mac. (Тип NetworkConfig)
+// Параметры операционной системы: hostname. (Тип SystemConfig)
 type PyldapProtocol struct {
 	network []NetworkConfig
 	system  SystemConfig
 }
 
+// Метод кодирует всю полученную информацию в формат, предписывающий протоколом.
+// Пример:
+//
+//	Header: iMac-pavel-milanov.local
+//	Body: {en0,1500,192.168.1.2/24,3c:a6:f6:b3:bf:e1} {en0,1500,192.168.1.2/24,3c:a6:f6:b3:bf:e1}
+//	Time: 2023-07-22 00:02
 func (protocol *PyldapProtocol) code() []byte {
 	var ipv4Data string
 	for _, item := range protocol.network {
-		if item.netAddr == "" {
+		if item.netAddr == "" { // усли интерфейс не имеет ip - не передаем
 			continue
 		}
 		ipv4Data += "{" + item.ethName + "," + item.mtu + "," + item.netAddr + "," + item.hardAddr + "} "

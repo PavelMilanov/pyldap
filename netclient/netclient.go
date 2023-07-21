@@ -30,9 +30,8 @@ func main() {
 	os.Exit(1)
 }
 
+// Собирает и форматирует параметры сетевых интерфейсов.
 func parseNetworkConfig() []NetworkConfig {
-	/// vlan3 1500 4c:52:62:3a:6a:2f 172.16.2.78/24
-
 	var netData []NetworkConfig
 	interfaces, err := net.Interfaces()
 
@@ -61,19 +60,20 @@ func parseNetworkConfig() []NetworkConfig {
 				netAddr:  ip,
 				hardAddr: hardAddress,
 			}
-			// fmt.Println(config)
-			// codedConfig := config.code()
 			netData = append(netData, config)
 		}
 	}
 	return netData
 }
+
+// Собирает и форматирует параметры ОС.
 func parseHostName() SystemConfig {
 	cmd := exec.Command("hostname")
 	out, _ := cmd.Output()
 	return SystemConfig{hostName: string(out)}
 }
 
+// Основная логика взаимодействия с сервером.
 func serverConnetion(connection net.Conn) string {
 	defer connection.Close()
 	buffer := make([]byte, 1024)
