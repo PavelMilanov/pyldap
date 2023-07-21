@@ -5,12 +5,13 @@ import (
 	"io"
 	"log"
 	"net"
+	"time"
 )
 
 func main() {
 
 	const (
-		SERVER = "192.168.1.2"
+		SERVER = "172.16.2.78"
 		PORT   = "8030"
 	)
 
@@ -32,6 +33,7 @@ func clientConnection(connection net.Conn) {
 	buffer := make([]byte, 400) // буфер для чтения клиентских данных
 	for {
 		clientData, err := connection.Read(buffer)
+		connection.SetReadDeadline(time.Now().Add(time.Second * 5))
 		if err != nil {
 			connection.Write(([]byte("0"))) // данные не приняты
 			if err == io.EOF {

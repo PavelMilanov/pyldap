@@ -33,8 +33,6 @@ services:
       - ./.config.env
     depends_on:
       - redis
-    # volumes:
-    #   - background_logs:/server/logs
     # healthcheck:
     #   test: curl --fail http://localhost:8000/check || exit 1
     #   interval: 30s

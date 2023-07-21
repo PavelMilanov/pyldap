@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"os/exec"
 	"regexp"
+	"strconv"
+	"time"
 )
 
 func main() {
 
 	const (
-		SERVER = "192.168.1.2"
+		SERVER = "172.16.2.78"
 		PORT   = "8030"
 	)
 
@@ -21,52 +24,67 @@ func main() {
 	}
 	status := serverConnetion(conn)
 	if status == "1" {
+		log.Println(status)
 		os.Exit(0)
 	}
 	os.Exit(1)
 }
 
-func parseIpAddresses() string {
-	///
-	/// 127.0.0.1/8 192.168.1.2/24 192.1
-	/// 68.1.6/24 172.16.184.1/24 192.16
-	/// 8.193.1/24
-	///
-	var data string
-	addrs, err := net.InterfaceAddrs()
+func parseNetworkConfig() []byte {
+	/// vlan3 1500 4c:52:62:3a:6a:2f 172.16.2.78/24
+
+	var netData []byte
+	interfaces, err := net.Interfaces()
+
 	if err != nil {
 		panic(err)
 	}
-	for _, addr := range addrs {
-		formatAddr := addr.String()
-		matched, _ := regexp.MatchString(`([0-9]{1,3}[\.]){3}[0-9]{1,3}/[0-9]{1,2}`, formatAddr)
-		if matched {
-			data += fmt.Sprintf("%s ", formatAddr)
+	for _, intf := range interfaces {
+		if intf.Name == "lo" { // пропускаем интерфейс loopback
+			continue
 		}
+		hardAddress := intf.HardwareAddr.String()
+		netAddresses, _ := intf.Addrs()
+		mtu := strconv.Itoa(intf.MTU)
+		var ip string
+		/// убираем адрес ipv6
+		for _, netAddress := range netAddresses {
+			data := netAddress.String()
+			matched, _ := regexp.MatchString(`[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\/[0-9]{1,2}`, data)
+			if matched {
+				ip = data
+			}
+		}
+		config := NetworkConfig{
+			ethName:  intf.Name,
+			mtu:      mtu,
+			netAddr:  ip,
+			hardAddr: hardAddress,
+		}
+
+		codedConfig := config.code()
+		netData = append(netData, codedConfig...)
 	}
-	return data
+	return netData
 }
 
-func parseHostName() string {
+func parseHostName() []byte {
 	cmd := exec.Command("hostname")
 	out, _ := cmd.Output()
-	return string(out)
+	return []byte(out)
 }
-
-// func parseCurrentUser() string { // только для windows
-// 	cmd := exec.Command("echo %UserName%")
-// 	out, _ := cmd.Output()
-// 	return string(out)
-// }
 
 func serverConnetion(connection net.Conn) string {
 	defer connection.Close()
-
+	var data []byte
 	buffer := make([]byte, 400)
-	ipdata := parseIpAddresses()
+	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
-	connection.Write([]byte(ipdata + hostdata))
+	data = append(data, netdata...)
+	data = append(data, hostdata...)
+	connection.Write(data)
 	serverData, err := connection.Read(buffer)
+	connection.SetReadDeadline(time.Now().Add(time.Second * 5))
 	if err != nil {
 		fmt.Println("Error reading:", err.Error())
 	}
