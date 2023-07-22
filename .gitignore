@@ -16,3 +16,4 @@ dist
 *.jpg
 *.pdf
 netclient/netclient
+.obsidian/

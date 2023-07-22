@@ -1,7 +1,16 @@
-https://ldap3.readthedocs.io/en/latest/connection.html
+# Pyldap
+___
 
-search_filter='(objectCategory= organizationalUnit)', attributes=ALL_ATTRIBUTES - подразделение
-search_filter='(objectCategory=computer)',attributes=ALL_ATTRIBUTES - компы
-search_filter='(objectCategory=person)',attributes=ALL_ATTRIBUTES - пользователи
+### Services:
+- backend server - [python v3.11](https://www.python.org/downloads/)
+- background worker - [dramatiq](https://dramatiq.io)
+- frontend server - [vue3.js](https://vuejs.org) + [nginx](https://nginx.org)
+- network server - [golang v1.20](https://go.dev)
+- network client - [golang v1.20](https://go.dev)
+- database server - [postgres v14](https://www.postgresql.org)
+- cache server - [redis-stack](https://redis.io/docs/data-types/json/)
 
-GOOS=windows GOARCH=amd64 go build .
+### Environment:
+- docker
+- docker-compose
+
