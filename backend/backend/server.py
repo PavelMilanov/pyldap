@@ -43,7 +43,7 @@ tags_metadata = [
     },
     {
         'name': 'Files',
-        'description': 'обслуживание статических файлов.'
+        'description': 'работа со статическими файлами.'
     }
 ]
 
