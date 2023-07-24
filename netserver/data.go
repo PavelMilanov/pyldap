@@ -1,6 +1,6 @@
 package main
 
-// Тип для описния сетевого интерфейса клиентского устройства.
+// Тип для описния сетевого интерфейса клиентского устройства. См. netclient.NetworkConfig.
 type NetworkConfig struct {
 	ethName  string // - название интерфейса;
 	mtu      string // - значение размера кадра интерфеса;
@@ -8,7 +8,7 @@ type NetworkConfig struct {
 	hardAddr string // mac-адрес.
 }
 
-// Тип для описания параметров ОС клиентского устройства.
+// Тип для описания параметров ОС клиентского устройства. См. netclient.SystemConfig.
 type SystemConfig struct {
 	hostName string // название устройства в сети
 }

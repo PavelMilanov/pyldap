@@ -6,12 +6,14 @@ import (
 	"strings"
 )
 
+// / Протокол для взаимодействия с клиентами. Cм. netclient.PyldapProtocol.
 type PyldapProtocol struct {
 	network []NetworkConfig
 	system  SystemConfig
 	time    string
 }
 
+// / Метод декодирует информацию от клиента. См. netclient.PyldapProtocol
 func (protocol *PyldapProtocol) decode(bytes []byte) *PyldapProtocol {
 	data := string(bytes)
 	reHeader, _ := regexp.Compile(`Header:.*`)
