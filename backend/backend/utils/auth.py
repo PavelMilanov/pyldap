@@ -75,7 +75,7 @@ class Authentification(HTTPBearer):
                 )
                 cache.delete_value('token')
         except jwt.JWTError as e:
-            logger.exception(e)
+            logger.error(e)
             raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail='Invalid token',

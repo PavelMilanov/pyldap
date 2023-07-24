@@ -11,7 +11,7 @@ import (
 func main() {
 
 	const (
-		SERVER = "192.168.1.2"
+		SERVER = "172.16.2.78"
 		PORT   = "8030"
 	)
 
@@ -43,6 +43,8 @@ func clientConnection(connection net.Conn) {
 			panic(err)
 		}
 		connection.Write(([]byte("1"))) // данные приняты успешно
-		fmt.Println((string(buffer[:clientData])))
+		// fmt.Println((string(buffer[:clientData])))
+		message := PyldapProtocol{}
+		message.decode(buffer[:clientData])
 	}
 }

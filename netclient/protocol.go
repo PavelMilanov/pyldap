@@ -25,7 +25,7 @@ func (protocol *PyldapProtocol) code() []byte {
 		if item.netAddr == "" { // усли интерфейс не имеет ip - не передаем
 			continue
 		}
-		ipv4Data += "{" + item.ethName + "," + item.mtu + "," + item.netAddr + "," + item.hardAddr + "} "
+		ipv4Data += item.ethName + "," + item.mtu + "," + item.netAddr + "," + item.hardAddr + " "
 	}
 	now := time.Now()
 	message := fmt.Sprintf("Header: %s\rBody: %s\nTime: %d-%02d-%02d %02d:%02d\n", protocol.system.hostName, ipv4Data, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
