@@ -8,13 +8,14 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
 func main() {
 
 	var (
-		SERVER = "10.0.101.107"
+		SERVER = "192.168.1.2"
 		PORT   = "8030"
 	)
 
@@ -39,8 +40,8 @@ func parseNetworkConfig() []NetworkConfig {
 	}
 
 	for _, intf := range interfaces {
-		matched, _ := regexp.MatchString(`^lo`, intf.Name)
-		if matched { // пропускаем интерфейс loopback
+		isLoopback, _ := regexp.MatchString(`(?i)^lo`, intf.Name) // пропускаем интерфейс loopback || пропускаем многие дефолтные интерфейсы не из одного слова [Loopback Pseudo-Interface 1],[Сетевое подключение Bluetooth]
+		if isLoopback || len(strings.Fields(intf.Name)) > 1 {
 			continue
 		}
 		hardAddress := intf.HardwareAddr.String()
@@ -50,9 +51,11 @@ func parseNetworkConfig() []NetworkConfig {
 		/// убираем адрес ipv6
 		for _, netAddress := range netAddresses {
 			data := netAddress.String()
-			matched, _ := regexp.MatchString(`[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}`, data)
-			if matched {
+			isIpv4, _ := regexp.MatchString(`[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}`, data)
+			if isIpv4 {
 				ip = data
+			} else {
+				continue
 			}
 			config := NetworkConfig{
 				ethName:  intf.Name,

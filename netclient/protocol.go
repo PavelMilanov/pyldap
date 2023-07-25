@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"time"
 )
 
@@ -31,13 +29,6 @@ func (protocol *PyldapProtocol) code() []byte {
 	}
 	now := time.Now()
 	message := fmt.Sprintf("Header: %s\rBody: %s\nTime: %d-%02d-%02d %02d:%02d\n", protocol.system.hostName, ipv4Data, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
-	file, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 
-	logfile := log.New(file, message, log.Ldate|log.Ltime)
-	logfile.Println()
 	return []byte(message)
 }

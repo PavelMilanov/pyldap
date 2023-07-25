@@ -11,7 +11,7 @@ import (
 func main() {
 
 	var (
-		SERVER = "10.0.101.107"
+		SERVER = "192.168.1.2"
 		PORT   = "8030"
 	)
 
