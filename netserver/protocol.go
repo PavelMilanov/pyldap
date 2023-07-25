@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 )
+
+var BACKEND_SERVER = os.Getenv("BACKEND_SERVER")
 
 // / Протокол для взаимодействия с клиентами. Cм. netclient.PyldapProtocol.
 type ClientData struct {
@@ -47,7 +50,7 @@ func (protocol *ClientData) send() {
 		Time:    protocol.Time,
 	}
 
-	url := "http://localhost:8000/api/v1/network/netclient"
+	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient", BACKEND_SERVER)
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		panic(err)

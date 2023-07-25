@@ -1,10 +1,16 @@
 FROM golang:alpine as builder
 
+ARG server
+ARG backend
+
 WORKDIR /build
 
 COPY . /build
 
-RUN go build -o netserver netserver.go
+ENV SERVER=${server}
+ENV BACKEND_SERVER=${backend}
+
+RUN go build .
 
 
 FROM alpine

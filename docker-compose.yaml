@@ -41,6 +41,19 @@ services:
     networks:
       - application
 
+  netserver:
+    build:
+      context: ./netserver
+      args:
+        - server=0.0.0.0
+        - backend=0.0.0.0
+    container_name: netserver
+    restart: always
+    ports:
+      - 8030:8030
+    networks:
+      - application
+
   frontend:
     build:
       context: ./web
