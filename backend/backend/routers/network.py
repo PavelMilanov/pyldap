@@ -73,6 +73,11 @@ async def get_static_ip(
     except DoesNotExist as e:
         logger.exception(e)
 
+@router.post('/netclient')
+async def get_netclient_data(config: dict):
+    print(config)
+    return config
+
 @router.put('/{id}')
 async def change_static_ip(
     id: int, item: schema.StaticIp,

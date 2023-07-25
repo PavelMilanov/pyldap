@@ -13,8 +13,8 @@ import (
 
 func main() {
 
-	const (
-		SERVER = "172.16.2.78"
+	var (
+		SERVER = "10.0.101.107"
 		PORT   = "8030"
 	)
 
@@ -34,10 +34,10 @@ func main() {
 func parseNetworkConfig() []NetworkConfig {
 	var netData []NetworkConfig
 	interfaces, err := net.Interfaces()
-
 	if err != nil {
 		panic(err)
 	}
+
 	for _, intf := range interfaces {
 		matched, _ := regexp.MatchString(`^lo`, intf.Name)
 		if matched { // пропускаем интерфейс loopback
