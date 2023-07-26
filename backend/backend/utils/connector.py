@@ -232,7 +232,7 @@ class Ldap3Connector:
             unit=[''],
             ip=''
         )
-        ip = cache.get_value(name)
+        # ip = cache.get_value(name)
         return CustomerLdapDescribe(
             name=user.name,
             description=user.description,

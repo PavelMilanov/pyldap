@@ -42,7 +42,7 @@ func (protocol *ClientData) decode(bytes []byte) *ClientData {
 	return protocol
 }
 
-func (protocol *ClientData) send() {
+func (protocol *ClientData) send() int {
 
 	config := &ClientData{
 		Network: protocol.Network,
@@ -55,7 +55,6 @@ func (protocol *ClientData) send() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(data))
 	client := http.Client{}
 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
@@ -65,5 +64,5 @@ func (protocol *ClientData) send() {
 		panic(err)
 	}
 	defer response.Body.Close()
-	// return response.StatusCode
+	return response.StatusCode
 }

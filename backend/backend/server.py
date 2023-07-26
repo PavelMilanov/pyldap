@@ -102,7 +102,6 @@ async def startup_event():
         app,
         db_url=f'postgres://{USER}:{PASSWORD}@{HOST}:5432/{DB}',
         modules={"models": ['db.postgres.models']},
-        generate_schemas=True,
         add_exception_handlers=True,
     )
 

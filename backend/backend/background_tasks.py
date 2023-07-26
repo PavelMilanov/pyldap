@@ -3,7 +3,6 @@ from dramatiq.brokers.redis import RedisBroker
 from environs import Env
 from loguru import logger
 
-from utils.utilits import get_ip_address
 from utils.connector import Ldap3Connector
 from db.redis import RedisConnector
 
@@ -17,16 +16,6 @@ dramatiq.set_broker(broker)
 ldap = Ldap3Connector()
 cache = RedisConnector()
 
-
-#@background.scheduled_job('cron', hour=23)
-def scheduled_nslookup_for_customer():
-    """Добавляет в кеш ip адреса и dns имена компьютеров в AD по расписанию."""    
-    logger.info('run dns polling for customers')
-    data = ldap.get_computers()
-    for item in data:
-        computer = item.split(',')[0][3:].lower()
-        customer, ip = get_ip_address(computer) 
-        cache.set_value(customer, ip)
 
 @dramatiq.actor
 def scheduled_parse_computer_for_unit():

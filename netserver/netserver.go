@@ -46,6 +46,7 @@ func clientConnection(connection net.Conn) {
 		// fmt.Println((string(buffer[:clientData])))
 		bytes := ClientData{}
 		bytes.decode(buffer[:clientData])
-		bytes.send()
+		resp := bytes.send()
+		fmt.Println(resp)
 	}
 }

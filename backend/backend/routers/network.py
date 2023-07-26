@@ -5,7 +5,7 @@ from typing import List
 from loguru import logger
 
 from models import schema
-from db.postgres.models import StaticIp
+from db.postgres.models import StaticIp, NetworkClient
 from .auth import token_auth_scheme
 
 
@@ -74,9 +74,21 @@ async def get_static_ip(
         logger.exception(e)
 
 @router.post('/netclient')
-async def get_netclient_data(config: dict):
-    print(config)
-    return config
+async def get_netclient_data(config: schema.NetworkClietnConfig):
+    """Принимает конфигурацию клиента AD, с помощью службы Netclient v1.
+    Добавляет\обновляет данный в БД.
+
+    Args:
+        config (schema.NetworkClietnConfig): 
+    """    
+    try:
+        resp = await NetworkClient.get_or_none(system=config.system)
+        if resp is None:
+            await NetworkClient.create(network=config.network, system=config.system, time=config.time)
+        else:
+            resp.update_from_dict(config.dict())
+    except Exception as e:
+        logger.exception(e)
 
 @router.put('/{id}')
 async def change_static_ip(
