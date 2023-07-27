@@ -5,14 +5,13 @@ import (
 	"io"
 	"log"
 	"net"
-	"os"
 	"time"
 )
 
 func main() {
 
 	var (
-		SERVER = os.Getenv("SERVER")
+		SERVER = "0.0.0.0"
 		PORT   = "8030"
 	)
 

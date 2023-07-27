@@ -45,7 +45,6 @@ services:
     build:
       context: ./netserver
       args:
-        - listen_netserver=0.0.0.0
         - backend=backend
     container_name: netserver
     restart: always
