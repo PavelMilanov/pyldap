@@ -7,7 +7,7 @@ WORKDIR /build
 
 COPY . /build
 
-RUN echo "SERVER=${listen_netserver}}" > .env && echo "BACKEND_SERVER=${backend}}" >> .env && go build .
+RUN echo "SERVER=${listen_netserver}" > .env && echo "BACKEND_SERVER=${backend}" >> .env && go build .
 
 
 FROM alpine
