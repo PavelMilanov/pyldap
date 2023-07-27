@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 
-ARG server
+ARG netserver
 ARG backend
 
 WORKDIR /build

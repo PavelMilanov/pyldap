@@ -5,13 +5,14 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 	"time"
 )
 
 func main() {
 
 	var (
-		SERVER = "0.0.0.0"
+		SERVER = os.Getenv("BACKEND_SERVER")
 		PORT   = "8030"
 	)
 

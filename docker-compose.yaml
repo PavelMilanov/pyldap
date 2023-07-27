@@ -45,7 +45,7 @@ services:
     build:
       context: ./netserver
       args:
-        - server=0.0.0.0
+        - netserver=0.0.0.0
         - backend=backend
     container_name: netserver
     restart: always
@@ -68,13 +68,13 @@ services:
       - acts:/files/acts
     healthcheck:
       test: curl --fail http://localhost || exit 1
-      interval: 30s
+      interval: 90s
       timeout: 5s
       retries: 5
-    networks:
-      - application
     ports:
       - 80:80
+    networks:
+      - application
 
   postgres:
     image: postgres:14
@@ -86,7 +86,7 @@ services:
       - db:/var/lib/postgresql/data/
     healthcheck:
       test: pg_isready -U $POSTGRES_USER -d $POSTGRES_DB || exit 1
-      interval: 30s
+      interval: 90s
       timeout: 5s
       retries: 3
     networks:
@@ -100,7 +100,7 @@ services:
       - cache:/data
     healthcheck:
       test: redis-cli ping | grep PONG || exit 1
-      interval: 30s
+      interval: 90s
       timeout: 5s
       retries: 3
     networks:
