@@ -113,5 +113,4 @@ volumes:
   cache:
   db:
   server_logs:
-  background_logs:
   acts:

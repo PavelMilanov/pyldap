@@ -87,10 +87,11 @@ class Authentification(HTTPBearer):
 
         Returns:
             date: Дата окончания валидности токена.
-        """        
+        """
+        token_life = 5        
         current_date = date.today()
         last_day = calendar.monthrange(current_date.year, current_date.month)[1]
-        if current_date.day == last_day:
-            return date(current_date.year, current_date.month+1, 5)
+        if current_date.day + token_life >= last_day:
+            return date(current_date.year, current_date.month+1, (current_date.day + token_life)-last_day)
         else:
-            return date(current_date.year, current_date.month, current_date.day+5)
+            return date(current_date.year, current_date.month, current_date.day+token_life)
