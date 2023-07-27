@@ -240,7 +240,7 @@ class Ldap3Connector:
             os=computer.os,
             version_os=computer.version_os,
             unit=computer.unit,
-            ip=ip
+            ip=''
         )
     
     async def ldap_authentificate(self, name: str, password: str) -> bool:
