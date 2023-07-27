@@ -6,6 +6,6 @@ v=
 release:
 	@sed -i "s/listen_ip=*.*.*.*/listen_ip=$(web)/g" docker-compose.yaml
 	@sed -i "s/version=v*.*.*/version=v$(v)/g" docker-compose.yaml
-	@sed -i "s/listen_netserver=*.*.*/listen_netserver=$(v)/g" docker-compose.yaml
+	@sed -i "s/listen_netserver=*.*.*/listen_netserver=$(netserver)/g" docker-compose.yaml
 	@docker compose build --no-cache
 	@docker compose up -d
