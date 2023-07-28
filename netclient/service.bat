@@ -1,1 +1,1 @@
-Sc create NetClient binPath=C:\netclient.exe DisplayName=″NetCLient Service″ type=own start=auto
+Sc create NetClient binPath=C:\netclient.exe DisplayName=″NetCLient V1 Service″ type=own start=auto
