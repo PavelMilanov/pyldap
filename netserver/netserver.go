@@ -11,7 +11,7 @@ import (
 func main() {
 
 	var (
-		SERVER = "0.0.0.0"
+		SERVER = "192.168.1.2"
 		PORT   = "8030"
 	)
 
@@ -43,7 +43,6 @@ func clientConnection(connection net.Conn) {
 			panic(err)
 		}
 		connection.Write(([]byte("1"))) // данные приняты успешно
-		// fmt.Println((string(buffer[:clientData])))
 		bytes := ClientData{}
 		bytes.decode(buffer[:clientData])
 		resp := bytes.send()
