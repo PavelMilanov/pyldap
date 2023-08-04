@@ -1,34 +1,26 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net"
-	"os"
+	"net/http"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func main() {
 
-	var (
-		SERVER = "192.168.1.2"
-		PORT   = "8030"
+	const (
+		PORT = ":8031"
 	)
 
-	conn, err := net.Dial("tcp", SERVER+":"+PORT)
-	if err != nil {
-		panic(err)
-	}
-	status := serverConnetion(conn)
-	if status == "1" {
-		log.Println(status)
-		os.Exit(0)
-	}
-	os.Exit(1)
+	fmt.Printf("Starting server on port %v\n", PORT)
+	go sendConfig()
+	http.ListenAndServe(PORT, nil)
 }
 
 // Собирает и форматирует параметры сетевых интерфейсов.
@@ -73,22 +65,25 @@ func parseNetworkConfig() []NetworkConfig {
 func parseHostName() SystemConfig {
 	cmd := exec.Command("hostname")
 	out, _ := cmd.Output()
-	return SystemConfig{hostName: string(out)}
+	data := strings.Trim(string(out), "\n")
+	return SystemConfig{hostName: data}
 }
 
-// Основная логика взаимодействия с сервером.
-func serverConnetion(connection net.Conn) string {
-	defer connection.Close()
-	buffer := make([]byte, 1024)
+// Отправка конфигурации на сервер при включение хоста.
+func sendConfig() {
 	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
-	data := PyldapProtocol{network: netdata, system: hostdata}
+	data := ClientConfig{network: netdata, system: hostdata}
 	message := data.code()
-	connection.Write([]byte(message))
-	serverData, err := connection.Read(buffer)
-	connection.SetReadDeadline(time.Now().Add(time.Second * 5))
+	url := "http://localhost:8030/logon"
+	client := http.Client{}
+	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(message))
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	response, err := client.Do(request)
 	if err != nil {
-		fmt.Println("Error reading:", err.Error())
+		panic(err)
 	}
-	return string(buffer[:serverData])
+	defer response.Body.Close()
+	log.Println(response.StatusCode)
 }

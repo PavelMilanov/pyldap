@@ -1,6 +1,7 @@
 <script>
 import { defaultStore } from '../stores/counter'
 
+
 export default {
 
     components: {
@@ -13,13 +14,42 @@ export default {
     data() {
         return {
           page: 0,
+          connection: null,
+          cache: null
         }
+  },
+    watch: {
+    logonInfo(items) {
+      console.log(items)
+      }
     },
     methods: {
       goPage(number) {
         this.page = number
       },
   },
+  created() {
+    this.connection = new WebSocket("ws://localhost:8000/api/v1/ws/netclients")
+
+    this.connection.onmessage = function (event) {
+      if (event.data == this.cache) {  // если не было новых сообщений и пришло тоже самое
+        return
+      }
+      var jsondata = JSON.parse(event.data)
+      var message = jsondata["time"] + ": " + jsondata["client"] + " авторизовался" 
+      document.querySelector("#Logon-log").value += message + "\n"
+      this.cache = event.data
+    }
+
+    this.connection.onopen = function (event) {
+      console.log(event)
+      console.log("connection oppened")
+    }
+
+    setInterval(() => {  // триггер для обновления данных по вебсокету.
+      this.connection.send('info')
+    }, 6000)
+  }
 }
 </script>
 
@@ -27,6 +57,19 @@ export default {
     <div class="mb-3 mx-auto">
       <div class="home container-fluid text-center">
         <div class="p-3 row">
+          <div class="col-6">
+              <div class="card">
+                <div class="card-header">
+                  <p class="card-title">Инфо</p>
+                </div>
+                <div class="body">
+                  <p class="card-text m-2">Всего пользователей: {{ this.store.getCustomersCount }}</p>
+                </div>
+              </div>
+              <div class="mt-2">
+                <textarea class="form-control" id="Logon-log" rows="10"></textarea>
+              </div>
+          </div>
           <div class="col-6">
             <div class="card">
               <div class="card-header">
@@ -82,20 +125,10 @@ export default {
                         </div>
                       </div>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-6">
-            <div class="card">
-              <div class="card-header">
-                <p class="card-title">Инфо</p>
-              </div>
-              <div class="body">
-                <p class="card-text m-2">Всего пользователей: {{ this.store.getCustomersCount }}</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

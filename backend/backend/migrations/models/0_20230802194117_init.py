@@ -9,7 +9,7 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
     "file_name" TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "netclients" (
-    "system" VARCHAR(15) NOT NULL  PRIMARY KEY,
+    "system" VARCHAR(32) NOT NULL  PRIMARY KEY,
     "network" TEXT NOT NULL,
     "time" TEXT NOT NULL
 );

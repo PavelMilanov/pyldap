@@ -7,6 +7,7 @@ from loguru import logger
 from models import schema
 from db.postgres.models import StaticIp, NetworkClient
 from .auth import token_auth_scheme
+from .import cache
 
 
 router = APIRouter(
@@ -87,6 +88,7 @@ async def get_netclient_data(config: schema.NetworkClietnConfig):
             await NetworkClient.create(network=config.network, system=config.system, time=config.time)
         else:
             resp.update_from_dict(config.dict())
+        cache.append_json_set('logon', {'client': config.system, 'time': config.time})
     except Exception as e:
         logger.exception(e)
 

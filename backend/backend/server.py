@@ -6,7 +6,15 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from environs import Env
 from loguru import logger
 
-from routers import computers, organizations, users, auth, network, files
+from routers import (
+    computers,
+    organizations,
+    users,
+    auth,
+    network,
+    files,
+    websockets
+    )
 from background_tasks import (
     scheduled_generate_customers_cache,
     scheduled_parse_computer_for_unit,
@@ -44,7 +52,7 @@ tags_metadata = [
     {
         'name': 'Files',
         'description': 'работа со статическими файлами.'
-    }
+    },
 ]
 
 background = BackgroundScheduler()
@@ -73,6 +81,7 @@ app.include_router(organizations.router)
 app.include_router(users.router)
 app.include_router(network.router)
 app.include_router(files.router)
+app.include_router(websockets.router)
 
 app.add_middleware(
     CORSMiddleware,

@@ -103,18 +103,22 @@ class RedisConnector:
         except Exception as e:
             logger.exception(e)
     
-    def get_json_set(self, set_name: str, skip: int, limit: int) -> List[dict]:
+    def get_json_set(self, set_name: str, skip: int = None, limit: int = None) -> List[dict]:      
         """Redis JSON.GET command.
 
         Args:
             set_name (str): key.
-            skip (int): first index. 
-            limit (int): last index.
+            skip (int, optional): first index. 
+            limit (int, optional): last index.
 
         Returns:
             List[dict]: values.
         """
-        try:        
+        try:
+            if skip is None and limit is None:
+                return self.CONN.json().get(set_name, '$')
+            elif skip is None and limit is not None:
+                return self.CONN.json().get(set_name, f'$[{limit}]')
             return self.CONN.json().get(set_name, f'$[{skip}:{limit}]')
         except Exception as e:
             logger.exception(e)
@@ -130,5 +134,11 @@ class RedisConnector:
         """
         try:        
             return self.CONN.json().delete(set_name)
+        except Exception as e:
+            logger.exception(e)
+
+    def append_json_set(self, set_name: str, data: dict):
+        try:
+            return self.CONN.json().arrappend(set_name, '$', data)
         except Exception as e:
             logger.exception(e)

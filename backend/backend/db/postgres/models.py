@@ -47,7 +47,7 @@ class Act(Model):
 
 
 class NetworkClient(Model):
-    system = fields.CharField(max_length=15, pk=True)
+    system = fields.CharField(max_length=32, pk=True)
     network = fields.TextField()
     time = fields.TextField()
     

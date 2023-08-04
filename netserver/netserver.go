@@ -1,51 +1,29 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"log"
-	"net"
-	"time"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
+
+func ClientLogonHandler(w http.ResponseWriter, r *http.Request) {
+	var config ClientConfig
+	err := json.NewDecoder(r.Body).Decode(&config)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	config.send()
+}
 
 func main() {
 
-	var (
-		SERVER = "192.168.1.2"
-		PORT   = "8030"
-	)
+	const PORT = ":8030"
+	r := mux.NewRouter()
+	r.HandleFunc("/logon", ClientLogonHandler)
 
-	listener, _ := net.Listen("tcp", SERVER+":"+PORT)
-	info := fmt.Sprintf("Server listening on %s:%s", SERVER, PORT)
-	log.Printf(info)
-	for {
-		conn, err := listener.Accept() // принимаем TCP-соединение от клиента и создаем новый сокет
-		if err != nil {
-			continue
-		}
-		go clientConnection(conn)
-	}
-}
-
-// Основная логика взаимодействия с клиетами.
-func clientConnection(connection net.Conn) {
-	defer connection.Close() // закрываем сокет при выходе из функции
-
-	buffer := make([]byte, 1024) // буфер для чтения клиентских данных
-	for {
-		clientData, err := connection.Read(buffer)
-		connection.SetReadDeadline(time.Now().Add(time.Second * 5))
-		if err != nil {
-			connection.Write(([]byte("0"))) // данные не приняты
-			if err == io.EOF {
-				return
-			}
-			panic(err)
-		}
-		connection.Write(([]byte("1"))) // данные приняты успешно
-		bytes := ClientData{}
-		bytes.decode(buffer[:clientData])
-		resp := bytes.send()
-		fmt.Println(resp)
-	}
+	fmt.Printf("Starting server on port %v\n", PORT)
+	http.ListenAndServe(PORT, r)
 }

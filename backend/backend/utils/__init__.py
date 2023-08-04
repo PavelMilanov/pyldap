@@ -12,4 +12,5 @@ cache = RedisConnector()
 from .connector import Ldap3Connector
 from .auth import Authentification
 
+
 __all__ = ['Authentication', 'Ldap3Connector']
