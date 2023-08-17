@@ -18,9 +18,17 @@ func main() {
 		PORT = ":8031"
 	)
 
+	server := &http.Server{Addr: PORT, Handler: nil}
 	fmt.Printf("Starting server on port %v\n", PORT)
-	go sendConfig()
-	http.ListenAndServe(PORT, nil)
+	status := sendConfig()
+	if status != "ok" {
+		log.Println(status)
+	}
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Println(err)
+	}
+
 }
 
 // Собирает и форматирует параметры сетевых интерфейсов.
@@ -70,7 +78,7 @@ func parseHostName() SystemConfig {
 }
 
 // Отправка конфигурации на сервер при включение хоста.
-func sendConfig() {
+func sendConfig() string {
 	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
 	data := ClientConfig{network: netdata, system: hostdata}
@@ -82,8 +90,10 @@ func sendConfig() {
 
 	response, err := client.Do(request)
 	if err != nil {
-		panic(err)
+		// log.Println(err)
+		return err.Error()
 	}
 	defer response.Body.Close()
-	log.Println(response.StatusCode)
+	// log.Println(response.StatusCode)
+	return "ok"
 }
