@@ -71,3 +71,16 @@ class NetworkClietnConfig(BaseModel):
                 'time': '2023-07-26 17:06'        
                 }
         }
+
+
+class NetworkClientMessage(BaseModel):
+    system: str = Field()
+    message: str = Field()
+    
+    class Config:
+        schema_extra = {
+            'example': {
+                "system": "iMac-pavel-milanov.local",
+                "message": "login"
+            }
+        }

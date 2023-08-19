@@ -2,33 +2,68 @@ package main
 
 import (
 	"bytes"
+	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"os/exec"
+	"os/signal"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/gorilla/mux"
 )
+
+func PingHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
 
 func main() {
 
 	const (
 		PORT = ":8031"
 	)
+	var wait time.Duration
+	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
+	flag.Parse()
 
-	server := &http.Server{Addr: PORT, Handler: nil}
-	fmt.Printf("Starting server on port %v\n", PORT)
+	router := mux.NewRouter()
+	server := &http.Server{
+		Addr:    PORT,
+		Handler: router,
+	}
+
+	router.HandleFunc("/ping", PingHandler).Methods("GET")
+
 	status := sendConfig()
+	go sendMessage("login")
 	if status != "ok" {
 		log.Println(status)
 	}
-	err := server.ListenAndServe()
-	if err != nil {
-		log.Println(err)
-	}
+	fmt.Printf("Starting server on port %v\n", PORT)
+	go func() {
+		err := server.ListenAndServe()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
+	c := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(c, os.Interrupt)
 
+	// Block until we receive our signal.
+	<-c
+	sendMessage("shutdown")
+	ctx, cancel := context.WithTimeout(context.Background(), wait)
+	defer cancel()
+	server.Shutdown(ctx)
+	os.Exit(0)
 }
 
 // Собирает и форматирует параметры сетевых интерфейсов.
@@ -83,17 +118,34 @@ func sendConfig() string {
 	hostdata := parseHostName()
 	data := ClientConfig{network: netdata, system: hostdata}
 	message := data.code()
-	url := "http://localhost:8030/logon"
+
+	url := "http://localhost:8030/config"
 	client := http.Client{}
 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(message))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
 	response, err := client.Do(request)
 	if err != nil {
-		// log.Println(err)
 		return err.Error()
 	}
 	defer response.Body.Close()
-	// log.Println(response.StatusCode)
 	return "ok"
+}
+
+// Отправка информации на сервер.
+func sendMessage(text string) {
+	hostdata := parseHostName()
+	data := ClientLog{SystemName: hostdata.hostName, Message: text}
+	message := data.code()
+
+	url := "http://localhost:8030/messages"
+	client := http.Client{}
+	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(message))
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	response, err := client.Do(request)
+	if err != nil {
+		log.Println(err)
+	}
+	defer response.Body.Close()
 }

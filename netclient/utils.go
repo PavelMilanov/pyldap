@@ -15,6 +15,12 @@ type ClientConfig struct {
 	SystemName      string   `json:"system"`
 }
 
+// Структура для отправки информации на сервер о состоянии работы клиента.
+type ClientLog struct {
+	SystemName string `json:"system"`
+	Message    string `json:"message"`
+}
+
 // Метод форматирует данные в JSON-формат для передачи на сервер.
 // Пример:
 //
@@ -37,6 +43,19 @@ func (config *ClientConfig) code() []byte {
 	}
 	config.NetworkSettings = ipv4Data
 	config.SystemName = config.system.hostName
+	codeData, _ := json.MarshalIndent(config, "", "\t")
+	log.Println(string(codeData))
+	return codeData
+}
+
+// Метод форматирует данные в JSON-формат для передачи на сервер.
+// Пример:
+//
+//	{
+//			"system": "iMac-pavel-milanov.local",
+//			"message": "shutdown"
+//	}
+func (config *ClientLog) code() []byte {
 	codeData, _ := json.MarshalIndent(config, "", "\t")
 	log.Println(string(codeData))
 	return codeData

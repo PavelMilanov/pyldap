@@ -19,6 +19,11 @@ type ClientConfig struct {
 	Time    string   `json:"time"`
 }
 
+type ClientLog struct {
+	SystemName string `json:"system"`
+	Message    string `json:"message"`
+}
+
 // Метод форматирует данные в JSON-формат для передачи на сервер бекенда.
 // Пример:
 //
@@ -38,6 +43,25 @@ func (config *ClientConfig) send() {
 	now := time.Now()
 	datalog := fmt.Sprintf("%d-%02d-%02d %02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
 	config.Time = datalog
+	data, err := json.MarshalIndent(config, "", "\t")
+	if err != nil {
+		panic(err)
+	}
+	client := http.Client{}
+	log.Println(string(data))
+	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	response, err := client.Do(request)
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+	log.Println(response.StatusCode)
+}
+
+func (config *ClientLog) send() {
+	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient/messages", "localhost")
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		panic(err)
