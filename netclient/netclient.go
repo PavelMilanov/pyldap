@@ -19,6 +19,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var (
+	NET_SERVER      = os.Getenv("NET_SERVER")
+	NET_SERVER_PORT = os.Getenv("NET_SERVER_PORT")
+)
+
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
@@ -119,7 +124,7 @@ func sendConfig() string {
 	data := ClientConfig{network: netdata, system: hostdata}
 	message := data.code()
 
-	url := "http://localhost:8030/config"
+	url := fmt.Sprintf("http://%s:%s/config", NET_SERVER, NET_SERVER_PORT)
 	client := http.Client{}
 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(message))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
@@ -138,7 +143,7 @@ func sendMessage(text string) {
 	data := ClientLog{SystemName: hostdata.hostName, Message: text}
 	message := data.code()
 
-	url := "http://localhost:8030/messages"
+	url := fmt.Sprintf("http://%s:%s/messages", NET_SERVER, NET_SERVER_PORT)
 	client := http.Client{}
 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(message))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")

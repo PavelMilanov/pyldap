@@ -39,7 +39,7 @@ type ClientLog struct {
 //	}
 func (config *ClientConfig) send() {
 
-	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient", "localhost")
+	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient", BACKEND_SERVER)
 	now := time.Now()
 	datalog := fmt.Sprintf("%d-%02d-%02d %02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
 	config.Time = datalog
@@ -61,7 +61,7 @@ func (config *ClientConfig) send() {
 }
 
 func (config *ClientLog) send() {
-	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient/messages", "localhost")
+	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient/messages", BACKEND_SERVER)
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		panic(err)
