@@ -49,7 +49,6 @@ class Act(Model):
 class NetworkClient(Model):
     system = fields.CharField(max_length=32, pk=True)
     network = fields.TextField()
-    time = fields.TextField()
     
     class Meta:
         table = 'netclients'

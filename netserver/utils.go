@@ -16,12 +16,12 @@ var BACKEND_SERVER = os.Getenv("BACKEND_SERVER")
 type ClientConfig struct {
 	Network []string `json:"network"`
 	System  string   `json:"system"`
-	Time    string   `json:"time"`
 }
 
 type ClientLog struct {
 	SystemName string `json:"system"`
 	Message    string `json:"message"`
+	Time       string `json:"time"`
 }
 
 // Метод форматирует данные в JSON-формат для передачи на сервер бекенда.
@@ -35,14 +35,10 @@ type ClientLog struct {
 //	               "bridge101,1500,172.16.184.1/24,3e:a6:f6:3b:1a:65"
 //	       ],
 //	       "system": "iMac-pavel-milanov.local",
-//			"time": "2023-08-02 19:31"
 //	}
 func (config *ClientConfig) send() {
 
 	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient", BACKEND_SERVER)
-	now := time.Now()
-	datalog := fmt.Sprintf("%d-%02d-%02d %02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
-	config.Time = datalog
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		panic(err)
@@ -62,6 +58,9 @@ func (config *ClientConfig) send() {
 
 func (config *ClientLog) send() {
 	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient/messages", BACKEND_SERVER)
+	now := time.Now()
+	datalog := fmt.Sprintf("%d-%02d-%02d %02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
+	config.Time = datalog
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		panic(err)

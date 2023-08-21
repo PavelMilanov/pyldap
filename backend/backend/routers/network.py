@@ -88,13 +88,12 @@ async def get_netclient_config(config: schema.NetworkClietnConfig):
             await NetworkClient.create(network=config.network, system=config.system, time=config.time)
         else:
             resp.update_from_dict(config.dict())
-        # cache.append_json_set('logon', {'client': config.system, 'time': config.time})
     except Exception as e:
         logger.exception(e)
         
 @router.post('/netclient/messages')
-async def get_netclient_messages(message: schema.NetworkClientMessage):
-    return message
+async def get_netclient_messages(data: schema.NetworkClientMessage):
+    cache.append_json_set('messages', {'client': data.system, 'message': data.message, 'time': data.time})
 
 @router.put('/{id}')
 async def change_static_ip(
