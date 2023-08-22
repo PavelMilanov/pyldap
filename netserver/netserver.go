@@ -56,7 +56,6 @@ func main() {
 		IdleTimeout:  time.Second * 60,
 		Handler:      router,
 	}
-
 	router.HandleFunc("/config", ClientConfigHandler).Methods("POST")
 	router.HandleFunc("/messages", ClientMessagesHandler).Methods("POST")
 	router.HandleFunc("/ping", ClientPingHandler).Methods("GET")
