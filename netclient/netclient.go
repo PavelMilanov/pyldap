@@ -28,6 +28,7 @@ func init() {
 }
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
+	// Хендлер ответа для сервера, если ход доступен
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -71,8 +72,8 @@ func main() {
 	os.Exit(0)
 }
 
-// Собирает и форматирует параметры сетевых интерфейсов.
 func parseNetworkConfig() []NetworkConfig {
+	// Функция собирает и форматирует параметры сетевых интерфейсов.
 	var netData []NetworkConfig
 	interfaces, err := net.Interfaces()
 	if err != nil {
@@ -109,16 +110,16 @@ func parseNetworkConfig() []NetworkConfig {
 	return netData
 }
 
-// Собирает и форматирует параметры ОС.
 func parseHostName() SystemConfig {
+	// Функция собирает и форматирует параметры ОС.
 	cmd := exec.Command("hostname")
 	out, _ := cmd.Output()
 	data := strings.Trim(string(out), "\n")
 	return SystemConfig{hostName: data}
 }
 
-// Отправка конфигурации на сервер при включение хоста.
 func sendConfig() string {
+	// Функция отправляет конфигурацию на сервер при включение хоста.
 	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
 	data := ClientConfig{network: netdata, system: hostdata}
@@ -137,8 +138,8 @@ func sendConfig() string {
 	return "ok"
 }
 
-// Отправка информации на сервер.
 func sendMessage(text string) {
+	// Функция отправки системных сообщений на сервер.
 	hostdata := parseHostName()
 	data := ClientLog{SystemName: hostdata.hostName, Message: text}
 	message := data.code()

@@ -77,11 +77,11 @@ async def get_static_ip(
 
 @router.post('/netclient')
 async def get_netclient_config(config: schema.NetworkClietnConfig):
-    """Принимает конфигурацию клиента AD, с помощью службы Netclient v1.
+    """Принимает конфигурацию хоста AD, с помощью службы Netclient v1.
     Добавляет\обновляет данные в БД.
 
     Args:
-        config (schema.NetworkClietnConfig): 
+        config (schema.NetworkClietnConfig): json-данные.
     """    
     try:
         resp = await NetworkClient.get_or_none(system=config.system)
@@ -94,10 +94,24 @@ async def get_netclient_config(config: schema.NetworkClietnConfig):
         
 @router.post('/netclient/messages')
 async def get_netclient_messages(data: schema.NetworkClientMessage):
+    """Принимает системные сообщения от хостов службы Netclient v1.
+    Добавляет все сообщения в кеш.
+    
+    Args:
+        data (schema.NetworkClientMessage): json-данные.
+    """    
     cache.append_json_set('messages', {'client': data.system, 'message': data.message, 'time': data.time})
 
 @router.get('/netclient/ping')
-async def ping_client(host: str):
+async def ping_client(host: str) -> int | None:    
+    """Проверка доступности хоста службы Netclient v1.
+
+    Args:
+        host (str): ip-адрес.
+
+    Returns:
+        int | None: статус
+    """    
     status = await get_ping_request(host)
     return status
 
