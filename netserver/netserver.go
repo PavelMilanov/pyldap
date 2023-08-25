@@ -32,17 +32,15 @@ func ClientMessagesHandler(w http.ResponseWriter, r *http.Request) {
 
 func ClientPingHandler(w http.ResponseWriter, r *http.Request) {
 	host := r.URL.Query().Get("host")
-
 	url := fmt.Sprintf("http://%s:8031/ping", host)
 	client := http.Client{}
 
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	response, err := client.Do(request)
 	if err != nil {
-		panic(err)
+		return
 	}
 	defer response.Body.Close()
-	log.Println(response.StatusCode)
 }
 
 func main() {
