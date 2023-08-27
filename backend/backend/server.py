@@ -102,6 +102,7 @@ async def check():
 
 @app.on_event('startup')
 async def startup_event():
+    # JSON.SET messages $ '[]'
     USER = env('POSTGRES_USER')
     PASSWORD = env('POSTGRES_PASSWORD')
     DB = env('POSTGRES_DB')

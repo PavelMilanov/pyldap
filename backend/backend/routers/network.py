@@ -86,7 +86,7 @@ async def get_netclient_config(config: schema.NetworkClietnConfig):
     try:
         resp = await NetworkClient.get_or_none(system=config.system)
         if resp is None:
-            await NetworkClient.create(network=config.network, system=config.system, time=config.time)
+            await NetworkClient.create(network=config.network, system=config.system)
         else:
             resp.update_from_dict(config.dict())
     except Exception as e:
@@ -128,7 +128,7 @@ async def change_static_ip(
             ip: str,
             description: str
         }
-        token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional): Defaults to Security(token_auth_scheme).
     """    
     try:
         resp = await StaticIp.get(id=id)
@@ -146,6 +146,6 @@ async def delete_static_ip(
 
     Args:
         id (int): id записи.
-        token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional): Defaults to Security(token_auth_scheme).
     """    
     await StaticIp.get(id=id).delete()

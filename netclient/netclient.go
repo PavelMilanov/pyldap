@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"os/signal"
 	"regexp"
 	"strconv"
 	"strings"
@@ -58,13 +57,13 @@ func main() {
 			log.Println(err)
 		}
 	}()
-	c := make(chan os.Signal, 1)
+	// c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
 	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
-	signal.Notify(c, os.Interrupt)
+	// signal.Notify(c, os.Interrupt)
 
 	// Block until we receive our signal.
-	<-c
+	// <-c
 	sendMessage("shutdown")
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
