@@ -36,7 +36,7 @@ export default {
         return
       }
       var jsondata = JSON.parse(event.data)
-      var message = jsondata["time"] + ": " + jsondata["client"] + " авторизовался" 
+      var message = jsondata["time"] + ": " + jsondata["client"] + " " + jsondata["message"] 
       document.querySelector("#Logon-log").value += message + "\n"
       this.cache = event.data
     }
@@ -48,7 +48,7 @@ export default {
 
     setInterval(() => {  // триггер для обновления данных по вебсокету.
       this.connection.send('info')
-    }, 6000)
+    }, 3000)
   }
 }
 </script>
@@ -67,7 +67,7 @@ export default {
                 </div>
               </div>
               <div class="mt-2">
-                <textarea class="form-control" id="Logon-log" rows="10"></textarea>
+                <textarea class="form-control" id="Logon-log" rows="20"></textarea>
               </div>
           </div>
           <div class="col-6">
