@@ -103,14 +103,14 @@ async def get_netclient_messages(data: schema.NetworkClientMessage):
     cache.append_json_set('messages', {'client': data.system, 'message': data.message, 'time': data.time})
 
 @router.get('/netclient/ping')
-async def ping_client(host: str) -> int | None:    
+async def ping_client(host: str) -> int:    
     """Проверка доступности хоста службы Netclient v1.
 
     Args:
         host (str): ip-адрес.
 
     Returns:
-        int | None: статус
+        int: статус
     """    
     status = await get_ping_request(host)
     return status
