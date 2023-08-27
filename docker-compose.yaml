@@ -18,7 +18,7 @@ services:
     healthcheck:
       test: curl --fail http://localhost:8000/check || exit 1
       interval: 30s
-      timeout: 5s
+      timeout: 30s
       retries: 5
     networks:
       - application
@@ -33,11 +33,6 @@ services:
       - ./.config.env
     depends_on:
       - redis
-    # healthcheck:
-    #   test: curl --fail http://localhost:8000/check || exit 1
-    #   interval: 30s
-    #   timeout: 5s
-    #   retries: 5
     networks:
       - application
 
@@ -50,6 +45,11 @@ services:
     restart: always
     ports:
       - 8030:8030
+    healthcheck:
+      test: curl --fail http://localhost:8030/check || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 5
     networks:
       - application
 

@@ -43,6 +43,10 @@ func ClientPingHandler(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 }
 
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
 func main() {
 
 	const PORT = ":8030"
@@ -57,6 +61,7 @@ func main() {
 	router.HandleFunc("/config", ClientConfigHandler).Methods("POST")
 	router.HandleFunc("/messages", ClientMessagesHandler).Methods("POST")
 	router.HandleFunc("/ping", ClientPingHandler).Methods("GET")
+	router.HandleFunc("/check", HealthCheckHandler).Methods("GET")
 
 	fmt.Printf("Starting server on port %v\n", PORT)
 	err := server.ListenAndServe()
