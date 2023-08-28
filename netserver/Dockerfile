@@ -11,11 +11,11 @@ FROM alpine
 
 WORKDIR /app
 
+RUN apk add --no-cache curl
+
 COPY --from=builder /build/netserver /app
 
-ARG listen_netserver
 ARG backend
-
-ENV SERVER=$listen_netserver
 ENV BACKEND_SERVER=$backend
+
 ENTRYPOINT [ "./netserver" ]
