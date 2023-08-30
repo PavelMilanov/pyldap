@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
-var BACKEND_SERVER = os.Getenv("BACKEND_SERVER")
+// var BACKEND_SERVER = os.Getenv("BACKEND_SERVER")
 
 type ClientConfig struct {
 	// Структура для преобразования и передачи конфигурационных данных на сервер бекенда.

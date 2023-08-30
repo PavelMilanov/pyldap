@@ -1,75 +1,80 @@
 package main
 
 import (
-	"bytes"
-	"context"
-	"flag"
-	"fmt"
 	"log"
 	"net"
-	"net/http"
 	"os"
 	"os/exec"
-	"os/signal"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
+	"github.com/kardianos/service"
 )
 
-func init() {
-	// loads values from .env into the system
-	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
+var (
+	SERVER = "172.16.2.78"
+	PORT   = "8030"
+)
+var logger service.Logger
+
+type program struct{}
+
+func (p *program) Start(s service.Service) error {
+	// Start should not block. Do the actual work async.
+	go p.run()
+	return nil
+}
+func (p *program) run() {
+	// Do work here
+	conn, err := net.Dial("tcp", SERVER+":"+PORT)
+	if err != nil {
+		panic(err)
 	}
+	netdata := parseNetworkConfig()
+	hostdata := parseHostName()
+	data := PyldapProtocol{network: netdata, system: hostdata}
+	message1 := data.code("config", "")
+	message2 := data.code("message", "login")
+	serverConnetion(conn, message1, message2)
+	// message := data.code("message", "login")
+	// serverConnetion(conn, message)
 }
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
-	// Хендлер ответа для сервера, если ход доступен
-	w.WriteHeader(http.StatusOK)
+func (p *program) Stop(s service.Service) error {
+	// Stop should not block. Return with a few seconds.
+	// sendMessage("shutdown")
+	<-time.After(time.Second * 3)
+	return nil
 }
-
 func main() {
-	const PORT = ":8031"
-	var wait time.Duration
-
-	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
-	flag.Parse()
-
-	router := mux.NewRouter()
-	server := &http.Server{
-		Addr:    PORT,
-		Handler: router,
+	svcConfig := &service.Config{
+		Name:        "NetClient",
+		DisplayName: "NetClient V1",
+		Description: "NetClient service for customers",
 	}
-	router.HandleFunc("/ping", PingHandler).Methods("GET")
 
-	status := sendConfig()
-	go sendMessage("login")
-	if status != "ok" {
-		log.Println(status)
+	prg := &program{}
+	s, err := service.New(prg, svcConfig)
+	if err != nil {
+		log.Fatal(err)
 	}
-	fmt.Printf("Starting server on port %v\n", PORT)
-	go func() {
-		err := server.ListenAndServe()
+	if len(os.Args) > 1 {
+		err = service.Control(s, os.Args[1])
 		if err != nil {
-			log.Println(err)
+			log.Fatal(err)
 		}
-	}()
-	c := make(chan os.Signal, 1)
-	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
-	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
-	signal.Notify(c, os.Interrupt)
-
-	// Block until we receive our signal.
-	<-c
-	sendMessage("shutdown")
-	ctx, cancel := context.WithTimeout(context.Background(), wait)
-	defer cancel()
-	server.Shutdown(ctx)
-	os.Exit(0)
+		return
+	}
+	logger, err = s.Logger(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = s.Run()
+	if err != nil {
+		logger.Error(err)
+	}
 }
 
 func parseNetworkConfig() []NetworkConfig {
@@ -118,41 +123,18 @@ func parseHostName() SystemConfig {
 	return SystemConfig{hostName: data}
 }
 
-func sendConfig() string {
-	// Функция отправляет конфигурацию на сервер при включение хоста.
-	netdata := parseNetworkConfig()
-	hostdata := parseHostName()
-	data := ClientConfig{network: netdata, system: hostdata}
-	message := data.code()
+func serverConnetion(connection net.Conn, messages ...[]byte) {
+	// Основная логика взаимодействия с сервером.
+	defer connection.Close()
 
-	url := fmt.Sprintf("http://%s:%s/config", os.Getenv("NET_SERVER"), os.Getenv("NET_SERVER_PORT"))
-	client := http.Client{}
-	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(message))
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
-
-	response, err := client.Do(request)
-	if err != nil {
-		return err.Error()
+	// buffer := make([]byte, 1024)
+	connection.SetReadDeadline(time.Now().Add(time.Second * 5))
+	for _, message := range messages {
+		connection.Write([]byte(message))
+		// _, err := connection.Read(buffer)
+		// if err != nil {
+		// 	fmt.Println("Error reading:", err.Error())
+		// }
 	}
-	defer response.Body.Close()
-	return "ok"
-}
-
-func sendMessage(text string) {
-	// Функция отправки системных сообщений на сервер.
-	hostdata := parseHostName()
-	data := ClientLog{SystemName: hostdata.hostName, Message: text}
-	message := data.code()
-
-	url := fmt.Sprintf("http://%s:%s/messages", os.Getenv("NET_SERVER"), os.Getenv("NET_SERVER_PORT"))
-	client := http.Client{}
-	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(message))
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
-
-	response, err := client.Do(request)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	defer response.Body.Close()
+	// connection.Write([]byte("1"))
 }
