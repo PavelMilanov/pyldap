@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	SERVER = "172.16.2.78"
+	SERVER = "localhost"
 	PORT   = "8030"
 )
 var logger service.Logger
@@ -35,11 +35,12 @@ func (p *program) run() {
 	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
 	data := PyldapProtocol{network: netdata, system: hostdata}
-	message1 := data.code("config", "")
-	message2 := data.code("message", "login")
-	serverConnetion(conn, message1, message2)
+	config := data.code("config", "")
+	login := data.code("message", "login")
+	serverConnetion(conn, config, login)
 	// message := data.code("message", "login")
-	// serverConnetion(conn, message)
+	// serverConnetion(conn, login)
+	os.Exit(0)
 }
 
 func (p *program) Stop(s service.Service) error {
@@ -134,7 +135,7 @@ func serverConnetion(connection net.Conn, messages ...[]byte) {
 		// _, err := connection.Read(buffer)
 		// if err != nil {
 		// 	fmt.Println("Error reading:", err.Error())
-		// }
 	}
+	// }
 	// connection.Write([]byte("1"))
 }
