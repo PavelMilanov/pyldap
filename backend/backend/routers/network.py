@@ -86,7 +86,7 @@ async def get_netclient_config(config: schema.NetworkClietnConfig):
     try:
         resp = await NetworkClient.get_or_none(system=config.system)
         if resp is None:
-            await NetworkClient.create(network=config.network, system=config.system)
+            await NetworkClient.create(network=config.network, system=config.system, time=config.time)
         else:
             resp.update_from_dict(config.dict())
     except Exception as e:
