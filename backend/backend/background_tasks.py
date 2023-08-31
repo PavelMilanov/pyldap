@@ -58,3 +58,17 @@ def scheduled_generate_customers_cache():
         logger.info('set customers cache')
     else:
         logger.warning('failed to set customer cache')
+
+@dramatiq.actor
+def scheduled_clear_messages_cache():
+    """Фоновая задача.
+    
+    По будням чистит кеш сообщений для websocket.
+    
+    Задача выполняется в будние дни в 0 часов.
+    """    
+    clear_cache = cache.clear_json_set('messages')
+    if clear_cache == 1:
+        logger.info('clear messages cache')
+    else:
+        logger.warning('failed to clear messages')
