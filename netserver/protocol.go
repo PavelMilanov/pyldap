@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
 	"log"
+=======
+>>>>>>> b4ea94b (rebuild netclient\netserver)
 	"net/http"
 	"os"
 	"regexp"
