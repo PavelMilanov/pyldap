@@ -4,14 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-<<<<<<< HEAD
-<<<<<<< HEAD
 	"log"
-=======
->>>>>>> b4ea94b (rebuild netclient\netserver)
-=======
-	"log"
->>>>>>> ws
 	"net/http"
 	"os"
 	"regexp"
@@ -36,29 +29,11 @@ func (protocol *ClientData) decode(bytes []byte) {
 	//Header: iMac-pavel-milanov.local
 	//Body: en0,1500,192.168.1.2/24,3c:a6:f6:b3:bf:e1 en1,1500,192.168.1.6/24,3c:a6:f6:af:ba:e1 bridge100,1500,192.168.193.1/24,3e:a6:f6:3b:1a:64 bridge101,1500,172.16.184.1/24,3e:a6:f6:3b:1a:65
 	//Time: 2023-08-30 23:45
-<<<<<<< HEAD
-	//End
-=======
 	//...
->>>>>>> ws
 	//Event: message
 	//Header: iMac-pavel-milanov.local
 	//Body: login
 	//Time: 2023-08-30 23:45
-<<<<<<< HEAD
-	//End
-	data := string(bytes)
-	frames := strings.Split(data, "End\n") // Разбивает общий фраем на отдельные сообщения по метке.
-	for _, frame := range frames {
-		// fmt.Println(frame, "\nframe")
-		reEvent, _ := regexp.Compile(`Event:.*`)
-		event := reEvent.FindString(frame)[7:]
-		switch event {
-		case "config":
-			reHeader, _ := regexp.Compile(`Header:.*`)
-			header := reHeader.FindString(frame)
-			protocol.System = header[8:]
-=======
 	//...
 	data := string(bytes)
 	frames := strings.Split(data, "...") // Разбивает общий фрэйм на отдельные сообщения по метке.
@@ -69,6 +44,8 @@ func (protocol *ClientData) decode(bytes []byte) {
 		header := reHeader.FindString(frame)
 		if strings.HasSuffix(header[8:], "\r") { // Убираем символ \r в конце строки, если он присутсвует
 			protocol.System = header[8 : len(header)-1]
+		} else {
+			protocol.System = header[8:]
 		}
 		reTime, _ := regexp.Compile(`Time:.*`)
 		time := reTime.FindString(frame)
@@ -76,7 +53,6 @@ func (protocol *ClientData) decode(bytes []byte) {
 
 		switch event {
 		case "config":
->>>>>>> ws
 			reBody, _ := regexp.Compile(`Body:.*`)
 			body := reBody.FindString(frame)
 			trimdata := strings.TrimSpace(body[6:])
@@ -86,30 +62,12 @@ func (protocol *ClientData) decode(bytes []byte) {
 				ipv4Data := fmt.Sprintf("%s %s %s %s", intf[0], intf[1], intf[2], intf[3])
 				protocol.Network = append(protocol.Network, ipv4Data)
 			}
-<<<<<<< HEAD
-			reTime, _ := regexp.Compile(`Time:.*`)
-			time := reTime.FindString(frame)
-			protocol.Time = time[6:]
-			status := protocol.sendConfig()
-			log.Println(status)
-		case "message":
-			reHeader, _ := regexp.Compile(`Header:.*`)
-			header := reHeader.FindString(frame)
-			protocol.System = header[8:]
-			reBody, _ := regexp.Compile(`Body:.*`)
-			body := reBody.FindString(frame)[6:]
-			protocol.Message = body
-			reTime, _ := regexp.Compile(`Time:.*`)
-			time := reTime.FindString(frame)
-			protocol.Time = time[6:]
-=======
 			status := protocol.sendConfig()
 			log.Println(status)
 		case "message":
 			reBody, _ := regexp.Compile(`Body:.*`)
 			body := reBody.FindString(frame)[6:]
 			protocol.Message = body
->>>>>>> ws
 			status := protocol.sendMessage()
 			log.Println(status)
 		}
