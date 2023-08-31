@@ -38,14 +38,11 @@ func (p *program) run() {
 	config := data.code("config", "")
 	login := data.code("message", "login")
 	serverConnetion(conn, config, login)
-	// message := data.code("message", "login")
-	// serverConnetion(conn, login)
 	os.Exit(0)
 }
 
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
-	// sendMessage("shutdown")
 	<-time.After(time.Second * 3)
 	return nil
 }
@@ -128,14 +125,8 @@ func serverConnetion(connection net.Conn, messages ...[]byte) {
 	// Основная логика взаимодействия с сервером.
 	defer connection.Close()
 
-	// buffer := make([]byte, 1024)
 	connection.SetReadDeadline(time.Now().Add(time.Second * 5))
 	for _, message := range messages {
 		connection.Write([]byte(message))
-		// _, err := connection.Read(buffer)
-		// if err != nil {
-		// 	fmt.Println("Error reading:", err.Error())
 	}
-	// }
-	// connection.Write([]byte("1"))
 }

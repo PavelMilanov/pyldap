@@ -8,7 +8,6 @@ from models import schema
 from db.postgres.models import StaticIp, NetworkClient
 from .auth import token_auth_scheme
 from .import cache
-from utils.utilits import get_ping_request
 
 
 router = APIRouter(
@@ -101,19 +100,6 @@ async def get_netclient_messages(data: schema.NetworkClientMessage):
         data (schema.NetworkClientMessage): json-данные.
     """    
     cache.append_json_set('messages', {'client': data.system, 'message': data.message, 'time': data.time})
-
-@router.get('/netclient/ping')
-async def ping_client(host: str) -> int:    
-    """Проверка доступности хоста службы Netclient v1.
-
-    Args:
-        host (str): ip-адрес.
-
-    Returns:
-        int: статус
-    """    
-    status = await get_ping_request(host)
-    return status
 
 @router.put('/{id}')
 async def change_static_ip(

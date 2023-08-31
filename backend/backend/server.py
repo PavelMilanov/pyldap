@@ -18,6 +18,7 @@ from routers import (
 from background_tasks import (
     scheduled_generate_customers_cache,
     scheduled_parse_computer_for_unit,
+    scheduled_clear_messages_cache
     )
 
 
@@ -122,6 +123,10 @@ async def startup_event():
     background.add_job(
         scheduled_parse_computer_for_unit.send,
         'cron', day_of_week='0-4', hour='9-18/3'         
+    )
+    background.add_job(
+        scheduled_clear_messages_cache.send,
+        'cron', day_of_week='0-4', hour='0'
     )
     background.start()
     background.print_jobs()

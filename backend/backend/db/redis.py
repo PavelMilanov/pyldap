@@ -10,7 +10,7 @@ class RedisConnector:
     _IP: Final = (env('REDIS_HOST'))
     _PORT: Final = 6379
     CONN = redis.Redis(host=_IP, port=_PORT, decode_responses=True)
-        
+
 
     def set_value(self, key: str, value: str) -> None:
         """Redis SET command.
@@ -23,7 +23,7 @@ class RedisConnector:
             self.CONN.set(key, value)
         except Exception as e:
             logger.exception(e)
-    
+
     def get_value(self, key: str) -> str:
         """Redis GET command.
 
@@ -49,7 +49,7 @@ class RedisConnector:
             self.CONN.delete(key)
         except Exception as e:
             logger.exception(e)
-    
+
     def add_set_item(self, set_name: str, set_value: str) -> None:
         """Redis SADD command.
 
@@ -61,7 +61,7 @@ class RedisConnector:
             self.CONN.sadd(set_name, set_value)
         except Exception as e:
             logger.exception(e)
-    
+
     def get_set_items(self, set_name: str) -> Set[str]:
         """Redis SINTER command.
 
@@ -102,7 +102,7 @@ class RedisConnector:
             return self.CONN.json().set(set_name, '$', value)
         except Exception as e:
             logger.exception(e)
-    
+
     def get_json_set(self, set_name: str, skip: int = None, limit: int = None) -> List[dict]:      
         """Redis JSON.GET command.
 
@@ -137,8 +137,31 @@ class RedisConnector:
         except Exception as e:
             logger.exception(e)
 
-    def append_json_set(self, set_name: str, data: dict):
+    def append_json_set(self, set_name: str, data: dict) -> int:
+        """Redis JSON.ARRAPPEND command.
+
+        Args:
+            set_name (str): key.
+            data (dict): values.
+
+        Returns:
+            int: status.
+        """        
         try:
             return self.CONN.json().arrappend(set_name, '$', data)
+        except Exception as e:
+            logger.exception(e)
+
+    def clear_json_set(self, set_name: str) -> int:
+        """Redis JSON.CLEAR command.
+
+        Args:
+            set_name (str): key.
+
+        Returns:
+            int: status.
+        """       
+        try:
+            return self.CONN.json().clear(set_name)
         except Exception as e:
             logger.exception(e)
