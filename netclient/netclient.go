@@ -16,10 +16,18 @@ import (
 var (
 	SERVER = "localhost"
 	PORT   = "8030"
+	logger service.Logger
 )
-var logger service.Logger
 
 type program struct{}
+
+func connection() net.Conn {
+	conn, err := net.Dial("tcp", SERVER+":"+PORT)
+	if err != nil {
+		panic(err)
+	}
+	return conn
+}
 
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
@@ -27,11 +35,7 @@ func (p *program) Start(s service.Service) error {
 	return nil
 }
 func (p *program) run() {
-	// Do work here
-	conn, err := net.Dial("tcp", SERVER+":"+PORT)
-	if err != nil {
-		panic(err)
-	}
+	conn := connection()
 	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
 	data := PyldapProtocol{network: netdata, system: hostdata}
@@ -46,6 +50,7 @@ func (p *program) Stop(s service.Service) error {
 	<-time.After(time.Second * 3)
 	return nil
 }
+
 func main() {
 	svcConfig := &service.Config{
 		Name:        "NetClient",
