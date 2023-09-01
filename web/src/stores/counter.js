@@ -242,5 +242,20 @@ export const defaultStore = defineStore('default', {
         console.log(error)
       })
     },
+    getAllMessages() {
+      var cache
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      axios.get(`http://${this.BACKEND}/api/v1/network/netclient/messages`, { headers }).then(
+        function (response) {
+          cache = response.data
+          cache.pop()  // удаляется последний элемент, последний элемент получается по веб-сокету
+          cache.forEach(element => {  // загружаются все сообщения из кеша
+            var message = element.time + ": " + element.client + " " + element.message
+            document.querySelector("#Logon-log").value += message + "\n"
+          })
+        }).catch(function (error) {
+          console.log(error)
+        })
+    },
   },
 })

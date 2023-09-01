@@ -124,7 +124,7 @@ func (protocol *ClientData) sendMessage() int {
 		System:  protocol.System,
 		Time:    protocol.Time,
 	}
-	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient/messages", BACKEND_SERVER)
+	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient/message", BACKEND_SERVER)
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		panic(err)

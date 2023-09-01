@@ -29,8 +29,9 @@ export default {
       },
   },
   created() {
-    this.connection = new WebSocket("ws://localhost:8000/api/v1/ws/netclients")
+    this.store.getAllMessages()
 
+    this.connection = new WebSocket("ws://localhost:8000/api/v1/ws/netclients")
     this.connection.onmessage = function (event) {
       if (event.data == this.cache) {  // если не было новых сообщений и пришло тоже самое
         return
@@ -48,7 +49,7 @@ export default {
 
     setInterval(() => {  // триггер для обновления данных по вебсокету.
       this.connection.send('info')
-    }, 3000)
+    }, 1000)
   }
 }
 </script>

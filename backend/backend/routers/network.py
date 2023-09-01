@@ -75,7 +75,7 @@ async def get_static_ip(
         logger.exception(e)
 
 @router.post('/netclient')
-async def get_netclient_config(config: schema.NetworkClietnConfig):
+async def netclient_config(config: schema.NetworkClietnConfig) -> None:
     """Принимает конфигурацию хоста AD, с помощью службы Netclient v1.
     Добавляет\обновляет данные в БД.
 
@@ -91,8 +91,8 @@ async def get_netclient_config(config: schema.NetworkClietnConfig):
     except Exception as e:
         logger.exception(e)
         
-@router.post('/netclient/messages')
-async def get_netclient_messages(data: schema.NetworkClientMessage):
+@router.post('/netclient/message')
+async def netclient_messages(data: schema.NetworkClientMessage) -> None:
     """Принимает системные сообщения от хостов службы Netclient v1.
     Добавляет все сообщения в кеш.
     
@@ -100,6 +100,11 @@ async def get_netclient_messages(data: schema.NetworkClientMessage):
         data (schema.NetworkClientMessage): json-данные.
     """    
     cache.append_json_set('messages', {'client': data.system, 'message': data.message, 'time': data.time})
+
+@router.get('/netclient/messages')
+async def get_messages_log() -> List[dict]:
+    data = cache.get_json_set('messages')[0]  # список сообщений от клиентов службы Netclient.
+    return data
 
 @router.put('/{id}')
 async def change_static_ip(
