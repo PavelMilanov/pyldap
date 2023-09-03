@@ -11,7 +11,7 @@ import (
 func main() {
 
 	var (
-		SERVER = "localhost"
+		SERVER = "0.0.0.0"
 		PORT   = "8030"
 	)
 
@@ -44,8 +44,6 @@ func clientConnection(connection net.Conn) {
 			}
 			panic(err)
 		}
-		// connection.Write(([]byte("1"))) // данные приняты успешно
-		// fmt.Println((string(buffer[:client])))
 		bytes := ClientData{}
 		bytes.decode(buffer[:client])
 	}

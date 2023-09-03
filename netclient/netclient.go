@@ -21,21 +21,16 @@ var (
 
 type program struct{}
 
-func connection() net.Conn {
-	conn, err := net.Dial("tcp", SERVER+":"+PORT)
-	if err != nil {
-		panic(err)
-	}
-	return conn
-}
-
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
 	go p.run()
 	return nil
 }
 func (p *program) run() {
-	conn := connection()
+	conn, err := net.Dial("tcp", SERVER+":"+PORT)
+	if err != nil {
+		panic(err)
+	}
 	netdata := parseNetworkConfig()
 	hostdata := parseHostName()
 	data := PyldapProtocol{network: netdata, system: hostdata}
