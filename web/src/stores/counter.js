@@ -243,7 +243,7 @@ export const defaultStore = defineStore('default', {
       })
     },
     getAllMessages() {
-      var cache
+      var cache = []
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
       axios.get(`http://${this.BACKEND}/api/v1/network/netclient/messages`, { headers }).then(
         function (response) {

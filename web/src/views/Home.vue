@@ -30,7 +30,6 @@ export default {
   },
   created() {
     this.store.getAllMessages()
-
     this.connection = new WebSocket("ws://localhost:8000/api/v1/ws/netclients")
     this.connection.onmessage = function (event) {
       if (event.data == this.cache) {  // если не было новых сообщений и пришло тоже самое
