@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ____
 ## NetClient v1
 Служба, которая сканирует все сетевые интерфейсы компьютера и отправляет данные на [сервер](../netserver/readme.md) при старте ОС:
@@ -14,3 +15,6 @@ ____
 	3) Перейти в директорию с исполняемым файлом;
 	4) \netclient.exe install  - устанавливает службу;
 	5) перезагрузить компьютер или ввести команду netclient.exe start.
+=======
+1) GOOS=windows GOARCH=amd64 go build .
+>>>>>>> 479c6f2 (rebuild backend-netserver-netclient API)

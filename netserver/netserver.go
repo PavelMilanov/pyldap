@@ -44,6 +44,11 @@ func clientConnection(connection net.Conn) {
 			}
 			panic(err)
 		}
+<<<<<<< HEAD
+=======
+		// connection.Write(([]byte("1"))) // данные приняты успешно
+		// fmt.Println((string(buffer[:client])))
+>>>>>>> 479c6f2 (rebuild backend-netserver-netclient API)
 		bytes := ClientData{}
 		bytes.decode(buffer[:client])
 	}
