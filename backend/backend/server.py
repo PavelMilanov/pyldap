@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
+from tortoise.contrib.fastapi import register_tortoise
 from apscheduler.schedulers.background import BackgroundScheduler
 from environs import Env
 from loguru import logger
@@ -93,9 +93,10 @@ app.add_middleware(
     expose_headers=['X-Customer-Act', 'X-Customers-Count']
 )
 
-logger.add('logs/logs', format='{time:YYYY-MM-DD HH:mm Z} |{file}:{module}:{function}:{line} | {level} | {message}',
-        level='INFO', rotation='5 MB',
-        compression='tar', backtrace=True, diagnose=True)
+logger.add('logs/logs',
+    format='{time:YYYY-MM-DD HH:mm Z} |{file}:{module}:{function}:{line} | {level} | {message}',  # noqa: E501
+    level='INFO', rotation='5 MB',
+    compression='tar', backtrace=True, diagnose=True)
 
 @app.get('/check')
 async def check():

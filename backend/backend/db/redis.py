@@ -36,7 +36,7 @@ class RedisConnector:
         try:
             data = self.CONN.get(key)
             return data.decode('utf-8')
-        except AttributeError as e:
+        except AttributeError:
             return data
 
     def delete_value(self, key: str) -> None:
@@ -103,7 +103,11 @@ class RedisConnector:
         except Exception as e:
             logger.exception(e)
 
-    def get_json_set(self, set_name: str, skip: int = None, limit: int = None) -> List[dict]:      
+    def get_json_set(self,
+        set_name: str,
+        skip: int = None,
+        limit: int = None
+        ) -> List[dict]:      
         """Redis JSON.GET command.
 
         Args:

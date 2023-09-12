@@ -16,10 +16,13 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> List[schema.GetStaticIp]:
+async def get_static_ip_all(
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> List[schema.GetStaticIp]:
     """Возвращает список табличных данных.
     Args:
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+        Defaults to Security(token_auth_scheme).
 
     Returns:
         List[schema.GetStaticIp]: db.postgres.StaticIp.
@@ -29,7 +32,7 @@ async def get_static_ip_all(token: HTTPAuthorizationCredentials = Security(token
         return [schema.GetStaticIp(**item) for item in resp]
     except DoesNotExist as e:
         logger.exception(e)
-    except TypeError as e:  # пустой список
+    except TypeError:  # пустой список
         return []
 
 @router.post('/')
@@ -44,10 +47,11 @@ async def set_static_ip(
             ip: str,
             description: str
         }
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+        Defaults to Security(token_auth_scheme).
     """    
     try:
-        new_item = await StaticIp.create(ip=item.ip, description=item.description)
+        await StaticIp.create(ip=item.ip, description=item.description)
     except Exception as e:
         logger.exception(e)
         
@@ -60,7 +64,8 @@ async def get_static_ip(
 
     Args:
         id (int): Возвращает запись из таблицы StaticIp по id.
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+        Defaults to Security(token_auth_scheme).
 
     Returns:
         schema.GetStaticIp: {
@@ -85,7 +90,11 @@ async def netclient_config(config: schema.NetworkClietnConfig) -> None:
     try:
         resp = await NetworkClient.get_or_none(system=config.system)
         if resp is None:
-            await NetworkClient.create(network=config.network, system=config.system, time=config.time)
+            await NetworkClient.create(
+                network=config.network,
+                system=config.system,
+                time=config.time
+                )
         else:
             resp.update_from_dict(config.dict())
     except Exception as e:
@@ -99,11 +108,16 @@ async def netclient_messages(data: schema.NetworkClientMessage) -> None:
     Args:
         data (schema.NetworkClientMessage): json-данные.
     """    
-    cache.append_json_set('messages', {'client': data.system, 'message': data.message, 'time': data.time})
+    cache.append_json_set('messages', {
+        'client': data.system,
+        'message': data.message,
+        'time': data.time}
+        )
 
 @router.get('/netclient/messages')
 async def get_messages_log() -> List[dict]:
-    data = cache.get_json_set('messages')[0]  # список сообщений от клиентов службы Netclient.
+    # список сообщений от клиентов службы Netclient.
+    data = cache.get_json_set('messages')[0]
     return data
 
 @router.put('/{id}')
@@ -119,7 +133,8 @@ async def change_static_ip(
             ip: str,
             description: str
         }
-        token (HTTPAuthorizationCredentials, optional): Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional):
+        Defaults to Security(token_auth_scheme).
     """    
     try:
         resp = await StaticIp.get(id=id)
@@ -137,6 +152,7 @@ async def delete_static_ip(
 
     Args:
         id (int): id записи.
-        token (HTTPAuthorizationCredentials, optional): Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional):
+        Defaults to Security(token_auth_scheme).
     """    
     await StaticIp.get(id=id).delete()

@@ -34,7 +34,7 @@ class Ldap3Connector:
     _DC1: Final = env.list("DN")[1]
     _DC2: Final = env.list("DN")[2]
     
-    def get_domain_users(self, skip: int = None, limit: int = None) -> List[CustomerLdap]:       
+    def get_domain_users(self, skip: int = None, limit: int = None) -> List[CustomerLdap]:  # noqa: E501
         """Возвращает список pydantic-моделей всех пользователей в контейнере AD.
         
         Args:
@@ -48,14 +48,20 @@ class Ldap3Connector:
                 member_of=list(str),
             }
         """        
-        with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-            dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter='(objectClass=person)', attributes=[ALL_ATTRIBUTES])
+        with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
+            dc.search(
+                search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}',
+                search_filter='(objectClass=person)',
+                attributes=[ALL_ATTRIBUTES]
+                )
             data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
-            sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])  # сортировка по порядку
+            # сортировка по порядку
+            sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])
             users = []
             for user in sorted_data[skip:limit]:
                 name=str(user['attributes']['name'][0])
-                description = ''  # этого атрибута может не быть, по умолчанию задаем строку
+                # этого атрибута может не быть, по умолчанию задаем строку
+                description = ''
                 try:
                     description=str(user['attributes']['description'][0])
                     member_of=list(user['attributes']['memberOf'])
@@ -83,11 +89,16 @@ class Ldap3Connector:
             }
         """        
         try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                dc.search(search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_filter=f'(&(objectClass=person)(cn={name}))', attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
+                dc.search(
+                    search_base=f'ou=Customer,ou=Customers,ou={self._OU},dc={self._DC1},dc={self._DC2}',
+                    search_filter=f'(&(objectClass=person)(cn={name}))',
+                    attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES]
+                    )
                 user = json.loads(dc.entries[0].entry_to_json())
                 name=str(user['attributes']['name'][0])
-                description = ''  # этого атрибута может не быть, по умолчанию задаем строку
+                # этого атрибута может не быть, по умолчанию задаем строку
+                description = ''
                 try:
                     description=str(user['attributes']['description'][0])
                     member_of=list(user['attributes']['memberOf'])
@@ -108,8 +119,12 @@ class Ldap3Connector:
             Dict | None: json-всех подраздлений со всеми атрибутами | None.
         """        
         try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                dc.search(search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_scope=SUBTREE, search_filter='(objectClass=organizationalUnit)', attributes=ALL_ATTRIBUTES)
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
+                dc.search(
+                    search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}',
+                    search_scope=SUBTREE, search_filter='(objectClass=organizationalUnit)',  # noqa: E501
+                    attributes=ALL_ATTRIBUTES
+                    )
                 units = [json.loads(unit.entry_to_json()) for unit in dc.entries]
                 return units
         except Exception as e:
@@ -123,13 +138,21 @@ class Ldap3Connector:
             Dict[str, List[str]] | None: {'Temp': ['Unit1', 'Unit2']} | None.
         """        
         try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                dc.search(search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}', search_scope=LEVEL, search_filter='(objectClass=organizationalUnit)', attributes=['name'])
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
+                dc.search(
+                    search_base=f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}',
+                    search_scope=LEVEL, search_filter='(objectClass=organizationalUnit)',
+                    attributes=['name']
+                    )
                 units_tree = dict()
                 for unit in dc.entries:
                     data = json.loads(unit.entry_to_json())
                     tree_item = data['attributes']['name'][0]
-                    dc.search(search_base=f'ou={tree_item},ou=ARMs,ou={env.list("DN")[0]},dc={env.list("DN")[1]},dc={env.list("DN")[2]}', search_scope=LEVEL, search_filter='(objectClass=organizationalUnit)', attributes=['name'])
+                    dc.search(
+                        search_base=f'ou={tree_item},ou=ARMs,ou={env.list("DN")[0]},dc={env.list("DN")[1]},dc={env.list("DN")[2]}',
+                        search_scope=LEVEL, search_filter='(objectClass=organizationalUnit)',  # noqa: E501
+                        attributes=['name']
+                        )
                     if len(dc.entries) > 0:  # если есть вложенность
                         tree_subitems = []
                         for subunit in dc.entries:
@@ -173,8 +196,12 @@ class Ldap3Connector:
         search = f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}'
         filter_pattern = f'(&(objectClass=computer)(cn={name}))'
         try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
-                dc.search(search_base=search, search_filter=filter_pattern, attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES])
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
+                dc.search(
+                    search_base=search,
+                    search_filter=filter_pattern,
+                    attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES]
+                    )
                 computer = json.loads(dc.entries[0].entry_to_json())
                 os=computer['attributes']['operatingSystem'][0],
                 version=str(computer['attributes']['operatingSystemVersion'][0])
@@ -192,12 +219,13 @@ class Ldap3Connector:
         search = f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}'
         filter_pattern = '(&(objectClass=computer))'
         try:
-            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
                 dc.search(search_base=search, search_filter=filter_pattern)
                 dn_items = []
                 computers = dc.entries
                 for computer in computers:
-                    data = json.loads(computer.entry_to_json())  # CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=_
+                    # CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=
+                    data = json.loads(computer.entry_to_json())
                     item = computer.entry_dn
                     dn_items.append(item)
                 return dn_items
@@ -232,7 +260,6 @@ class Ldap3Connector:
             unit=[''],
             ip=''
         )
-        # ip = cache.get_value(name)
         return CustomerLdapDescribe(
             name=user.name,
             description=user.description,
@@ -259,10 +286,15 @@ class Ldap3Connector:
         search_tree = f'cn=Users,dc={self._DC1},dc={self._DC2}'
         search_filter = f'(&(objectClass=person)(cn={name}))'
         try:
-            with Connection(self._SERVER, user=f'{self._DC1}.{self._DC2}\{name.lower()}', password=password, authentication=NTLM) as dc:
-                dc.search(search_base=search_tree, search_filter=search_filter, attributes=['name'])
+            with Connection(self._SERVER, user=f'{self._DC1}.{self._DC2}\{name.lower()}', password=password, authentication=NTLM) as dc:  # noqa: E501, E999
+                dc.search(
+                    search_base=search_tree,
+                    search_filter=search_filter,
+                    attributes=['name']
+                    )
                 user = json.loads(dc.entries[0].entry_to_json())
-                if user['attributes']['name'][0].lower() == name.lower():  # проверка на ввод данных администратора домена
+                # проверка на ввод данных администратора домена
+                if user['attributes']['name'][0].lower() == name.lower():
                     return True
         except LDAPBindError as e:
             logger.error(e)

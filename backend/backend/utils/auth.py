@@ -54,7 +54,11 @@ class Authentification(HTTPBearer):
             str: токен.
         """        
         expired_date = await self.__expired_date()
-        token = jwt.encode({'expired_date': str(expired_date)}, self.SECRET, algorithm=self.ALGORITHM)
+        token = jwt.encode(
+            {'expired_date': str(expired_date)},
+            self.SECRET,
+            algorithm=self.ALGORITHM
+            )
         cache.set_value('token', token)
         return token
 
@@ -63,8 +67,7 @@ class Authentification(HTTPBearer):
 
         Args:
             token (str): токен аутентификации.
-        """       
-        cache_token = cache.get_value('token')
+        """
         try:
             decod_token = jwt.decode(token, self.SECRET, algorithms=self.ALGORITHM)
             if date.fromisoformat(decod_token['expired_date']) < date.today():
@@ -92,6 +95,6 @@ class Authentification(HTTPBearer):
         current_date = date.today()
         last_day = calendar.monthrange(current_date.year, current_date.month)[1]
         if current_date.day + token_life >= last_day:
-            return date(current_date.year, current_date.month+1, (current_date.day + token_life)-last_day)
+            return date(current_date.year, current_date.month+1, (current_date.day + token_life)-last_day)  # noqa: E501
         else:
-            return date(current_date.year, current_date.month, current_date.day+token_life)
+            return date(current_date.year, current_date.month, current_date.day+token_life)  # noqa: E501

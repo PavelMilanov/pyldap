@@ -13,21 +13,24 @@ router = APIRouter(
 )
 
 @router.get('/schema')
-async def get_organizations_schema():
+async def get_organizations_schema() -> Dict | None:
     """Возвращает схему всех подраздений со всеми отрибутами.
 
     Returns:
-        _type_: _description_
+        Dict | None: json-всех подраздлений со всеми атрибутами | None
     """    
     resp = await ldap.search_organizations_schema()
     return resp
 
 @router.get('/tree')
-async def get_organizations_tree(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> Dict[str, List[str]]:
+async def get_organizations_tree(
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> Dict[str, List[str]]:
     """Возвращает иерархию подраздений AD.
 
     Args:
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+        Defaults to Security(token_auth_scheme).
 
     Returns:
         Dict[str, List[str]]: {
@@ -47,7 +50,8 @@ def get_computers_for_unit(
 
     Args:
         unit (str): Название подраздления.
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации. Defaults to Security(token_auth_scheme).
+        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+        Defaults to Security(token_auth_scheme).
 
     Returns:
         List[str]: ["user1", "user2"]
