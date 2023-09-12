@@ -38,10 +38,13 @@ func (p *program) run() {
 	login := data.code("message", "login")
 	serverConnetion(conn, config, login)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	// message := data.code("message", "login")
 	// serverConnetion(conn, login)
 >>>>>>> 479c6f2 (rebuild backend-netserver-netclient API)
+=======
+>>>>>>> a336fee (change redis API and clear cache)
 	os.Exit(0)
 }
 
@@ -134,6 +137,7 @@ func serverConnetion(connection net.Conn, messages ...[]byte) {
 	for _, message := range messages {
 		connection.Write([]byte(message))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
 		// _, err := connection.Read(buffer)
@@ -143,4 +147,7 @@ func serverConnetion(connection net.Conn, messages ...[]byte) {
 	// }
 	// connection.Write([]byte("1"))
 >>>>>>> 479c6f2 (rebuild backend-netserver-netclient API)
+=======
+	}
+>>>>>>> a336fee (change redis API and clear cache)
 }
