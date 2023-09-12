@@ -1,7 +1,6 @@
 from pydantic import BaseModel, validator
 from datetime import datetime
 from typing import Union, List
-from enum import Enum
 
 
 class CustomerLdap(BaseModel):
@@ -13,7 +12,8 @@ class CustomerLdap(BaseModel):
     @validator('member_of')
     def formated_member_of(cls, data):
         if data is not None:
-            return [group.split(',')[0][3:] for group in data]  # CN=Administrators -> Administrators
+            # CN=Administrators -> Administrators
+            return [group.split(',')[0][3:] for group in data]
         else:
             return []
 
@@ -40,7 +40,6 @@ class ComputerLdap(BaseModel):
     @validator('unit')
     def formated_unit(cls, data):
         if data is not None:
-            format_value = data.split(',')[1:-4]
             return data.split(',')[1:-4]
 
 

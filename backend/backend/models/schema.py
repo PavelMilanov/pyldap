@@ -1,7 +1,5 @@
 from pydantic import BaseModel, Field, UUID4
-from datetime import datetime
-from typing import Union, List, Dict
-from enum import Enum
+from typing import List
 
 
 class AuthSchema(BaseModel):

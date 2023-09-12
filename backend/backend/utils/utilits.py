@@ -1,8 +1,6 @@
-import subprocess
-import re
 from typing import List
 
-from .import env, cache
+from .import cache
 
 
 def generate_computer_list_from_unit_free(unit: str) -> List[str]:

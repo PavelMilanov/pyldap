@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, Security
 from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse
 from typing import Final
-import aiofiles, aiofiles.os
+import aiofiles
 from loguru import logger
 
 from .auth import token_auth_scheme
@@ -54,7 +54,11 @@ async def download_act(
     """    
     resp = await Act.get(customer=customer).values()
     file = ActSchema(**resp)
-    return FileResponse(path=file.file, filename=f'{customer}', media_type='multipart/form-data')
+    return FileResponse(
+        path=file.file,
+        filename=f'{customer}',
+        media_type='multipart/form-data'
+        )
 
 @router.put('/act/{customer}/change')
 async def change_act(
@@ -77,7 +81,7 @@ async def change_act(
     async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
-    resp = await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{customer}')
+    await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{customer}')
     logger.info(f'Загружен новый акт {file.filename} для {customer}')
     return 'ok'
 

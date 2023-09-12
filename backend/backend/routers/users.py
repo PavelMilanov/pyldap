@@ -4,7 +4,6 @@ from typing import List, Dict
 from tortoise.exceptions import DoesNotExist
 
 from db.postgres.models import Act
-from models.schema import ActSchema
 from .auth import token_auth_scheme
 from .import ldap, cache
 
@@ -36,7 +35,7 @@ async def get_customers(
 @router.get('/{customer}/info')
 async def get_customer_info(
     response: Response,
-    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
+    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),  # noqa: E501
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> Dict | None:
     """Возвращает полную информацию о пользователе домена.
@@ -57,7 +56,7 @@ async def get_customer_info(
 
 @router.get('/{customer}')
 async def get_customer(
-    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),
+    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),  # noqa: E501
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> Dict | None:
     """Вывод информации о пользователе AD c атрибутами CustomerLdap.

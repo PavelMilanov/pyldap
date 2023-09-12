@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	SERVER = "localhost"
+	SERVER = "172.16.2.78"
 	PORT   = "8030"
 	logger service.Logger
 )
