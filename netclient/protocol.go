@@ -41,15 +41,16 @@ func (protocol *PyldapProtocol) sendConfig(event string) []byte {
 		ipv4Data += item.ethName + "," + item.mtu + "," + item.netAddr + "," + item.hardAddr + " "
 	}
 	now := time.Now()
-<<<<<<< HEAD
-<<<<<<< HEAD
-	data := fmt.Sprintf("Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\n...", event, protocol.system.hostName, ipv4Data, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
-=======
-	data := fmt.Sprintf("Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\nEnd\n", event, protocol.system.hostName, ipv4Data, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
->>>>>>> 479c6f2 (rebuild backend-netserver-netclient API)
-=======
-	data := fmt.Sprintf("Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\n...", event, protocol.system.hostName, ipv4Data, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
->>>>>>> 587a2bf (refactoring)
+	data := fmt.Sprintf(
+		"Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\n...",
+		event,
+		protocol.system.hostName,
+		ipv4Data,
+		now.Year(),
+		now.Month(),
+		now.Day(),
+		now.Hour(),
+		now.Minute())
 	fmt.Println(data)
 	return []byte(data)
 }
@@ -57,15 +58,16 @@ func (protocol *PyldapProtocol) sendConfig(event string) []byte {
 func (protocol *PyldapProtocol) sendMessage(event string, text string) []byte {
 	// Функция отправки системных сообщений на сервер.
 	now := time.Now()
-<<<<<<< HEAD
-<<<<<<< HEAD
-	data := fmt.Sprintf("Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\n...", event, protocol.system.hostName, text, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
-=======
-	data := fmt.Sprintf("Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\nEnd", event, protocol.system.hostName, text, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
->>>>>>> 479c6f2 (rebuild backend-netserver-netclient API)
-=======
-	data := fmt.Sprintf("Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\n...", event, protocol.system.hostName, text, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
->>>>>>> 587a2bf (refactoring)
+	data := fmt.Sprintf(
+		"Event: %s\nHeader: %s\nBody: %s\nTime: %d-%02d-%02d %02d:%02d\n...",
+		event,
+		protocol.system.hostName,
+		text,
+		now.Year(),
+		now.Month(),
+		now.Day(),
+		now.Hour(),
+		now.Minute())
 	fmt.Println(data)
 	return []byte(data)
 }
