@@ -1,6 +1,6 @@
 #  внешние пакеты
 from environs import Env
-from utils import Ldap3Connector
+from utils.connector import Ldap3Connector
 from db.redis import RedisConnector
 
 

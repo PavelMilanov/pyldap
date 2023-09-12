@@ -1,9 +1,6 @@
-#  внешние пакеты
 from environs import Env
-from db import RedisConnector
+from db.redis import RedisConnector
 
-#  внутренние пакеты
-from .connector import Ldap3Connector
 
 env = Env()
 env.read_env()

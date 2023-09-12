@@ -1,7 +1,4 @@
-#  внешние пакеты
 from environs import Env
-#  внутренние пакеты
-from .redis import RedisConnector
 
 
 env = Env()
