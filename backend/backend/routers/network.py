@@ -114,12 +114,15 @@ async def netclient_messages(data: schema.NetworkClientMessage) -> None:
         'time': data.time}
         )
 
+<<<<<<< HEAD
 @router.get('/netclient/messages')
 async def get_messages_log() -> List[dict]:
     # список сообщений от клиентов службы Netclient.
     data = cache.get_json_set('messages')[0]
     return data
 
+=======
+>>>>>>> 587a2bf (refactoring)
 @router.put('/{id}')
 async def change_static_ip(
     id: int, item: schema.StaticIp,
