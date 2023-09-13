@@ -16,10 +16,12 @@ async def netclients_ws(websocket: WebSocket):
         while True:
             await websocket.receive_text()
             # [{}] - получаем последнее сообщение
-            data = cache.get_json_set('messages', limit=-1)
-            if len(data) < 1:
-                await websocket.send_json('no data')
-            await websocket.send_json(data[0])
+            try:
+                data = cache.get_json_set('messages', limit=-1)
+                await websocket.send_json(data[0])
+            except IndexError:
+                await websocket.send_json('')
+                await websocket.send_json(data)
     except WebSocketDisconnect as e:
         logger.warning(e)
         return
