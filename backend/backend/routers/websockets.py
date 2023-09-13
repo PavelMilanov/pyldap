@@ -20,8 +20,7 @@ async def netclients_ws(websocket: WebSocket):
                 data = cache.get_json_set('messages', limit=-1)
                 await websocket.send_json(data[0])
             except IndexError:
-                await websocket.send_json('')
-                await websocket.send_json(data)
+                await websocket.send_json(None)
     except WebSocketDisconnect as e:
         logger.warning(e)
         return

@@ -30,16 +30,19 @@ export default {
   },
   created() {
     var backend = import.meta.env.VITE_APP_BACKEND
-    this.store.getAllMessages()  // загружает все сообщения и выводит в окно событий при обновлении страницы
     this.connection = new WebSocket(`ws://${backend}/api/v1/ws/netclients`)
+
+    this.store.getAllMessages()  // загружает все сообщения и выводит в окно событий при обновлении страницы
+
     this.connection.onmessage = function (event) {
-      if (event.data == this.cache || event.data.length == 0) {  // если не было новых сообщений и пришло тоже самое
-        return
-      }
       var jsondata = JSON.parse(event.data)
+      if (event.data == this.cache || event.data == "null") {  // если не было новых сообщений и пришло тоже самое
+        return
+      } 
       var message = jsondata["time"] + ": " + jsondata["client"] + " " + jsondata["message"]
       document.querySelector("#Logon-log").value += message + "\n"
       this.cache = event.data
+      
     }
 
     this.connection.onopen = function (event) {
