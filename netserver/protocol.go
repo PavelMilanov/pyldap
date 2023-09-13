@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"regexp"
@@ -21,7 +22,7 @@ type ClientData struct {
 	Time    string   `json:"time"`
 }
 
-func (protocol *ClientData) decode(bytes []byte) {
+func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 	// Метод декодирует информацию от клиента. См. netclient.PyldapProtocol
 	// Пример одного фрайма:
 	//
@@ -70,6 +71,11 @@ func (protocol *ClientData) decode(bytes []byte) {
 			protocol.Message = body
 			status := protocol.sendMessage()
 			log.Println(status)
+		case "check":
+			reBody, _ := regexp.Compile(`Body:.*`)
+			body := reBody.FindString(frame)[6:]
+			log.Println(body)
+			conn.Write([]byte("1"))
 		}
 	}
 }

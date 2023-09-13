@@ -11,8 +11,6 @@ FROM alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache curl
-
 COPY --from=builder /build/netserver /app
 
 ARG backend
