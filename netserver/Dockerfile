@@ -16,4 +16,4 @@ COPY --from=builder /build/netserver /app
 ARG backend
 ENV BACKEND_SERVER=$backend
 
-ENTRYPOINT [ "./netserver" ]
+ENTRYPOINT [ "./netserver", "listen" ]
