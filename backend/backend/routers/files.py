@@ -3,6 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse
 from typing import Final
 import aiofiles
+import aiofiles.os
 from loguru import logger
 
 from .auth import token_auth_scheme
@@ -74,9 +75,7 @@ async def change_act(
 
     Returns:
         str: статус.
-    """    
-    # resp = await Act.get(customer=customer).values()
-    # old_file = resp['file_name']
+    """
     await aiofiles.os.remove(f'{ACT_DIR}/{customer}.pdf')
     async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
         content = await file.read()
