@@ -161,6 +161,7 @@ export const defaultStore = defineStore('default', {
         function (response) {
           responseData = response.data
           responseHeader = response.headers['x-customer-act']
+          // console.log(responseHeader)
         }
       ).catch(function (error) {
         console.log(error)
@@ -168,6 +169,7 @@ export const defaultStore = defineStore('default', {
         localStorage.removeItem("token")
       })
       responseData['act'] = responseHeader
+      console.log(responseData)
       return responseData
     },
     async getUnitsTree() {

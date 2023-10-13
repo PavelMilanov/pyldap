@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Path, Security, Response
 from fastapi.security import HTTPAuthorizationCredentials
 from typing import List, Dict
+import re
 from tortoise.exceptions import DoesNotExist
 
 from db.postgres.models import Act
@@ -35,7 +36,7 @@ async def get_customers(
 @router.get('/{customer}/info')
 async def get_customer_info(
     response: Response,
-    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),  # noqa: E501
+    customer: str = Path(description='Имя компьютера', example='customer'),  # noqa: E501
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> Dict | None:
     """Возвращает полную информацию о пользователе домена.
@@ -51,8 +52,12 @@ async def get_customer_info(
         response.headers['X-Customer-Act'] = 'true'
     except DoesNotExist:
         response.headers['X-Customer-Act'] = 'false'
-    resp = await ldap.get_customer_desctibe(customer)
-    return resp
+    pattern = re.search(r"customer[0-9]{4}", customer)
+    if pattern:   
+        resp = await ldap.get_customer_desctibe(customer)
+        return resp
+    else:
+        return {'act': response.headers['X-Customer-Act']}
 
 @router.get('/{customer}')
 async def get_customer(
