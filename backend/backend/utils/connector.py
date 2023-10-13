@@ -62,7 +62,7 @@ class Ldap3Connector:
                     description=str(user['attributes']['description'][0])
                     member_of=list(user['attributes']['memberOf'])
                 except KeyError:  # пользователь состоит только в группе domain user
-                    last_logon=None
+                    # last_logon=None
                     member_of=None
                 users.append(CustomerLdap(
                     name=name,
@@ -221,7 +221,7 @@ class Ldap3Connector:
                 computers = dc.entries
                 for computer in computers:
                     # CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=
-                    data = json.loads(computer.entry_to_json())
+                    # data = json.loads(computer.entry_to_json())
                     item = computer.entry_dn
                     dn_items.append(item)
                 return dn_items
