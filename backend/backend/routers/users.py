@@ -52,11 +52,13 @@ async def get_customer_info(
         response.headers['X-Customer-Act'] = 'true'
     except DoesNotExist:
         response.headers['X-Customer-Act'] = 'false'
+    # если запрос на акт не от AD.
     pattern = re.search(r"customer[0-9]{4}", customer)
     if pattern:   
         resp = await ldap.get_customer_desctibe(customer)
         return resp
     else:
+        # если не пользователь AD вернуть только акт.
         return {'act': response.headers['X-Customer-Act']}
 
 @router.get('/{customer}')
