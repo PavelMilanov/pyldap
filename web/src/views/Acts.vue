@@ -42,9 +42,6 @@ export default {
         preinput() {
             this.act.name = "customer"  // добавляет текст при начале ввода поиска
         },
-        inputout() {
-            this.search = ""
-        },
         async getCustomerInfo(CustomerName) {
             let data = await this.store.getCustomerDescribeInfo(CustomerName)
             return data

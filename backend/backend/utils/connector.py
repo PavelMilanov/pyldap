@@ -176,6 +176,48 @@ class Ldap3Connector:
                     count += 1
         return count
 
+    def get_domain_computers(self, skip: int = None, limit: int = None) -> List[ComputerLdap]:
+        """Возвращает список pydantic-моделей всех компьютеров в контейнере AD.
+        Args:
+            skip (int, optional): Начальный индекс списка пользователей. Defaults to None.
+            limit (int, optional): Конечный индекс списка пользователей. Defaults to None.
+
+        Returns:
+            List[ComputerLdap]: {
+                os=str,
+                version_os=str,
+                unit=[str]
+            }
+        """        
+        search = f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}'
+        filter_pattern = '(objectClass=computer)'
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
+                dc.search(
+                    search_base=search,
+                    search_filter=filter_pattern,
+                    attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES]
+                    )
+                data = [json.loads(unit.entry_to_json()) for unit in dc.entries]
+                # сортировка по порядку
+                sorted_data = sorted(data, key=lambda x: x['attributes']['name'][0])
+                computers = []
+                for computer in sorted_data[skip:limit]:    
+                    try:
+                        os=computer['attributes']['operatingSystem'][0],
+                        version=str(computer['attributes']['operatingSystemVersion'][0])
+                        unit=str(computer['attributes']['distinguishedName'][0])
+                    except KeyError:
+                        os=['']
+                    computers.append(ComputerLdap(
+                        os=os[0],
+                        version_os=version,
+                        unit=unit,
+                    ))
+                return computers 
+        except IndexError:  # компьютер не найден
+            # logger.error(f'компьютер {name} не найден в лесу')
+            return None
     async def get_domain_computer(self, name: str) -> ComputerLdap | None:
         """Возврщает pydantic-модель компьютера в контейнере AD.
 

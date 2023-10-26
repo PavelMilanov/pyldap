@@ -19,7 +19,10 @@ export const defaultStore = defineStore('default', {
       currentPage: 0, // номер страницы пагинации
     },
     customers: {
-      tableFull: []
+      customersAll: [],
+      computersAll: [],
+      all: [],
+      pageCount: Math.ceil(localStorage.customersCount / 20)
     },
     units: {
       tree: {},
@@ -62,6 +65,21 @@ export const defaultStore = defineStore('default', {
         return 'failure'
       }
     },
+    async getComputersandCustomers(skip, limit) {
+      let cache = []
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/`, { headers, params: { skip: skip, limit: limit } }).then(
+        function (response) {
+          cache = response.data
+        }
+      ).catch(function (error) {
+        console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
+      })
+      this.customers.all = cache
+      return cache
+    },
     async getNetworkList() {
       let cache = []
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
@@ -82,6 +100,21 @@ export const defaultStore = defineStore('default', {
         const chunk = cache.slice(i, i + this.pagination.range)
         this.network.tableRender.push(chunk)
       }
+    },
+    async getComputersList(skip, limit) {
+      let cache = []
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/computers/all`, { headers, params: { skip: skip, limit: limit } }).then(
+        function (response) {
+          cache = response.data
+        }
+      ).catch(function (error) {
+        console.log(error)
+        localStorage.removeItem("isActive")
+        localStorage.removeItem("token")
+      })
+      this.customers.computersAll
+      return cache
     },
     async addNetworkRow(ip, description) {
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
@@ -149,7 +182,7 @@ export const defaultStore = defineStore('default', {
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
       })
-      this.customers.tableFull = cache
+      this.customers.customersAll = cache
       localStorage.customersCount = responseHeader
       return cache
     },
@@ -161,7 +194,6 @@ export const defaultStore = defineStore('default', {
         function (response) {
           responseData = response.data
           responseHeader = response.headers['x-customer-act']
-          // console.log(responseHeader)
         }
       ).catch(function (error) {
         console.log(error)
@@ -169,7 +201,6 @@ export const defaultStore = defineStore('default', {
         localStorage.removeItem("token")
       })
       responseData['act'] = responseHeader
-      console.log(responseData)
       return responseData
     },
     async getUnitsTree() {

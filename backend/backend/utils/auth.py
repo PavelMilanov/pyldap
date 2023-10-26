@@ -94,7 +94,9 @@ class Authentification(HTTPBearer):
         token_life = 5        
         current_date = date.today()
         last_day = calendar.monthrange(current_date.year, current_date.month)[1]
-        if current_date.day + token_life >= last_day:
+        if current_date.day + token_life > last_day:
             return date(current_date.year, current_date.month+1, (current_date.day + token_life)-last_day)  # noqa: E501
+        elif current_date.day + token_life == last_day:
+            return date(current_date.year, current_date.month+1, 1)
         else:
             return date(current_date.year, current_date.month, current_date.day+token_life)  # noqa: E501

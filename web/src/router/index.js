@@ -7,7 +7,7 @@ import UnitsView from '../views/Units.vue'
 import ActsView from '../views/Acts.vue'
 import AuthView from '../views/Auth.vue'
 import ActRender from '../components/ActRender.vue'
-import CustomerRender from '../components/CustomerRender.vue'
+import CustomersTable from '../components/CustomersTable.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,13 +30,13 @@ const router = createRouter({
         {
             path: '/customers',
             name: 'customers',
-            redirect: { path: '/customers/all' },
+            redirect: { path: '/customers/tables', query: {skip: 0, limit: 20, name: "all"} },
             component: CustomersView,
             children: [
                 {
-                    path: '/customers/:id',
-                    name: 'customer',
-                    component: CustomerRender,
+                    path: '/customers/tables',
+                    name: 'customer-tables',
+                    component: CustomersTable,
                     props: true,
                 }
             ]
@@ -65,6 +65,7 @@ const router = createRouter({
 
 export default router
 
+
 router.beforeEach((to, from, next) => {
     const store = defaultStore()
     if (to.name !== 'auth' && !store.getUser.isActive) {  // если пользователь не авторизован, будет редирект на страницу авторизации
@@ -75,7 +76,16 @@ router.beforeEach((to, from, next) => {
     }
 })
 
+// после перехода
 router.afterEach((to, from) => {
-    const store = defaultStore()
+    // const store = defaultStore()
 
+})
+
+// до перехода
+router.beforeEach((to, from) => {
+    if (to.name == 'customer-tables') { // рендер таблицы при переходе на вкладку /customers/tables
+        const store = defaultStore()
+        store.getComputersandCustomers(to.params.skip, to.params.limit, to.params.name)
+    }
 })
