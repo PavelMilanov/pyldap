@@ -63,10 +63,10 @@ export default {
                     <th scope="row">{{ index + 1 }}</th>  <!-- Генерация сквозной нумерации -->
                     <td>{{ item.name }}</td>
                     <td>{{ item.description }}</td>
-                    <td>{{ item.unit ? item.unit.join(', ') : '' }}</td>
-                    <td>{{ item.ip ? item.ip : 'не найден' }}</td>
+                    <td>{{ item.unit ? item.unit.join(', ') : '-' }}</td>
+                    <td>{{ item.ip ? item.ip : '-' }}</td>
                     <td>{{ item.os + item.version_os }}</td>
-                    <td>{{ item.member_of ? item.member_of.join('. ') : '' }}</td>
+                    <td>{{ item.member_of ? item.member_of.join(', ') : '-' }}</td>
                 </tr>
             </tbody>
         </table>

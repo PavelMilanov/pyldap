@@ -88,6 +88,7 @@ async def get_customer_info(
     pattern = re.search(r"customer[0-9]{4}", customer)
     if pattern:   
         resp = await ldap.get_customer_desctibe(customer)
+        print(resp.member_of)
         return resp
     else:
         # если не пользователь AD вернуть только акт.

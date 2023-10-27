@@ -176,7 +176,7 @@ class Ldap3Connector:
                     count += 1
         return count
 
-    async def get_domain_computer(self, name: str) -> ComputerLdap:
+    async def get_domain_computer(self, name: str) -> ComputerLdap | None:
         """Возврщает pydantic-модель компьютера в контейнере AD.
 
         Args:
@@ -209,11 +209,6 @@ class Ldap3Connector:
                 )
         except IndexError:  # компьютер не найден
             logger.error(f'компьютер {name} не найден в лесу')
-            return ComputerLdap(
-                    os='',
-                    version_os='',
-                    unit='',
-                )
 
     async def get_customer_desctibe(self, name: str) -> CustomerLdapDescribe:
         """Возвращает общую модель CustomerLdap и ComputerLdap.

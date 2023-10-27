@@ -33,36 +33,25 @@ class OrganizationLdap(BaseModel):
 
 class ComputerLdap(BaseModel):
     """Модель компьютера домена."""    
-    os: str
-    version_os: str
+    os: Union[str, None]
+    version_os: Union[str, None]
     unit: Union[str, None]
     
     @validator('unit')
     def formated_unit(cls, data):
         if data is not None:
+            if isinstance(data, list):
+                return data
             return data.split(',')[1:-4]
 
-
-class CustomerLdapDescribe(CustomerLdap,ComputerLdap):
+class CustomerLdapDescribe(BaseModel):
     """Подробная модель пользователя домена.
     Совмещает атрибуты пользователя и компьютера.
-
-    Args:
-        CustomerLdap (_type_): модель пользователя домена.
-        ComputerLdap (_type_): модуль компьютера домена.
-    """    
-    unit: List[str]
-    ip: Union[str, None]
-    
-
-    @validator('member_of', 'unit')
-    def formated_member_of_and_unit(cls, data):
-        if data is not None:
-            return data
-        else:
-            return []
-
-    @validator('unit')
-    def formated_unit(cls, data):
-        if data is not None:
-            return data
+    """
+    name: str
+    description: str
+    member_of: Union[List[str], None]    
+    os: str
+    version_os: str
+    unit: Union[List[str], None]
+    ip: str
