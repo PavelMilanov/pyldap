@@ -6,7 +6,7 @@ from tortoise.exceptions import DoesNotExist
 
 from db.postgres.models import Act
 from .auth import token_auth_scheme
-from models.ldap import CustomerLdapDescribe
+from models.ldap import CustomerLdapDescribe, CustomerLdap
 from .import ldap, cache
 
 
@@ -20,34 +20,25 @@ async def get_customers_and_computers(
     skip: int = 0,
     limit: int = 20,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ) -> List:
-    """_Вывод сортированный список всех записей AD с атрибутами CustomerLdapDescribe.
+    ) -> List[CustomerLdapDescribe]:
+    """Вывод сортированный список всех записей AD с атрибутами CustomerLdapDescribe.
 
-    Args:
-        skip (int, optional): Начальный индекс списка пользователей. Defaults to None.
-        limit (int, optional): Конечный индекс списка пользователей. Defaults to None.
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+        Args:
+            skip (int, optional): Начальный индекс списка пользователей. Defaults to None.
+            limit (int, optional): Конечный индекс списка пользователей. Defaults to None.
+            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
 
     Returns:
-        List: _description_
+        List: List[CustomerLdapDescribe]
     """    
+    resp = []
     users = cache.get_json_set('customers', skip=skip, limit=limit)
+    users = [CustomerLdap(**model) for model in users]
     if users is None:  # если в кеше не окажется данных, взять из AD.
         users = ldap.get_domain_users(skip, limit)
-    computers = cache.get_json_set('computers', skip=skip, limit=limit)
-    if computers is None:  # если в кеше не окажется данных, взять из AD.
-        computers = ldap.get_domain_computers(skip, limit)
-    resp = []
-    for user, computer in zip(users, computers):
-        resp.append(CustomerLdapDescribe(
-            name=user.name,
-            description=user.description,
-            member_of=user.member_of,
-            os=computer.os,
-            version_os=computer.version_os,
-            unit=computer.unit,
-            ip=''
-        ))
+    for user in users:
+        data = await ldap.get_customer_desctibe(user.name)
+        resp.append(data)
     return resp
 
 @router.get('/all')
@@ -79,11 +70,11 @@ async def get_customer_info(
     response: Response,
     customer: str = Path(description='Имя компьютера', example='customer'),  # noqa: E501
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ) -> Dict | None:
+    ) -> CustomerLdapDescribe | None:
     """Возвращает полную информацию о пользователе домена.
 
-    Args:
-        customer (str): имя customer.
+        Args:
+            customer (str): имя customer.
 
     Returns:
         Dict | None: модель CustomerLdapDescribe.
@@ -109,8 +100,8 @@ async def get_customer(
     ) -> Dict | None:
     """Вывод информации о пользователе AD c атрибутами CustomerLdap.
 
-    Args:
-        customer (str): имя пользователя.
+        Args:
+            customer (str): имя пользователя.
 
     Returns:
         Dict | None: Dict | None: модель CustomerLdap.

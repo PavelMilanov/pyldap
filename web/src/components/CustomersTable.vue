@@ -13,7 +13,7 @@ export default {
     },
     data() {
         return {
-            
+            searchMode: true
         }
     },
     watch: {
@@ -29,10 +29,12 @@ export default {
         async renderCustomer(name) {
             let data = await this.store.getCustomerDescribeInfo(name)
             this.store.getCustomersTable.all = [data]
+            this.searchMode = false
         },
         async renderTable() {
             let data = await this.store.getComputersandCustomers(0, 20)
             this.store.getCustomersTable.all = data
+            this.searchMode = true
         },
         async changePage(skip, limit) {
             let data = await this.store.getComputersandCustomers(skip, limit)
@@ -68,7 +70,7 @@ export default {
                 </tr>
             </tbody>
         </table>
-        <nav aria-label="Page navigation example">
+        <nav v-if="searchMode" aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item" @click="changePage(0, 20)">
                 <a class="page-link" aria-label="Previous">

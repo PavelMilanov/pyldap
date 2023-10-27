@@ -59,28 +59,6 @@ def scheduled_generate_customers_cache():
         logger.info('set customers cache')
     else:
         logger.warning('failed to set customer cache')
-        
-@dramatiq.actor
-def scheduled_generate_computers_cache():
-    """Фоновая задача.
-    
-    Периодически подключается к AD и генерирует сортированный список
-    всех компьютеров и заносит в кеш.
-    
-    Задача выполняется в будние дни в час ночи.
-    """    
-    del_cache = cache.del_json_set('computers')  # очишаем список
-    if del_cache == 1:
-        logger.info('flush computers cache')
-    else:
-        logger.warning('failed to flush computers cache')
-    data = ldap.get_domain_computers()
-    data = [item.dict() for item in data]
-    set_cache = cache.set_json_set('computers', data)  # пишем заново
-    if set_cache == 1:
-        logger.info('set computers cache')
-    else:
-        logger.warning('failed to set computers cache')
 
 @dramatiq.actor
 def scheduled_clear_messages_cache():
