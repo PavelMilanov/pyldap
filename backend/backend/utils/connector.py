@@ -71,7 +71,7 @@ class Ldap3Connector:
                 ))
             return users
 
-    async def get_domain_user(self, name: str) -> CustomerLdap | None:
+    def get_domain_user(self, name: str) -> CustomerLdap | None:
         """Ищет пользователя в домене и возвращает pydantic-модель.
 
         Args:
@@ -108,7 +108,7 @@ class Ldap3Connector:
         except IndexError as e:  # пользователь не найден
             logger.error(e)
     
-    async def search_organizations_schema(self) -> Dict | None:
+    def search_organizations_schema(self) -> Dict | None:
         """Возвращает все подразделения в контейнере домена.
 
         Returns:
@@ -127,7 +127,7 @@ class Ldap3Connector:
             logger.exception(e)
             return None
 
-    async def search_organizations_tree(self) -> Dict[str, List[str]] | None:
+    def search_organizations_tree(self) -> Dict[str, List[str]] | None:
         """Возвращает все подраздления со вложенностью ввиде словаря.
 
         Returns:
@@ -161,13 +161,13 @@ class Ldap3Connector:
         except Exception as e:
             logger.exception(e)
 
-    async def get_count_organizations(self) -> int:
+    def get_count_organizations(self) -> int:
         """Возвращает число подразделений в контейнере AD.
 
         Returns:
             int: count.
         """        
-        organizations = await self.search_organizations_tree()
+        organizations = self.search_organizations_tree()
         count = 0
         for unit, subunit in organizations.items():
             count += 1
@@ -176,7 +176,7 @@ class Ldap3Connector:
                     count += 1
         return count
 
-    async def get_domain_computer(self, name: str) -> ComputerLdap | None:
+    def get_domain_computer(self, name: str) -> ComputerLdap | None:
         """Возврщает pydantic-модель компьютера в контейнере AD.
 
         Args:
@@ -191,6 +191,9 @@ class Ldap3Connector:
         """
         search = f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}'
         filter_pattern = f'(&(objectClass=computer)(cn={name}))'
+        os = ''
+        version = ''
+        unit = ''
         try:
             with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
                 dc.search(
@@ -199,18 +202,20 @@ class Ldap3Connector:
                     attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES]
                     )
                 computer = json.loads(dc.entries[0].entry_to_json())
-                os=computer['attributes']['operatingSystem'][0],
+                os=computer['attributes']['operatingSystem'][0]
                 version=str(computer['attributes']['operatingSystemVersion'][0])
                 unit=str(computer['attributes']['distinguishedName'][0])
-                return ComputerLdap(
-                    os=os[0],
+        except IndexError:  # компьютер не найден
+            logger.error(f'компьютер {name} не найден в лесу')
+        except KeyError:
+            pass
+        return ComputerLdap(
+                    os=os,
                     version_os=version,
                     unit=unit,
                 )
-        except IndexError:  # компьютер не найден
-            logger.error(f'компьютер {name} не найден в лесу')
 
-    async def get_customer_desctibe(self, name: str) -> CustomerLdapDescribe:
+    def get_customer_desctibe(self, name: str) -> CustomerLdapDescribe:
         """Возвращает общую модель CustomerLdap и ComputerLdap.
 
         Args:
@@ -226,8 +231,8 @@ class Ldap3Connector:
                 unit=list
             }
         """        
-        user = await self.get_domain_user(name)
-        computer = await self.get_domain_computer(name)
+        user = self.get_domain_user(name)
+        computer = self.get_domain_computer(name)
         if computer is None:
             return CustomerLdapDescribe(
             name=user.name,
@@ -248,7 +253,30 @@ class Ldap3Connector:
             ip=''
         )
     
-    async def ldap_authentificate(self, name: str, password: str) -> bool:
+    def get_computers(self) -> List[str]:
+        """Поиск всех компьюентров.
+        Требуется для задачи по рассписанию.
+
+        Returns:
+            List[str]:
+        """        
+        search = f'ou=ARMs,ou={self._OU},dc={self._DC1},dc={self._DC2}'
+        filter_pattern = '(&(objectClass=computer))'
+        try:
+            with Connection(self._SERVER, user=self._LOGIN, password=self._PASSWORD, authentication=NTLM) as dc:  # noqa: E501
+                dc.search(search_base=search, search_filter=filter_pattern)
+                dn_items = []
+                computers = dc.entries
+                for computer in computers:
+                    # CN=CUSTOMER0003,OU=_,OU=_,OU=_,DC=_,DC=
+                    # data = json.loads(computer.entry_to_json())
+                    item = computer.entry_dn
+                    dn_items.append(item)
+                return dn_items
+        except Exception as e:
+            logger.exception(e)
+
+    def ldap_authentificate(self, name: str, password: str) -> bool:
         """Ldap-аутентификация администратора домена.
 
         Args:

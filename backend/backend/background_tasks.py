@@ -44,7 +44,7 @@ def scheduled_generate_customers_cache():
     
     Счетчик количеста пользователей заносится в кеш.
 
-    Задача выполняется в будние дни с 9 до 17 каждые 2 часа.
+    Задача выполняется в будние дни в 12 и 00 часов.
     """    
     del_cache = cache.del_json_set('customers')  # очишаем список
     if del_cache == 1:
@@ -53,8 +53,12 @@ def scheduled_generate_customers_cache():
         logger.warning('failed to flush customers cache')
     data = ldap.get_domain_users()
     cache.set_value('customers_count', len(data))  # счетчик всех пользователей
-    data = [item.dict() for item in data]
-    set_cache = cache.set_json_set('customers', data)  # пишем заново
+    items = []
+    for user in data:
+        item = ldap.get_customer_desctibe(user.name)
+        items.append(item.dict())
+    # data = [item.dict() for item in data]
+    set_cache = cache.set_json_set('customers', items)  # пишем заново
     if set_cache == 1:
         logger.info('set customers cache')
     else:

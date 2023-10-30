@@ -119,7 +119,7 @@ async def startup_event():
 
     background.add_job(
         scheduled_generate_customers_cache.send,
-        'cron', day_of_week='0-4', hour='9-17/2' 
+        'cron', day_of_week='0-4', hour='0,12' 
     )
     background.add_job(
         scheduled_parse_computer_for_unit.send,
@@ -127,7 +127,7 @@ async def startup_event():
     )
     background.add_job(
         scheduled_clear_messages_cache.send,
-        'cron', day_of_week='0-4', hour='0'
+        'cron', day_of_week='0-4', hour='1'
     )
     background.start()
     background.print_jobs()

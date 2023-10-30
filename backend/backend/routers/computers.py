@@ -3,7 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from typing import Dict, List
 
 from .auth import token_auth_scheme
-from .import ldap, cache
+from .import ldap
 
 
 router = APIRouter(
@@ -26,17 +26,22 @@ async def  get_computers(
 
     Returns:
         List | None: Список ComputerLdap.
-    """    
-    resp = cache.get_json_set('computers', skip=skip, limit=limit)
-    if resp is None:  # если в кеше не окажется данных, взять из AD.
-        return ldap.get_domain_computers(skip, limit)
-    return resp
+    """
+    return ldap.get_domain_computers(skip, limit)
 
 @router.get('/')
 async def get_computer(
     customer: str = Query(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),  # noqa: E501
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> Dict | None:
-    resp = await ldap.get_domain_computer(name=customer)
+    """Поиск компьютера в лесу AD.
+
+        Args:
+            customer (str, optional): имя компьютера. Defaults to Query(description='Имя компьютера', example='customer', regex='customer[0-9]{4}').
+
+    Returns:
+        Dict | None: компьютер.
+    """    
+    resp = ldap.get_domain_computer(name=customer)
     if resp is not None:
         return resp

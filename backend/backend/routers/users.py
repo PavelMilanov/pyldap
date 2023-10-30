@@ -6,7 +6,7 @@ from tortoise.exceptions import DoesNotExist
 
 from db.postgres.models import Act
 from .auth import token_auth_scheme
-from models.ldap import CustomerLdapDescribe, CustomerLdap
+from models.ldap import CustomerLdapDescribe
 from .import ldap, cache
 
 
@@ -30,40 +30,21 @@ async def get_customers_and_computers(
 
     Returns:
         List: List[CustomerLdapDescribe]
-    """    
-    resp = []
-    users = cache.get_json_set('customers', skip=skip, limit=limit)
-    users = [CustomerLdap(**model) for model in users]
-    if users is None:  # если в кеше не окажется данных, взять из AD.
-        users = ldap.get_domain_users(skip, limit)
-    for user in users:
-        data = await ldap.get_customer_desctibe(user.name)
-        resp.append(data)
-    return resp
+    """
+    return cache.get_json_set('customers', skip=skip, limit=limit)
 
 @router.get('/all')
 async def get_customers(
     response: Response,
-    skip: int = 0,
-    limit: int = 20,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ) -> List | None:
-    """Вывод сортированный список всех пользователей AD с атрибутами CustomerLdap.
+    ) -> None:
+    """Вывод количества пользователей AD.
 
         Args:
-            skip (int, optional): Начальный индекс списка пользователей. Defaults to None.
-            limit (int, optional): Конечный индекс списка пользователей. Defaults to None.
             token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
-
-    Returns:
-        List: Список CustomerLdap сущностей.
     """
     header = cache.get_value('customers_count')
     response.headers['X-Customers-Count'] = str(header)
-    resp = cache.get_json_set('customers', skip=skip, limit=limit)
-    if resp is None:  # если в кеше не окажется данных, взять из AD.
-        return ldap.get_domain_users(skip, limit)
-    return resp
 
 @router.get('/{customer}/info')
 async def get_customer_info(
@@ -87,8 +68,8 @@ async def get_customer_info(
     # если запрос на акт не от AD.
     pattern = re.search(r"customer[0-9]{4}", customer)
     if pattern:   
-        resp = await ldap.get_customer_desctibe(customer)
-        print(resp.member_of)
+        resp = ldap.get_customer_desctibe(customer)
+
         return resp
     else:
         # если не пользователь AD вернуть только акт.
@@ -107,5 +88,5 @@ async def get_customer(
     Returns:
         Dict | None: Dict | None: модель CustomerLdap.
     """    
-    resp = await ldap.get_domain_user(customer)
+    resp = ldap.get_domain_user(customer)
     return resp

@@ -19,7 +19,7 @@ async def get_organizations_schema() -> Dict | None:
     Returns:
         Dict | None: json-всех подраздлений со всеми атрибутами | None
     """    
-    resp = await ldap.search_organizations_schema()
+    resp = ldap.search_organizations_schema()
     return resp
 
 @router.get('/tree')
@@ -38,7 +38,7 @@ async def get_organizations_tree(
             "unit2: [subunit1"]
             }
     """    
-    resp = await ldap.search_organizations_tree()
+    resp = ldap.search_organizations_tree()
     return resp
 
 @router.get('/{unit}')

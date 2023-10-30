@@ -100,7 +100,7 @@ export default {
                     <li v-for="(page, index) in this.store.getPaginationInfo.count" :key="index" @click="changePage(index)" class="page-item">
                         <button class="btn btn-primary page-link">{{ page }}</button>
                     </li>
-                    <li class="page-item" @click="changePage(this.store.getPaginationInfo.count -1)">
+                    <li class="page-item" @click="changePage(this.store.getPaginationInfo.count-1)">
                     <button class="btn btn-primary page-link" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </button>

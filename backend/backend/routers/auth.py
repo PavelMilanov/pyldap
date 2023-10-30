@@ -26,7 +26,7 @@ async def login(form: AuthSchema = Body()) -> str | None:
     Returns:
         str | None: токен авторизации.
     """    
-    resp = await ldap.ldap_authentificate(form.username, form.password)
+    resp = ldap.ldap_authentificate(form.username, form.password)
     if resp:
         token = await token_auth_scheme.generate_token(form.username, form.password)
         return token
