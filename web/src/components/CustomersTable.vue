@@ -14,6 +14,7 @@ export default {
     data() {
         return {
             searchMode: true,
+            tableIndex: 1
         }
     },
     watch: {
@@ -36,9 +37,10 @@ export default {
             this.store.getCustomersTable.all = data
             this.searchMode = true
         },
-        async changePage(skip, limit) {
+        async changePage(skip, limit, currentPage) {
             let data = await this.store.getComputersandCustomers(skip, limit)
             this.store.getCustomersTable.all = data
+            this.tableIndex = currentPage
         }
     },
 }
@@ -74,15 +76,15 @@ export default {
         </table>
         <nav v-if="searchMode" aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <li class="page-item" @click="changePage(0, 20)">
+                <li class="page-item" :class="{ 'disabled': this.tableIndex == 1 }" @click="changePage(0, 20, 1)">
                 <a class="page-link" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
                 </li>
-                <li v-for="(page, index) in this.store.getCustomersTable.pageCount" :key="index" @click="changePage(20*index,20*index+20)" class="page-item">
+                <li v-for="(page, index) in this.store.getCustomersTable.pageCount" :key="index" @click="changePage(20*index,20*index+20, page)" class="page-item">
                     <button class="btn btn-primary page-link">{{ page }}</button>
                 </li>
-                <li class="page-item" @click="changePage(20 * (this.store.getCustomersTable.pageCount-1), 20 * (this.store.getCustomersTable.pageCount-1) + 20)">
+                <li class="page-item" :class="{ 'disabled': this.ableIndex == this.store.getCustomersTable.pageCount }" @click="changePage(20 * (this.store.getCustomersTable.pageCount-1), 20 * (this.store.getCustomersTable.pageCount-1) + 20, this.store.getCustomersTable.pageCount)">
                 <button class="btn btn-primary page-link" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </button>

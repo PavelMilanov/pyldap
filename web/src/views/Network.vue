@@ -44,8 +44,9 @@ export default {
             this.search = ''
             this.store.getNetworkList()
         },
-        changePage(index) {
+        changePage(index, currentPage) {
             this.store.setPaginationPage(index)
+            this.tableIndex = currentPage
         },
     },
     created() {
@@ -92,15 +93,15 @@ export default {
             </table>
             <nav v-if="!searchMode" aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" @click="changePage(0)">
+                    <li class="page-item " :class="{ 'disabled': this.tableIndex == 1 }" @click="changePage(0, 1)">
                     <a class="page-link" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                     </li>
-                    <li v-for="(page, index) in this.store.getPaginationInfo.count" :key="index" @click="changePage(index)" class="page-item">
+                    <li v-for="(page, index) in this.store.getPaginationInfo.count" :key="index" @click="changePage(index, page)" class="page-item">
                         <button class="btn btn-primary page-link">{{ page }}</button>
                     </li>
-                    <li class="page-item" @click="changePage(this.store.getPaginationInfo.count-1)">
+                    <li class="page-item" :class="{ 'disabled': this.tableIndex == this.store.getPaginationInfo.count }" @click="changePage(this.store.getPaginationInfo.count-1, this.store.getPaginationInfo.count)">
                     <button class="btn btn-primary page-link" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </button>
