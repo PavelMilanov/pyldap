@@ -15,31 +15,6 @@ router = APIRouter(
     tags=['Users']
 )
 
-@router.get('/')
-async def get_customers_and_computers(
-    skip: int = 0,
-    limit: int = 20,
-    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ) -> List[CustomerLdapDescribe]:
-    """Вывод сортированный список всех записей AD с атрибутами CustomerLdapDescribe.
-
-        Args:
-            skip (int, optional): Начальный индекс списка пользователей. Defaults to None.
-            limit (int, optional): Конечный индекс списка пользователей. Defaults to None.
-            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
-
-    Returns:
-        List: List[CustomerLdapDescribe]
-    """
-    data = cache.get_json_set('customers', skip=skip, limit=limit)
-    for user in data:
-        netclient = await NetworkClient.get_or_none(system=user['name'])
-        if netclient:
-            strdata = netclient.network[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
-            parsedata = list(strdata.split(' '))
-            user['ip'] = parsedata[2]
-            user['mac'] = parsedata[3]
-    return data
 
 @router.get('/all')
 async def get_customers(
@@ -103,3 +78,29 @@ async def get_customer(
     """    
     resp = ldap.get_domain_user(customer)
     return resp
+
+@router.get('/')
+async def get_customers_and_computers(
+    skip: int = 0,
+    limit: int = 20,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> List[CustomerLdapDescribe]:
+    """Вывод сортированный список всех записей AD с атрибутами CustomerLdapDescribe.
+
+        Args:
+            skip (int, optional): Начальный индекс списка пользователей. Defaults to None.
+            limit (int, optional): Конечный индекс списка пользователей. Defaults to None.
+            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+
+    Returns:
+        List: List[CustomerLdapDescribe]
+    """
+    data = cache.get_json_set('customers', skip=skip, limit=limit)
+    for user in data:
+        netclient = await NetworkClient.get_or_none(system=user['name'])
+        if netclient:
+            strdata = netclient.network[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
+            parsedata = list(strdata.split(' '))
+            user['ip'] = parsedata[2]
+            user['mac'] = parsedata[3]
+    return data
