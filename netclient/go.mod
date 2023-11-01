@@ -1,6 +1,6 @@
 module netclient
 
-go 1.20
+go 1.21
 
 require github.com/kardianos/service v1.2.2
 
