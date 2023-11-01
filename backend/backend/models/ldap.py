@@ -54,4 +54,5 @@ class CustomerLdapDescribe(BaseModel):
     os: str
     version_os: str
     unit: Union[List[str], None]
-    ip: str
+    ip: Union[str, None]
+    mac: Union[str, None]

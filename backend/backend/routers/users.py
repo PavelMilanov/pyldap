@@ -4,7 +4,7 @@ from typing import List, Dict
 import re
 from tortoise.exceptions import DoesNotExist
 
-from db.postgres.models import Act
+from db.postgres.models import Act, NetworkClient
 from .auth import token_auth_scheme
 from models.ldap import CustomerLdapDescribe
 from .import ldap, cache
@@ -31,7 +31,15 @@ async def get_customers_and_computers(
     Returns:
         List: List[CustomerLdapDescribe]
     """
-    return cache.get_json_set('customers', skip=skip, limit=limit)
+    data = cache.get_json_set('customers', skip=skip, limit=limit)
+    for user in data:
+        netclient = await NetworkClient.get_or_none(system=user['name'])
+        if netclient:
+            strdata = netclient.network[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
+            parsedata = list(strdata.split(' '))
+            user['ip'] = parsedata[2]
+            user['mac'] = parsedata[3]
+    return data
 
 @router.get('/all')
 async def get_customers(
@@ -69,7 +77,12 @@ async def get_customer_info(
     pattern = re.search(r"customer[0-9]{4}", customer)
     if pattern:   
         resp = ldap.get_customer_desctibe(customer)
-
+        netclient = await NetworkClient.get_or_none(system=customer)  ## ['ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f']
+        if netclient:
+            strdata = netclient.network[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
+            parsedata = list(strdata.split(' '))
+            resp.ip = parsedata[2]
+            resp.mac = parsedata[3]
         return resp
     else:
         # если не пользователь AD вернуть только акт.

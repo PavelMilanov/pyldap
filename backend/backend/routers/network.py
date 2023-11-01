@@ -20,9 +20,9 @@ async def get_static_ip_all(
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> List[schema.GetStaticIp]:
     """Возвращает список табличных данных.
-    Args:
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
-        Defaults to Security(token_auth_scheme).
+    
+        Args:
+            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
 
     Returns:
         List[schema.GetStaticIp]: db.postgres.StaticIp.
@@ -39,16 +39,15 @@ async def get_static_ip_all(
 async def set_static_ip(
     item: schema.StaticIp,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ):
+    ) -> None:
     """Добавляет запись в таблицу StaticIp.
 
-    Args:
-        item (schema.StaticIp): {
-            ip: str,
-            description: str
-        }
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
-        Defaults to Security(token_auth_scheme).
+        Args:
+            item (schema.StaticIp): {
+                ip: str,
+                description: str
+            }
+            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
     """    
     try:
         await StaticIp.create(ip=item.ip, description=item.description)
@@ -62,10 +61,9 @@ async def get_static_ip(
     ) -> schema.GetStaticIp:
     """Возвращает таблицу StaticIp в виде списка.
 
-    Args:
-        id (int): Возвращает запись из таблицы StaticIp по id.
-        token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
-        Defaults to Security(token_auth_scheme).
+        Args:
+            id (int): Возвращает запись из таблицы StaticIp по id.
+            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
 
     Returns:
         schema.GetStaticIp: {
@@ -84,8 +82,8 @@ async def netclient_config(config: schema.NetworkClietnConfig) -> None:
     """Принимает конфигурацию хоста AD, с помощью службы Netclient v1.
     Добавляет\обновляет данные в БД.
 
-    Args:
-        config (schema.NetworkClietnConfig): json-данные.
+        Args:
+            config (schema.NetworkClietnConfig): json-данные.
     """    
     try:
         resp = await NetworkClient.get_or_none(system=config.system)
@@ -102,11 +100,11 @@ async def netclient_config(config: schema.NetworkClietnConfig) -> None:
         
 @router.post('/netclient/message')
 async def netclient_messages(data: schema.NetworkClientMessage) -> None:
-    """Принимает системные сообщения от хостов службы Netclient v1.
+    """Принимает системные сообщения от хостов службы NetClient v1.
     Добавляет все сообщения в кеш.
     
-    Args:
-        data (schema.NetworkClientMessage): json-данные.
+        Args:
+            data (schema.NetworkClientMessage): json-данные.
     """    
     cache.append_json_set('messages', {
         'client': data.system,
@@ -116,6 +114,11 @@ async def netclient_messages(data: schema.NetworkClientMessage) -> None:
 
 @router.get('/netclient/messages')
 async def get_messages_log() -> List[dict]:
+    """Получение всех сообщений службы NetClient v1 из кеша.
+
+    Returns:
+        List[dict]: сообщения.
+    """    
     # список сообщений от клиентов службы Netclient.
     data = cache.get_json_set('messages')[0]
     return data

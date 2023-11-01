@@ -5,7 +5,7 @@ from loguru import logger
 
 from utils.connector import Ldap3Connector
 from db.redis import RedisConnector
-
+from db.postgres.models import NetworkClient
 
 env = Env()
 env.read_env()
@@ -44,7 +44,7 @@ def scheduled_generate_customers_cache():
     
     Счетчик количеста пользователей заносится в кеш.
 
-    Задача выполняется в будние дни в 12 и 00 часов.
+    Задача выполняется в будние дни в 00 часов.
     """    
     del_cache = cache.del_json_set('customers')  # очишаем список
     if del_cache == 1:
@@ -56,6 +56,8 @@ def scheduled_generate_customers_cache():
     items = []
     for user in data:
         item = ldap.get_customer_desctibe(user.name)
+        client = NetworkClient.get(system=user.name)
+        print(client.network)
         items.append(item.dict())
     # data = [item.dict() for item in data]
     set_cache = cache.set_json_set('customers', items)  # пишем заново

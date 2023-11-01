@@ -241,7 +241,6 @@ class Ldap3Connector:
             os='',
             version_os='',
             unit=[''],
-            ip=''
         )
         return CustomerLdapDescribe(
             name=user.name,
@@ -250,7 +249,6 @@ class Ldap3Connector:
             os=computer.os,
             version_os=computer.version_os,
             unit=computer.unit,
-            ip=''
         )
     
     def get_computers(self) -> List[str]:

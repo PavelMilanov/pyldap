@@ -68,7 +68,7 @@ export default {
                     <td>{{ item.description }}</td>
                     <td>{{ item.unit ? item.unit.join(', ') : '-' }}</td>
                     <td>{{ item.ip ? item.ip : '-' }}</td>
-                    <td>{{ item.ip ? item.ip : '-' }}</td>
+                    <td>{{ item.mac ? item.mac : '-' }}</td>
                     <td>{{ item.os + ' ' + item.version_os }}</td>
                     <td>{{ item.member_of ? item.member_of.join(', ') : '-' }}</td>
                 </tr>
