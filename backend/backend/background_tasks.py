@@ -2,10 +2,11 @@ import dramatiq
 from dramatiq.brokers.redis import RedisBroker
 from environs import Env
 from loguru import logger
+import psycopg2
 
 from utils.connector import Ldap3Connector
 from db.redis import RedisConnector
-from db.postgres.models import NetworkClient
+
 
 env = Env()
 env.read_env()
@@ -54,12 +55,27 @@ def scheduled_generate_customers_cache():
     data = ldap.get_domain_users()
     cache.set_value('customers_count', len(data))  # счетчик всех пользователей
     items = []
+    conn = psycopg2.connect(
+        dbname=env('POSTGRES_DB'),
+        user=env('POSTGRES_USER'),
+        password=env('POSTGRES_PASSWORD'),
+        host=env('POSTGRES_HOST')
+        )
+    cursor = conn.cursor()
     for user in data:
         item = ldap.get_customer_desctibe(user.name)
-        client = NetworkClient.get(system=user.name)
-        print(client.network)
+        try:
+            cursor.execute('SELECT network FROM netclients WHERE system=%s', (user.name,))
+            query = cursor.fetchone()[0]
+            strdata = query[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
+            parsedata = list(strdata.split(' '))
+            item.ip = parsedata[2]
+            item.mac = parsedata[3]
+        except TypeError:
+            pass
         items.append(item.dict())
-    # data = [item.dict() for item in data]
+    cursor.close()
+    conn.close()
     set_cache = cache.set_json_set('customers', items)  # пишем заново
     if set_cache == 1:
         logger.info('set customers cache')

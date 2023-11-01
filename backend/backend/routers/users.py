@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path, Security, Response
 from fastapi.security import HTTPAuthorizationCredentials
-from typing import List, Dict
+from typing import List
 import re
 from tortoise.exceptions import DoesNotExist
 
@@ -14,20 +14,6 @@ router = APIRouter(
     prefix='/api/v1/ldap3/users',
     tags=['Users']
 )
-
-
-@router.get('/all')
-async def get_customers(
-    response: Response,
-    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ) -> None:
-    """Вывод количества пользователей AD.
-
-        Args:
-            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
-    """
-    header = cache.get_value('customers_count')
-    response.headers['X-Customers-Count'] = str(header)
 
 @router.get('/{customer}/info')
 async def get_customer_info(
@@ -49,37 +35,21 @@ async def get_customer_info(
     except DoesNotExist:
         response.headers['X-Customer-Act'] = 'false'
     # если запрос на акт не от AD.
+    network = await NetworkClient.get_or_none(system=customer)
     pattern = re.search(r"customer[0-9]{4}", customer)
-    if pattern:   
-        resp = ldap.get_customer_desctibe(customer)
-        netclient = await NetworkClient.get_or_none(system=customer)  ## ['ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f']
-        if netclient:
-            strdata = netclient.network[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
+    if pattern:
+        user = ldap.get_customer_desctibe(customer)
+        if network:
+            strdata = network.network[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
             parsedata = list(strdata.split(' '))
-            resp.ip = parsedata[2]
-            resp.mac = parsedata[3]
-        return resp
+            user.ip = parsedata[2]
+            user.mac = parsedata[3]
+        return user
     else:
         # если не пользователь AD вернуть только акт.
         return {'act': response.headers['X-Customer-Act']}
 
-@router.get('/{customer}')
-async def get_customer(
-    customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),  # noqa: E501
-    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-    ) -> Dict | None:
-    """Вывод информации о пользователе AD c атрибутами CustomerLdap.
-
-        Args:
-            customer (str): имя пользователя.
-
-    Returns:
-        Dict | None: Dict | None: модель CustomerLdap.
-    """    
-    resp = ldap.get_domain_user(customer)
-    return resp
-
-@router.get('/')
+@router.get('/all/customers/info')
 async def get_customers_and_computers(
     skip: int = 0,
     limit: int = 20,
@@ -95,12 +65,35 @@ async def get_customers_and_computers(
     Returns:
         List: List[CustomerLdapDescribe]
     """
-    data = cache.get_json_set('customers', skip=skip, limit=limit)
-    for user in data:
-        netclient = await NetworkClient.get_or_none(system=user['name'])
-        if netclient:
-            strdata = netclient.network[2:-2]  ## ethernet 1500 16.254.11.1/16 4c:52:62:3a:6a:2f
-            parsedata = list(strdata.split(' '))
-            user['ip'] = parsedata[2]
-            user['mac'] = parsedata[3]
-    return data
+    return cache.get_json_set('customers', skip=skip, limit=limit)
+
+@router.get('/count')
+async def get_customers(
+    response: Response,
+    token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+    ) -> None:
+    """Вывод количества пользователей AD.
+
+        Args:
+            token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
+    """
+    header = cache.get_value('customers_count')
+    response.headers['X-Customers-Count'] = str(header)
+
+
+# @router.get('/{customer}')
+# async def get_customer(
+#     customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),  # noqa: E501
+#     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
+#     ) -> Dict | None:
+#     """Вывод информации о пользователе AD c атрибутами CustomerLdap.
+
+#         Args:
+#             customer (str): имя пользователя.
+
+#     Returns:
+#         Dict | None: Dict | None: модель CustomerLdap.
+#     """    
+#     resp = ldap.get_domain_user(customer)
+#     return resp
+

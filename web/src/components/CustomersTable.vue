@@ -84,7 +84,7 @@ export default {
                 <li v-for="(page, index) in this.store.getCustomersTable.pageCount" :key="index" @click="changePage(20*index,20*index+20, page)" class="page-item">
                     <button class="btn btn-primary page-link">{{ page }}</button>
                 </li>
-                <li class="page-item" :class="{ 'disabled': this.ableIndex == this.store.getCustomersTable.pageCount }" @click="changePage(20 * (this.store.getCustomersTable.pageCount-1), 20 * (this.store.getCustomersTable.pageCount-1) + 20, this.store.getCustomersTable.pageCount)">
+                <li class="page-item" :class="{ 'disabled': this.tableIndex == this.store.getCustomersTable.pageCount }" @click="changePage(20 * (this.store.getCustomersTable.pageCount-1), 20 * (this.store.getCustomersTable.pageCount-1) + 20, this.store.getCustomersTable.pageCount)">
                 <button class="btn btn-primary page-link" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </button>

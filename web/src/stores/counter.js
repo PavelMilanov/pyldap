@@ -68,7 +68,7 @@ export const defaultStore = defineStore('default', {
     async getComputersandCustomers(skip, limit) {
       let cache = []
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/`, { headers, params: { skip: skip, limit: limit } }).then(
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/all/customers/info`, { headers, params: { skip: skip, limit: limit } }).then(
         function (response) {
           cache = response.data
         }
@@ -172,7 +172,7 @@ export const defaultStore = defineStore('default', {
       let cache = []
       let responseHeader
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/all`, { headers, params: { skip: skip, limit: limit } }).then(
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/count`, { headers, params: { skip: skip, limit: limit } }).then(
         function (response) {
           cache = response.data
           responseHeader = response.headers['x-customers-count']
