@@ -98,8 +98,6 @@ services:
     env_file:
       - ./.config.env
     environment:
-      PGADMIN_DEFAULT_EMAIL: $PG_ADMIN_MAIL
-      PG_ADMIN_DEFAULT_PASSWORD: $PG_ADMIN_PASSWORD
       PGADMIN_LISTEN_PORT: 8080
     networks:
       - application
