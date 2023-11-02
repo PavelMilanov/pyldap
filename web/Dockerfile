@@ -1,7 +1,6 @@
 FROM node:16.20 as build
 
 ARG listen_ip
-ARG listen_domain
 ARG version
 
 COPY . /.
@@ -12,6 +11,7 @@ RUN npm run build
 FROM nginx:stable
 
 ARG listen_ip
+ARG listen_domain
 
 RUN rm /etc/nginx/conf.d/default.conf && mkdir /www
 COPY --from=build dist/ /www
