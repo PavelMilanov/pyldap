@@ -37,7 +37,7 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 	//Time: 2023-08-30 23:45
 	//...
 	data := string(bytes)
-	log.Println(string(data))
+	log.Print(data)
 	frames := strings.Split(data, "...") // Разбивает общий фрэйм на отдельные сообщения по метке.
 	for _, frame := range frames[:len(frames)-1] {
 		reEvent, _ := regexp.Compile(`Event:.*`)
@@ -45,9 +45,9 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 		reHeader, _ := regexp.Compile(`Header:.*`)
 		header := reHeader.FindString(frame)
 		if strings.HasSuffix(header[8:], "\r") { // Убираем символ \r в конце строки, если он присутсвует
-			protocol.System = header[8 : len(header)-1]
+			protocol.System = strings.ToLower(header[8 : len(header)-1])
 		} else {
-			protocol.System = header[8:]
+			protocol.System = strings.ToLower(header[8:])
 		}
 		reTime, _ := regexp.Compile(`Time:.*`)
 		time := reTime.FindString(frame)
@@ -61,21 +61,18 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 			bodyData := strings.Split(trimdata, " ")
 			for _, item := range bodyData {
 				intf := strings.Split(item, ",")
-				ipv4Data := fmt.Sprintf("%s %s %s %s", strings.ToLower(intf[0]), intf[1], intf[2], intf[3])
+				ipv4Data := fmt.Sprintf("%s %s %s %s", intf[0], intf[1], intf[2], intf[3])
 				protocol.Network = append(protocol.Network, ipv4Data)
 			}
 			status := protocol.sendConfig()
-			log.Println(status)
+			log.Print(status)
 		case "message":
 			reBody, _ := regexp.Compile(`Body:.*`)
 			body := reBody.FindString(frame)[6:]
 			protocol.Message = body
 			status := protocol.sendMessage()
-			log.Println(status)
+			log.Print(status)
 		case "check":
-			// reBody, _ := regexp.Compile(`Body:.*`)
-			// body := reBody.FindString(frame)[6:]
-			// log.Println(body)
 			conn.Write([]byte("1"))
 		}
 	}
@@ -103,7 +100,7 @@ func (protocol *ClientData) sendConfig() int {
 	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient", BACKEND_SERVER)
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 	client := http.Client{}
 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
@@ -111,7 +108,7 @@ func (protocol *ClientData) sendConfig() int {
 
 	response, err := client.Do(request)
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 	defer response.Body.Close()
 	return response.StatusCode
@@ -134,7 +131,7 @@ func (protocol *ClientData) sendMessage() int {
 	url := fmt.Sprintf("http://%s:8000/api/v1/network/netclient/message", BACKEND_SERVER)
 	data, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 	client := http.Client{}
 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
@@ -142,7 +139,7 @@ func (protocol *ClientData) sendMessage() int {
 
 	response, err := client.Do(request)
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 	defer response.Body.Close()
 	return response.StatusCode
