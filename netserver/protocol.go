@@ -37,7 +37,6 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 	//Time: 2023-08-30 23:45
 	//...
 	data := string(bytes)
-	log.Print(data)
 	frames := strings.Split(data, "...") // Разбивает общий фрэйм на отдельные сообщения по метке.
 	for _, frame := range frames[:len(frames)-1] {
 		reEvent, _ := regexp.Compile(`Event:.*`)
@@ -52,7 +51,9 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 		reTime, _ := regexp.Compile(`Time:.*`)
 		time := reTime.FindString(frame)
 		protocol.Time = time[6:]
-
+		if event != "check" {
+			log.Print(frame)
+		}
 		switch event {
 		case "config":
 			reBody, _ := regexp.Compile(`Body:.*`)
