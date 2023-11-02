@@ -37,6 +37,7 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 	//Time: 2023-08-30 23:45
 	//...
 	data := string(bytes)
+	log.Println(string(data))
 	frames := strings.Split(data, "...") // Разбивает общий фрэйм на отдельные сообщения по метке.
 	for _, frame := range frames[:len(frames)-1] {
 		reEvent, _ := regexp.Compile(`Event:.*`)
@@ -58,7 +59,6 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 			body := reBody.FindString(frame)
 			trimdata := strings.TrimSpace(body[6:])
 			bodyData := strings.Split(trimdata, " ")
-			log.Println(bodyData) // для тестирования
 			for _, item := range bodyData {
 				intf := strings.Split(item, ",")
 				ipv4Data := fmt.Sprintf("%s %s %s %s", strings.ToLower(intf[0]), intf[1], intf[2], intf[3])
