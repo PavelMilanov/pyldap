@@ -58,6 +58,7 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 			body := reBody.FindString(frame)
 			trimdata := strings.TrimSpace(body[6:])
 			bodyData := strings.Split(trimdata, " ")
+			log.Println(bodyData) // для тестирования
 			for _, item := range bodyData {
 				intf := strings.Split(item, ",")
 				ipv4Data := fmt.Sprintf("%s %s %s %s", strings.ToLower(intf[0]), intf[1], intf[2], intf[3])
@@ -72,9 +73,9 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 			status := protocol.sendMessage()
 			log.Println(status)
 		case "check":
-			reBody, _ := regexp.Compile(`Body:.*`)
-			body := reBody.FindString(frame)[6:]
-			log.Println(body)
+			// reBody, _ := regexp.Compile(`Body:.*`)
+			// body := reBody.FindString(frame)[6:]
+			// log.Println(body)
 			conn.Write([]byte("1"))
 		}
 	}
