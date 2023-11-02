@@ -60,7 +60,7 @@ func (protocol *ClientData) decode(bytes []byte, conn net.Conn) {
 			bodyData := strings.Split(trimdata, " ")
 			for _, item := range bodyData {
 				intf := strings.Split(item, ",")
-				ipv4Data := fmt.Sprintf("%s %s %s %s", intf[0], intf[1], intf[2], intf[3])
+				ipv4Data := fmt.Sprintf("%s %s %s %s", strings.ToLower(intf[0]), intf[1], intf[2], intf[3])
 				protocol.Network = append(protocol.Network, ipv4Data)
 			}
 			status := protocol.sendConfig()
