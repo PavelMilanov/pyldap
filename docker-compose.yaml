@@ -58,6 +58,7 @@ services:
       context: ./web
       args:
         - listen_ip=0.0.0.0
+        - listen_domain=local
         - version=v0.0.0
     container_name: nginx
     restart: always
