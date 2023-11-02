@@ -16,5 +16,4 @@ ARG listen_ip
 RUN rm /etc/nginx/conf.d/default.conf && mkdir /www
 COPY --from=build dist/ /www
 COPY --from=build nginx.conf /etc/nginx/nginx.conf
-RUN sed -i "s/<ip>/${listen_ip}/" /etc/nginx/nginx.conf
-RUN sed -i "s/<site>/${listen_domain}/" /etc/nginx/nginx.conf
+RUN sed -i "s/<ip>/${listen_ip}/g" /etc/nginx/nginx.conf && sed -i "s/<site>/${listen_domain}/g" /etc/nginx/nginx.conf
