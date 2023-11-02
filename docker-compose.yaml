@@ -91,6 +91,19 @@ services:
     networks:
       - application
 
+  dbadmin:
+    image: dpage/pgadmin4:latest
+    container_name: dbadmin
+    restart: always
+    env_file:
+      - ./.config.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: $PG_ADMIN_MAIL
+      PG_ADMIN_DEFAULT_PASSWORD: $PG_ADMIN_PASSWORD
+      PGADMIN_LISTEN_PORT: 8080
+    networks:
+      - application
+
   redis:
     image: redis/redis-stack:latest
     container_name: redis
