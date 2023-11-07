@@ -69,7 +69,6 @@ async def get_customers_and_computers(
 
 @router.get('/count')
 async def get_customers(
-    response: Response,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> None:
     """Вывод количества пользователей AD.
@@ -77,8 +76,8 @@ async def get_customers(
         Args:
             token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
     """
-    header = cache.get_value('customers_count')
-    response.headers['X-Customers-Count'] = str(header)
+    count = cache.get_value('customers_count')
+    return int(count)
 
 
 # @router.get('/{customer}')

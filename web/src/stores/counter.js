@@ -168,22 +168,23 @@ export const defaultStore = defineStore('default', {
       })
       return responseData
     },
-    async getCustomersList(skip, limit) {
-      let cache = []
-      let responseHeader
+    async getCustomersList() {
+      let cache
+      // let responseHeader
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
-      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/count`, { headers, params: { skip: skip, limit: limit } }).then(
+      await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/count`, { headers }).then(
         function (response) {
           cache = response.data
-          responseHeader = response.headers['x-customers-count']
+          console.log(cache)
+          // responseHeader = response.headers['x-customers-count']
         }
       ).catch(function (error) {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
       })
-      this.customers.customersAll = cache
-      localStorage.customersCount = responseHeader
+      // this.customers.customersAll = cache
+      localStorage.customersCount = cache
       return cache
     },
     async getCustomerDescribeInfo(customer) {

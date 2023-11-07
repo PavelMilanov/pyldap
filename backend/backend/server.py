@@ -90,7 +90,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=['GET', 'POST', 'DELETE', 'PUT'],
     allow_headers=['*'],
-    expose_headers=['X-Customer-Act', 'X-Customers-Count']
+    expose_headers=['X-Customer-Act']
 )
 
 logger.add('logs/logs',

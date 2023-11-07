@@ -29,6 +29,7 @@ export default {
       },
   },
   created() {
+    this.store.getCustomersList()
     var backend = import.meta.env.VITE_APP_BACKEND
     this.connection = new WebSocket(`ws://${backend}/api/v1/ws/netclients`)
 
