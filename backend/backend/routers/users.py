@@ -15,7 +15,7 @@ router = APIRouter(
     tags=['Users']
 )
 
-@router.get('/{customer}/info')
+@router.get('/{customer}/info', response_model=None)
 async def get_customer_info(
     response: Response,
     customer: str = Path(description='Имя компьютера', example='customer'),  # noqa: E501
