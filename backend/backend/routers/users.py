@@ -78,21 +78,3 @@ async def get_customers(
     """
     count = cache.get_value('customers_count')
     return int(count)
-
-
-# @router.get('/{customer}')
-# async def get_customer(
-#     customer: str = Path(description='Имя компьютера', example='customer', regex='customer[0-9]{4}'),  # noqa: E501
-#     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
-#     ) -> Dict | None:
-#     """Вывод информации о пользователе AD c атрибутами CustomerLdap.
-
-#         Args:
-#             customer (str): имя пользователя.
-
-#     Returns:
-#         Dict | None: Dict | None: модель CustomerLdap.
-#     """    
-#     resp = ldap.get_domain_user(customer)
-#     return resp
-
