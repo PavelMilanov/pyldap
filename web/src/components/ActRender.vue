@@ -35,7 +35,6 @@ export default {
         },
         async renderActs() {
             let acts = await this.store.getActsTable()
-            console.log(acts)
             this.actsTable = acts
         }
     },
@@ -49,7 +48,7 @@ export default {
     <div class="row">
         <div class="col-4 p-4 d-flex justify-content-center">
             <div class="mx-auto">
-                <div class="card shadow rounded mb-3" style="width: 30rem;">
+                <div class="card shadow rounded mb-3" style="width: 35rem;">
                     <div class="card-body">
                         <h6 class="card-subtitle text-body-secondary d-flex justify-content-center">
                             {{ this.route.params.id == 'template'? 'Шаблон акта': id.slice(6,-4) }}
@@ -61,7 +60,8 @@ export default {
                         </div>
                     </div>
                 </div>
-                    <table class="table table-striped shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="width: 30rem;">
+                <div class="m-0 overflow-y:auto">
+                    <table class="table table-striped shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="width: 35rem;">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
@@ -77,6 +77,7 @@ export default {
                             </tr>
                         </tbody>
                     </table>
+                </div>
             </div>
         </div>
         <div class="col-8 p-4 act-area">
@@ -97,7 +98,4 @@ canvas {
     border-radius: 5px;
 }
 
-.act-area {
-    height: 160rem;
-}
 </style>
