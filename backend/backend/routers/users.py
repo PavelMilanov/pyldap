@@ -77,4 +77,7 @@ async def get_customers(
             token (HTTPAuthorizationCredentials, optional): Токен аутентификации.
     """
     count = cache.get_value('customers_count')
-    return int(count)
+    if count is not None:
+        return int(count)
+    else:
+        return 0

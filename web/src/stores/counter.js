@@ -32,6 +32,7 @@ export const defaultStore = defineStore('default', {
   }),
   getters: {
     getUser: (state) => state.user,
+    getActs: (state) => state.acts,
     getNetworkTable: (state) => state.network,
     getPaginationInfo: (state) => state.pagination,
     getCustomersTable: (state) => state.customers,
@@ -170,20 +171,16 @@ export const defaultStore = defineStore('default', {
     },
     async getCustomersList() {
       let cache
-      // let responseHeader
       const headers = { 'Authorization': `Bearer ${this.user.token}` }
       await axios.get(`http://${this.BACKEND}/api/v1/ldap3/users/count`, { headers }).then(
         function (response) {
           cache = response.data
-          console.log(cache)
-          // responseHeader = response.headers['x-customers-count']
         }
       ).catch(function (error) {
         console.log(error)
         localStorage.removeItem("isActive")
         localStorage.removeItem("token")
       })
-      // this.customers.customersAll = cache
       localStorage.customersCount = cache
       return cache
     },
@@ -243,11 +240,12 @@ export const defaultStore = defineStore('default', {
         console.log(error)
       })
     },
-    async UploadAct(data, customer) {
+    async UploadAct(data, customer, description) {
       const headers = { 'Authorization': `Bearer ${this.user.token}`, 'Content-Type': 'multipart/form-data' }
       let formData = new FormData()
+      let params = {'name': description}
       formData.append('file', data)
-      await axios.post(`http://${this.BACKEND}/api/v1/files/act/${customer}/upload`, formData, { headers }).then(
+      await axios.post(`http://${this.BACKEND}/api/v1/files/act/${customer}/upload`, formData, { headers, params }).then(
         function (response) {
           console.log(response)
         }
@@ -255,11 +253,12 @@ export const defaultStore = defineStore('default', {
         console.log(error)
       })
     },
-    async ChangeAct(data, customer) {
+    async ChangeAct(data, customer, description) {
       const headers = { 'Authorization': `Bearer ${this.user.token}`, 'Content-Type': 'multipart/form-data' }
       let formData = new FormData()
+      let params = { 'name': description }
       formData.append('file', data)
-      await axios.put(`http://${this.BACKEND}/api/v1/files/act/${customer}/change`, formData, { headers }).then(
+      await axios.put(`http://${this.BACKEND}/api/v1/files/act/${customer}/change`, formData, { headers, params }).then(
         function (response) {
           console.log(response)
         }
@@ -291,5 +290,17 @@ export const defaultStore = defineStore('default', {
           console.log(error)
         })
     },
+    async getActsTable() {
+      let responseData = []
+      const headers = { 'Authorization': `Bearer ${this.user.token}` }
+      await axios.get(`http://${this.BACKEND}/api/v1/files/acts`, { headers }).then(
+        function (response) {
+          responseData = response.data
+        }
+      ).catch(function (error) {
+        console.log(error)
+      })
+      return responseData
+    }
   },
 })

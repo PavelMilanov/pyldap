@@ -36,6 +36,7 @@ class StaticIp(Model):
 
 class Act(Model):
     id = fields.UUIDField(pk=True)
+    name = fields.TextField(null=True, description='Комментарий')
     customer = fields.TextField()
     file_name = fields.TextField()
     
@@ -55,4 +56,4 @@ class NetworkClient(Model):
         table = 'netclients'
     
     def __str__(self):
-        return self.systemname
+        return self.system

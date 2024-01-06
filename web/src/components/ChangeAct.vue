@@ -12,7 +12,8 @@ export default {
     data() {
         return {
             file: '',
-            customer: 'customer'
+            customer: '',
+            name: ''
         }
     },
     methods: {
@@ -20,7 +21,7 @@ export default {
             this.file = this.$refs.file.files[0]
         },
         async uploadFile() {
-            await this.store.ChangeAct(this.file, this.customer)
+            await this.store.ChangeAct(this.file, this.customer, this.name)
             this.$notify({
                 type: 'success',
                 title: 'Уведомление',
@@ -30,7 +31,8 @@ export default {
         },
         clearData() {
             this.file = ''
-            this.customer = 'customer'
+            this.customer = ''
+            this.name = ''
         }
     },
 }
@@ -50,14 +52,17 @@ export default {
                         <label for="customer" class="col-form-label">Customer:</label>
                         <input type="text" class="form-control" id="customer" v-model="customer">
                     </div>
+                    <div class="mb-3">
+                        <label for="new-act" class="col-form-label">Описание:</label>
+                        <input type="text" class="form-control" id="new-act" placeholder="Необязательно" v-model="name">
+                    </div>
                     <div class="input-group">
                         <input type="file" class="form-control" ref="file" id="inputGroupFile04"
                             aria-describedby="inputGroupFileAddon04" aria-label="Upload" v-on:change="handleFileUpload()">
-                        <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04" data-bs-dismiss="modal"
-                            @click="uploadFile()">Отправить</button>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal" @click="uploadFile()">Отправить</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                         @click="clearData()">Закрыть</button>
                 </div>

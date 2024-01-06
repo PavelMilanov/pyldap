@@ -84,8 +84,8 @@ router.afterEach((to, from) => {
 
 // до перехода
 router.beforeEach((to, from) => {
+    const store = defaultStore()
     if (to.name == 'customer-tables') { // рендер таблицы при переходе на вкладку /customers/tables
-        const store = defaultStore()
         store.getComputersandCustomers(to.params.skip, to.params.limit, to.params.name)
     }
 })

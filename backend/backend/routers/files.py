@@ -22,6 +22,7 @@ ACT_DIR: Final = 'files/acts'
 async def upload_act(
     file: UploadFile,
     customer: str,
+    name: str = None,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> str:
     """Загрузка акта пользователя AD.
@@ -33,7 +34,7 @@ async def upload_act(
     Returns:
         str: статус.
     """
-    await Act.create(customer=customer, file_name=f'{ACT_DIR}/{customer}.pdf')
+    await Act.create(customer=customer, name=name, file_name=f'{ACT_DIR}/{customer}.pdf')
     async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
         content = await file.read()
         await resp_file.write(content)
@@ -63,8 +64,9 @@ async def download_act(
 
 @router.put('/act/{customer}/change')
 async def change_act(
-    file: UploadFile,
     customer: str,
+    file: UploadFile = None,
+    name: str = None,
     token: HTTPAuthorizationCredentials = Security(token_auth_scheme)
     ) -> str:
     """Замена файла для выбранного пользователя.
@@ -76,12 +78,16 @@ async def change_act(
     Returns:
         str: статус.
     """
-    await aiofiles.os.remove(f'{ACT_DIR}/{customer}.pdf')
-    async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
-        content = await file.read()
-        await resp_file.write(content)
-    await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{customer}')
-    logger.info(f'Загружен новый акт {file.filename} для {customer}')
+    if file:
+        await aiofiles.os.remove(f'{ACT_DIR}/{customer}.pdf')
+        async with aiofiles.open(f'{ACT_DIR}/{customer}.pdf', 'wb') as resp_file:
+            content = await file.read()
+            await resp_file.write(content)
+        await Act.filter(customer=customer).update(file_name=f'{ACT_DIR}/{customer}')
+        logger.info(f'Загружен новый акт {file.filename} для {customer}')
+    if name:
+        await Act.filter(customer=customer).update(name=name)
+        logger.info(f'Изменено описание для {customer}')
     return 'ok'
 
 @router.delete('/act/{customer}/delete')
@@ -101,3 +107,16 @@ async def delete_act(
     await aiofiles.os.remove(f'{ACT_DIR}/{customer}.pdf')
     logger.info(f'Удален акт для {customer}')
     return 'ok'
+
+@router.get('/acts')
+async def get_acts(token: HTTPAuthorizationCredentials = Security(token_auth_scheme)) -> list:
+    """_summary_
+
+    Args:
+        token (HTTPAuthorizationCredentials, optional): _description_. Defaults to Security(token_auth_scheme).
+
+    Returns:
+        dict: _description_
+    """    
+    acts = await Act.all().values()
+    return acts

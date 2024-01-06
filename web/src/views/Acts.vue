@@ -56,7 +56,7 @@ export default {
             <div class="d-flex justify-content-center" role="search">
                 <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addAct">Добавить</button>
                 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#removeAct">Удалить</button>
-                <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#changeAct">Заменить</button>
+                <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#changeAct">Изменить</button>
                 <input class="form-control me-4" type="search" placeholder="Поиск" aria-label="Search" @click="preinput()" @keyup.enter="search(act.name)" v-model="act.name">
                 <button class="btn btn-outline-success" @click="search(act.name)">Найти</button>
                 <button v-if="this.route.params.id != 'template'" class="btn btn-outline-secondary" @click="back()">Назад</button>

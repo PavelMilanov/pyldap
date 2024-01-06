@@ -16,12 +16,14 @@ export default {
     },
     data() {
         return {
-            id: 'acts/template.pdf',  // по-умолчанию грузится шаблон
+            id: 'acts/template.pdf',  // по-умолчанию грузится шаблон,
+            actsTable: [],
         }
     },
     watch: {
         $route(to, from) {
             this.render(to)
+            this.renderActs()
         },
     },
     methods: {
@@ -30,8 +32,16 @@ export default {
         },
         render(data) {
             this.id = data.path + '.pdf'
+        },
+        async renderActs() {
+            let acts = await this.store.getActsTable()
+            console.log(acts)
+            this.actsTable = acts
         }
     },
+    created () {
+        this.renderActs()
+    }
 }
 </script>
 
@@ -39,7 +49,7 @@ export default {
     <div class="row">
         <div class="col-4 p-4 d-flex justify-content-center">
             <div class="mx-auto">
-                <div class="card shadow rounded" style="width: 30rem;">
+                <div class="card shadow rounded mb-3" style="width: 30rem;">
                     <div class="card-body">
                         <h6 class="card-subtitle text-body-secondary d-flex justify-content-center">
                             {{ this.route.params.id == 'template'? 'Шаблон акта': id.slice(6,-4) }}
@@ -51,6 +61,22 @@ export default {
                         </div>
                     </div>
                 </div>
+                    <table class="table table-striped shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="width: 30rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Акт</th>
+                                <th scope="col">Описание</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            <tr v-for="(item, index) in this.actsTable" :key="(index)">
+                                <th scope="row">{{ (index + 1)}}</th>
+                                <td>{{ item.customer }}</td>
+                                <td>{{ item.name }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
             </div>
         </div>
         <div class="col-8 p-4 act-area">
